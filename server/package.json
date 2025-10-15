@@ -1,22 +1,30 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Backend server for MERN POS Vehicles project",
+  "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "seed": "node src/seed/seedUsers.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "express",
+    "mongodb",
+    "mern",
+    "jwt",
+    "pos",
+    "vehicles"
+  ],
+  "author": "Mohammad Suleiman",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.19.1"
+    "mongoose": "^8.3.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
