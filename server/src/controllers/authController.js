@@ -6,16 +6,44 @@ const jwt = require("jsonwebtoken");
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+
+    // ✅ Populate role + nested permissions (with names)
+    const user = await User.findOne({ email })
+      .populate({
+        path: "role",
+        populate: {
+          path: "permissions",
+          select: "name", // نرجّع بس الاسم
+        },
+      });
+
     if (!user) return res.status(400).json({ message: "User not found" });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+    if (!isMatch)
+      return res.status(400).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1d" });
+    // 🔐 Generate JWT token
+    const token = jwt.sign(
+      { id: user._id, role: user.role?._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
 
-    res.json({ token, role: user.role });
+    // ✅ Send full response (clean, readable)
+    res.json({
+      token,
+      role: user.role?.name || "no-role",
+      permissions: user.role?.permissions?.map((p) => p.name) || [],
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role?.name || null,
+      },
+    });
   } catch (err) {
+    console.error("❌ Login error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -26,7 +54,8 @@ exports.register = async (req, res) => {
     const { name, email, password, role } = req.body;
 
     const existing = await User.findOne({ email });
-    if (existing) return res.status(400).json({ message: "User already exists" });
+    if (existing)
+      return res.status(400).json({ message: "User already exists" });
 
     const hashed = await bcrypt.hash(password, 10);
 
@@ -34,23 +63,33 @@ exports.register = async (req, res) => {
       name,
       email,
       password: hashed,
-      role: role || "clerk",
+      role: role || "clerk", // Default role
     });
 
     res.status(201).json({
       message: "✅ User registered successfully!",
-      user: { id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role },
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+      },
     });
   } catch (err) {
+    console.error("❌ Register error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-// ⚙️ Update role
+// ⚙️ Update Role
 exports.updateRole = async (req, res) => {
   try {
     const { userId, roleId } = req.body;
-    if (!userId || !roleId) return res.status(400).json({ message: "userId and roleId are required" });
+
+    if (!userId || !roleId)
+      return res
+        .status(400)
+        .json({ message: "userId and roleId are required" });
 
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -58,11 +97,24 @@ exports.updateRole = async (req, res) => {
     user.role = roleId;
     await user.save();
 
+    // ✅ Populate new role info
+    await user.populate({
+      path: "role",
+      populate: { path: "permissions", select: "name" },
+    });
+
     res.json({
       message: "✅ Role updated successfully",
-      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role?.name,
+        permissions: user.role?.permissions?.map((p) => p.name) || [],
+      },
     });
   } catch (err) {
+    console.error("❌ Update role error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };

@@ -1,0 +1,109 @@
+body {
+  margin: 0;
+  padding: 0;
+  /* background: linear-gradient(135deg, #0f172a, #1e293b); */
+  font-family: "Poppins", sans-serif;
+  
+  /* display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; */
+  animation: fadeInBg 1.5s ease forwards;
+}
+
+/* ✨ حركة الخلفية */
+@keyframes fadeInBg {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.unauthorized-card {
+  background: #ffffff;
+  border-radius: 16px;
+  text-align: center;
+  padding: 50px 40px;
+  width: 380px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 50px 350px 0px 50%;
+
+  /* ✨ الحركة */
+  opacity: 0;
+  transform: scale(0.8);
+  animation: popIn 0.8s ease forwards;
+}
+
+/* 💫 تأثير دخول الصندوق */
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.unauth-image {
+  width: 100px;
+  margin-bottom: 15px;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+}
+
+.unauth-icon {
+  font-size: 55px;
+  color: #ef4444;
+  margin: 10px 0;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+/* ❤️ حركة النبض على رمز المنع */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+h2 {
+  color: #1e293b;
+  font-weight: 600;
+  margin-bottom: 5px;
+  font-size: 24px;
+}
+
+p {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 25px;
+  max-width: 250px;
+}
+
+button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #1d4ed8;
+  transform: scale(1.05);
+}
