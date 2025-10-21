@@ -7,7 +7,7 @@ export default function Unauthorized() {
   return (
     <div className="unauthorized-card">
       <img
-        src="/assets/unauthorized.png"
+        src="/  assets/unauthorized.png"
         alt="Unauthorized Access"
         className="unauth-image"
       />

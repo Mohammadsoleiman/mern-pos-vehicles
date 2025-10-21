@@ -2,53 +2,48 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import RoleRoute from "./components/RoleRoute";
 
-// 🧭 Pages
 import Login from "./pages/Login";
+import DashboardLayout from "./layouts/DashboardLayout"; // ✅
 import Dashboard from "./pages/Dashboard";
-import Accounting from "./pages/Accounting";
-import Cashier from "./pages/Cashier";
-import Unauthorized from "./pages/Unauthorized"; // ✅ تم الاستيراد هنا
+import UsersPage from "./pages/users/index";
+
+// ✅ فقط Roles
+import RolesPage from "./pages/roles/index";
+
+// ✅ أضفنا PermissionsPage هنا 👇
+import PermissionsPage from "./pages/permissions/PermissionsPage";
+
+import Unauthorized from "./pages/Unauthorized";
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* 🔓 Public Route */}
+          {/* Public Route */}
           <Route path="/" element={<Login />} />
 
-          {/* 🔒 Protected Routes by Role */}
+          {/* Protected Routes */}
           <Route
-            path="/dashboard"
+            path="/"
             element={
               <RoleRoute allowedRoles={["admin"]}>
-                <Dashboard />
+                <DashboardLayout /> {/* ✅ ثابت */}
               </RoleRoute>
             }
-          />
+          >
+            {/* ⬇️ صفحات داخل نفس الـ Layout */}
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="users" element={<UsersPage />} />
 
-          <Route
-            path="/accounting"
-            element={
-              <RoleRoute allowedRoles={["accounting", "admin"]}>
-                <Accounting />
-              </RoleRoute>
-            }
-          />
+            {/* ✅ فقط صفحة Roles */}
+            <Route path="roles" element={<RolesPage />} />
 
-          <Route
-            path="/cashier"
-            element={
-              <RoleRoute allowedRoles={["clerk", "cashier", "admin"]}>
-                <Cashier />
-              </RoleRoute>
-            }
-          />
+            {/* ✅ أضفنا صفحة Permissions هون */}
+            <Route path="permissions" element={<PermissionsPage />} />
+          </Route>
 
-          {/* 🚫 Unauthorized Page */}
           <Route path="/unauthorized" element={<Unauthorized />} />
-
-          {/* ❌ Fallback 404 */}
           <Route path="*" element={<Navigate to="/unauthorized" replace />} />
         </Routes>
       </BrowserRouter>

@@ -12,6 +12,7 @@ const permissionRoutes = require("./routes/permissions");
 const roleRoutes = require("./routes/roles");
 const productRoutes = require("./routes/products");
 
+
 const app = express();
 
 // 🚀 Confirm server start

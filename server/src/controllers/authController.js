@@ -7,13 +7,12 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // ✅ Populate role + nested permissions (with names)
     const user = await User.findOne({ email })
       .populate({
         path: "role",
         populate: {
           path: "permissions",
-          select: "name", // نرجّع بس الاسم
+          select: "name",
         },
       });
 
@@ -23,14 +22,12 @@ exports.login = async (req, res) => {
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
 
-    // 🔐 Generate JWT token
     const token = jwt.sign(
       { id: user._id, role: user.role?._id },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
 
-    // ✅ Send full response (clean, readable)
     res.json({
       token,
       role: user.role?.name || "no-role",
@@ -63,7 +60,7 @@ exports.register = async (req, res) => {
       name,
       email,
       password: hashed,
-      role: role || "clerk", // Default role
+      role: role || "clerk",
     });
 
     res.status(201).json({
@@ -97,7 +94,6 @@ exports.updateRole = async (req, res) => {
     user.role = roleId;
     await user.save();
 
-    // ✅ Populate new role info
     await user.populate({
       path: "role",
       populate: { path: "permissions", select: "name" },
@@ -115,6 +111,126 @@ exports.updateRole = async (req, res) => {
     });
   } catch (err) {
     console.error("❌ Update role error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// 📋 Get all users
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find()
+      .populate({
+        path: "role",
+        select: "name permissions",
+        populate: { path: "permissions", select: "name" },
+      })
+      .select("-password");
+
+    res.json(
+      users.map((u) => ({
+        id: u._id,
+        name: u.name,
+        email: u.email,
+        role: u.role?.name || "no-role",
+        permissions: u.role?.permissions?.map((p) => p.name) || [],
+      }))
+    );
+  } catch (err) {
+    console.error("❌ Get users error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// ➕ Create user
+exports.createUser = async (req, res) => {
+  try {
+    const { name, email, password, role } = req.body;
+
+    const existing = await User.findOne({ email });
+    if (existing)
+      return res.status(400).json({ message: "User already exists" });
+
+    const hashed = await bcrypt.hash(password, 10);
+
+    // ✅ تأكد أن role هو ObjectId صالح
+    const newUser = await User.create({
+      name,
+      email,
+      password: hashed,
+      role, // رح يكون _id من Role
+    });
+
+    // رجّع مع الـ role details
+    const populated = await newUser.populate({
+      path: "role",
+      select: "name",
+    });
+
+    res.status(201).json({
+      message: "✅ User created successfully!",
+      user: {
+        id: populated._id,
+        name: populated.name,
+        email: populated.email,
+        role: populated.role?.name || null,
+      },
+    });
+  } catch (err) {
+    console.error("❌ Create user error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// ✏️ Update user
+exports.updateUser = async (req, res) => {
+  try {
+    const { name, email, password, role } = req.body;
+    const user = await User.findById(req.params.id);
+    if (!user)
+      return res.status(404).json({ message: "User not found" });
+
+    user.name = name || user.name;
+    user.email = email || user.email;
+
+    // ✅ تأكد أن role هو ObjectId صالح
+    if (role) user.role = role;
+
+    if (password) {
+      user.password = await bcrypt.hash(password, 10);
+    }
+
+    await user.save();
+
+    const populated = await user.populate({
+      path: "role",
+      select: "name",
+    });
+
+    res.json({
+      message: "✅ User updated successfully!",
+      user: {
+        id: populated._id,
+        name: populated.name,
+        email: populated.email,
+        role: populated.role?.name || null,
+      },
+    });
+  } catch (err) {
+    console.error("❌ Update user error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// ❌ Delete user
+exports.deleteUser = async (req, res) => {
+  try {
+    const deleted = await User.findByIdAndDelete(req.params.id);
+    if (!deleted)
+      return res.status(404).json({ message: "User not found" });
+
+    res.json({ message: "🗑️ User deleted successfully!" });
+  } catch (err) {
+    console.error("❌ Delete user error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
