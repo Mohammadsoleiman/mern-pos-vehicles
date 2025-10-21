@@ -1,0 +1,363 @@
+/* ========================================
+   OVERVIEW PAGE - PROFESSIONAL STYLE
+   ======================================== */
+
+.overview-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 0;
+}
+
+/* ========================================
+   Overview Header
+   ======================================== */
+.overview-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.overview-header h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.overview-header p {
+  font-size: 15px;
+  color: #6b7280;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ========================================
+   Stats Grid (using existing dashboard.css styles)
+   ======================================== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+.stat-card {
+  cursor: pointer;
+}
+
+/* ========================================
+   Features Section
+   ======================================== */
+.features-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.features-section h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  width: 100%;
+}
+
+/* ========================================
+   Feature Card - Interactive Design
+   ======================================== */
+.feature-card {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 14px;
+  border: 1.5px solid #e5e7eb;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.feature-card:hover::before {
+  transform: scaleX(1);
+}
+
+/* Feature Colors */
+.feature-blue::before {
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+}
+
+.feature-blue:hover {
+  border-color: #3b82f6;
+}
+
+.feature-purple::before {
+  background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+}
+
+.feature-purple:hover {
+  border-color: #8b5cf6;
+}
+
+.feature-green::before {
+  background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.feature-green:hover {
+  border-color: #10b981;
+}
+
+.feature-orange::before {
+  background: linear-gradient(90deg, #f59e0b, #f97316);
+}
+
+.feature-orange:hover {
+  border-color: #f59e0b;
+}
+
+.feature-red::before {
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.feature-red:hover {
+  border-color: #ef4444;
+}
+
+/* Feature Icon */
+.feature-icon {
+  font-size: 36px;
+  line-height: 1;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.feature-card:hover .feature-icon {
+  transform: scale(1.15) rotate(5deg);
+}
+
+/* Feature Content */
+.feature-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.feature-content h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  letter-spacing: -0.2px;
+}
+
+.feature-content p {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.feature-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background-color: #f3f4f6;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #374151;
+  width: fit-content;
+  margin-top: 4px;
+}
+
+/* Feature Arrow */
+.feature-arrow {
+  font-size: 20px;
+  color: #9ca3af;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.feature-card:hover .feature-arrow {
+  color: #3b82f6;
+  transform: translateX(4px);
+}
+
+/* ========================================
+   Charts Section
+   ======================================== */
+.charts-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.charts-section h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.chart-container {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.chart-container h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+/* ========================================
+   Recent Activity Section
+   ======================================== */
+.recent-activity {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.recent-activity h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+/* Activity Card */
+.activity-card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.2s ease;
+}
+
+.activity-card:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.activity-icon {
+  font-size: 28px;
+  line-height: 1;
+  background: #f9fafb;
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.activity-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.activity-content h4 {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.activity-content p {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+@media screen and (max-width: 1200px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .overview-header h1 {
+    font-size: 26px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-card {
+    padding: 20px;
+  }
+
+  .feature-icon {
+    font-size: 32px;
+  }
+}

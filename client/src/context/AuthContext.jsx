@@ -1,17 +1,27 @@
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
+// Create AuthContext
 const AuthContext = createContext();
 
+// Provider component
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user")) || null
-  );
+  const [user, setUser] = useState(null);
 
+  // Load user from localStorage on mount
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  // Login function
   const login = (data) => {
     setUser(data);
     localStorage.setItem("user", JSON.stringify(data));
   };
 
+  // Logout function
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
@@ -24,4 +34,5 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
+// Custom hook for easier context usage
 export const useAuth = () => useContext(AuthContext);
