@@ -1,56 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
-import RoleRoute from "./components/RoleRoute";
-
-import Login from "./pages/Login";
-import DashboardLayout from "./layouts/DashboardLayout"; // ✅
-import Dashboard from "./pages/Dashboard";
-import UsersPage from "./pages/users/index";
-
-// ✅ فقط Roles
-import RolesPage from "./pages/roles/index";
-
-// ✅ أضفنا PermissionsPage هنا 👇
-import PermissionsPage from "./pages/permissions/PermissionsPage";
-
-import Unauthorized from "./pages/Unauthorized";
-
-export default function App() {
-  return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* Public Route */}
-          <Route path="/" element={<Login />} />
-
-          {/* Protected Routes */}
-          <Route
-            path="/"
-            element={
-              <RoleRoute allowedRoles={["admin"]}>
-                <DashboardLayout /> {/* ✅ ثابت */}
-              </RoleRoute>
-            }
-          >
-            {/* ⬇️ صفحات داخل نفس الـ Layout */}
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="users" element={<UsersPage />} />
-
-            {/* ✅ فقط صفحة Roles */}
-            <Route path="roles" element={<RolesPage />} />
-
-            {/* ✅ أضفنا صفحة Permissions هون */}
-            <Route path="permissions" element={<PermissionsPage />} />
-          </Route>
-
-          <Route path="/unauthorized" element={<Unauthorized />} />
-          <Route path="*" element={<Navigate to="/unauthorized" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
-  );
-}
-// ???/
+// client/src/App.jsx
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // 🔐 Contexts
@@ -62,14 +10,21 @@ import { VehicleProvider } from "./context/ACCOUNTANT/VehicleContext";
 // 🔒 Role-based route
 import RoleRoute from "./components/RoleRoute";
 
+// 🧭 Layout
+import DashboardLayout from "./layouts/DashboardLayout";
+
 // 🧭 Pages
 import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import Accounting from "./pages/Accounting";
-import Cashier from "./pages/Cashier";
 import Unauthorized from "./pages/Unauthorized";
 
-// 📊 Accounting sub-pages
+// 🧩 Admin Pages
+import Dashboard from "./pages/Dashboard";
+import UsersPage from "./pages/users/index";
+import RolesPage from "./pages/roles/index";
+import PermissionsPage from "./pages/permissions/PermissionsPage";
+
+// 🧾 Accounting Pages
+import Accounting from "./pages/Accounting";
 import FeaturesOverview from "./pages/accountingstuff/FeaturesOverview.jsx";
 import Transactions from "./pages/accountingstuff/Transactions.jsx";
 import Reports from "./pages/accountingstuff/Reports.jsx";
@@ -77,6 +32,9 @@ import Accounts from "./pages/accountingstuff/Accounts.jsx";
 import Vehicles from "./pages/accountingstuff/Vehicles.jsx";
 import Settings from "./pages/accountingstuff/Settings.jsx";
 import Employees from "./pages/accountingstuff/Employees.jsx";
+
+// 💰 Cashier
+import Cashier from "./pages/Cashier";
 
 export default function App() {
   return (
@@ -86,21 +44,32 @@ export default function App() {
           <VehicleProvider>
             <BrowserRouter>
               <Routes>
-                {/* Public /}
+                {/* ================= PUBLIC ================= */}
                 <Route path="/" element={<Login />} />
 
-                {/ Admin Dashboard */}
+                {/* ================= ADMIN ================= */}
+  <Route
+  path="/admin"
+  element={
+    <RoleRoute allowedRoles={["admin"]}>
+      <DashboardLayout />
+    </RoleRoute>
+  }
+>
+  <Route index element={<Navigate to="dashboard" replace />} />
+  <Route path="dashboard" element={<Dashboard />} />
+  <Route path="users" element={<UsersPage />} />
+    <Route path="vehicles" element={<div>🚗 Vehicles Page Coming Soon</div>} />
+  <Route path="reports" element={<div>📊 Reports Page Coming Soon</div>} />
+  <Route path="settings" element={<div>⚙️ Settings Page Coming Soon</div>} />
+  <Route path="roles" element={<RolesPage />} />
+  <Route path="permissions" element={<PermissionsPage />} />
+</Route>
+
+
+                {/* ================= ACCOUNTING ================= */}
                 <Route
-                  path="/dashboard"
-                  element={
-                    <RoleRoute allowedRoles={["admin"]}>
-                      <Dashboard />
-                    </RoleRoute>
-                  }
-                />
-{/* Accounting /}
-                <Route
-                  path="/accounting/"
+                  path="/accounting/*"
                   element={
                     <RoleRoute allowedRoles={["accounting", "admin"]}>
                       <Accounting />
@@ -116,7 +85,7 @@ export default function App() {
                   <Route path="settings" element={<Settings />} />
                 </Route>
 
-                {/* Cashier /}
+                {/* ================= CASHIER ================= */}
                 <Route
                   path="/cashier"
                   element={
@@ -126,11 +95,12 @@ export default function App() {
                   }
                 />
 
-                {/ Unauthorized /}
-                <Route path="/unauthorized" element={<Unauthorized />} />
+                {/* ✅ TEST ROUTE (للتأكد أن الداشبورد شغال) */}
+                <Route path="/test" element={<UsersPage />} />
 
-                {/ Fallback /}
-                <Route path="" element={<Navigate to="/unauthorized" replace />} />
+                {/* ================= FALLBACK ================= */}
+                <Route path="/unauthorized" element={<Unauthorized />} />
+                <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
               </Routes>
             </BrowserRouter>
           </VehicleProvider>

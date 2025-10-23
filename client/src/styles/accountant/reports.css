@@ -1,0 +1,330 @@
+/* ========================================
+   REPORTS SECTION - ENHANCED PROFESSIONAL
+   ======================================== */
+
+.reports-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 0;
+}
+
+/* ========================================
+   Reports Header
+   ======================================== */
+.reports-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 16px;
+}
+
+.reports-header h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.reports-header p {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ========================================
+   Reports Grid - 4 Cards Side by Side
+   ======================================== */
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  width: 100%;
+}
+
+/* ========================================
+   Report Card - Compact Professional
+   ======================================== */
+.report-card {
+  background: #ffffff;
+  padding: 22px 20px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.report-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.report-card:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.12);
+  transform: translateY(-2px);
+}
+
+.report-card:hover::before {
+  transform: scaleX(1);
+}
+
+/* Report Icon */
+.report-icon {
+  font-size: 36px;
+  line-height: 1;
+  transition: transform 0.3s ease;
+  opacity: 0.9;
+}
+
+.report-card:hover .report-icon {
+  transform: scale(1.1);
+}
+
+/* Report Title & Description */
+.report-card h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  letter-spacing: -0.2px;
+}
+
+.report-card p {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0;
+  flex-grow: 1;
+  line-height: 1.4;
+}
+
+/* ========================================
+   Report Actions - Compact Buttons
+   ======================================== */
+.report-actions {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  position: relative;
+}
+
+/* Primary Button */
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.25);
+  flex: 1;
+  min-width: 55px;
+  justify-content: center;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.25);
+}
+
+/* Secondary Buttons */
+.btn-secondary {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1.5px solid #d1d5db;
+  flex: 1;
+  min-width: 50px;
+  justify-content: center;
+}
+
+.btn-secondary:hover {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+  color: #111827;
+  transform: translateY(-1px);
+}
+
+.btn-secondary:active {
+  background: #d1d5db;
+  transform: translateY(0);
+}
+
+/* Button Hover Effects */
+.btn-primary::after,
+.btn-secondary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+  transform: translateX(-100%);
+  animation: none;
+}
+
+.btn-primary:hover::after {
+  animation: shimmer 0.6s ease;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ========================================
+   Report Modal - Clickable Overlay
+   ======================================== */
+.report-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-in-out;
+  backdrop-filter: blur(4px);
+}
+
+.report-modal-content {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 28px 32px;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  text-align: left;
+  position: relative;
+  animation: slideUp 0.3s ease-out;
+}
+
+.report-modal-content h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.report-modal-content p {
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.6;
+  margin: 8px 0;
+}
+
+.report-modal-content p b {
+  color: #111827;
+  font-weight: 700;
+}
+
+.report-modal-content .btn-secondary {
+  margin-top: 20px;
+  width: 100%;
+  text-align: center;
+  padding: 10px 16px;
+  font-size: 12px;
+}
+
+/* ========================================
+   Animations
+   ======================================== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+@media screen and (max-width: 1400px) {
+  .reports-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .reports-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .report-card {
+    padding: 20px 18px;
+  }
+
+  .report-actions {
+    flex-direction: column;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    flex: none;
+  }
+
+  .report-icon {
+    font-size: 32px;
+  }
+
+  .report-card h3 {
+    font-size: 14px;
+  }
+
+  .report-modal-content {
+    padding: 24px 20px;
+  }
+
+  .report-modal-content h3 {
+    font-size: 18px;
+  }
+
+  .report-modal-content p {
+    font-size: 13px;
+  }
+}
