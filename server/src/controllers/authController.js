@@ -5,16 +5,18 @@ const jwt = require("jsonwebtoken");
 // 🔑 Login
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { emailOrUsername, password } = req.body;
 
-    const user = await User.findOne({ email })
-      .populate({
-        path: "role",
-        populate: {
-          path: "permissions",
-          select: "name",
-        },
-      });
+    // 👇 البحث باستخدام الإيميل أو اليوزرنيم
+    const user = await User.findOne({
+      $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
+    }).populate({
+      path: "role",
+      populate: {
+        path: "permissions",
+        select: "name",
+      },
+    });
 
     if (!user) return res.status(400).json({ message: "User not found" });
 
@@ -35,6 +37,7 @@ exports.login = async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
+        username: user.username, // 👈 أضفناه هنا
         email: user.email,
         role: user.role?.name || null,
       },

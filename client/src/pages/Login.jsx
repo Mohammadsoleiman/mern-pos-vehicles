@@ -9,7 +9,8 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
+  // الآن نستخدم emailOrName بدل email
+  const [emailOrName, setEmailOrName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -18,7 +19,8 @@ export default function Login() {
     setError("");
 
     try {
-      const { data } = await axiosClient.post("/auth/login", { email, password });
+      // إرسال emailOrName بدل email
+      const { data } = await axiosClient.post("/auth/login", { emailOrName, password });
       login(data);
       console.log("✅ Logged in:", data);
 
@@ -41,11 +43,11 @@ export default function Login() {
 
         <form onSubmit={handleSubmit}>
           <input
-            type="email"
+            type="text"
             className="login-input"
-            placeholder="Email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email / UserName"
+            value={emailOrName}
+            onChange={(e) => setEmailOrName(e.target.value)}
             required
           />
           <input
