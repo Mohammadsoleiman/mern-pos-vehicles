@@ -21,49 +21,66 @@ export default function Accounts() {
   const profit = totalIncome - totalExpenses;
 
   return (
-    <div className="accounting-page">
+    <div className="accounts-unique-page">
       <Sidebar />
-      <div className="accounting-content">
-        <h2>Financial Dashboard</h2>
+      <div className="accounts-unique-content">
+        <h2 className="accounts-main-title">Financial Dashboard</h2>
 
         {/* Summary cards */}
-        <div className="stats-grid">
-          <div className="stat-card">
-            <h3>Total Income</h3>
-            <p>${totalIncome}</p>
+        <div className="accounts-stats-container">
+          <div className="accounts-stats-card">
+            <h3 className="card-label">Total Income</h3>
+            <p className="card-value">${totalIncome.toLocaleString()}</p>
           </div>
-          <div className="stat-card">
-            <h3>Total Expenses</h3>
-            <p>${totalExpenses}</p>
+          <div className="accounts-stats-card">
+            <h3 className="card-label">Total Expenses</h3>
+            <p className="card-value">${totalExpenses.toLocaleString()}</p>
           </div>
-          <div className="stat-card">
-            <h3>Profit/Loss</h3>
-            <p style={{ color: profit >= 0 ? "green" : "red" }}>
-              ${profit}
+          <div className="accounts-stats-card">
+            <h3 className="card-label">Profit/Loss</h3>
+            <p className="card-value" style={{ color: profit >= 0 ? "#10b981" : "#ef4444" }}>
+              ${profit.toLocaleString()}
             </p>
           </div>
-          <div className="stat-card">
-            <h3>Total Vehicles Value</h3>
-            <p>${totalValue}</p>
+          <div className="accounts-stats-card">
+            <h3 className="card-label">Total Vehicles Value</h3>
+            <p className="card-value">${totalValue.toLocaleString()}</p>
           </div>
         </div>
 
         {/* Timeframe selector */}
-        <div className="timeframe-selector">
-          <button onClick={() => setTimeframe("daily")}>Daily</button>
-          <button onClick={() => setTimeframe("monthly")}>Monthly</button>
-          <button onClick={() => setTimeframe("yearly")}>Yearly</button>
+        <div className="accounts-timeframe-controls">
+          <button 
+            className={`timeframe-btn ${timeframe === 'daily' ? 'active' : ''}`}
+            onClick={() => setTimeframe("daily")}
+          >
+            Daily
+          </button>
+          <button 
+            className={`timeframe-btn ${timeframe === 'monthly' ? 'active' : ''}`}
+            onClick={() => setTimeframe("monthly")}
+          >
+            Monthly
+          </button>
+          <button 
+            className={`timeframe-btn ${timeframe === 'yearly' ? 'active' : ''}`}
+            onClick={() => setTimeframe("yearly")}
+          >
+            Yearly
+          </button>
         </div>
 
         {/* Charts */}
-        <div className="charts-grid">
+        <div className="accounts-charts-container">
           <IncomeExpensesChart timeframe={timeframe} />
           <ProfitChart timeframe={timeframe} />
         </div>
 
         {/* Employee Table */}
-        <h3>Employee Salaries</h3>
-        <EmployeeTable />
+        <h3 className="accounts-section-title">Employee Salaries</h3>
+        <div className="accounts-employee-wrapper">
+          <EmployeeTable />
+        </div>
       </div>
     </div>
   );
