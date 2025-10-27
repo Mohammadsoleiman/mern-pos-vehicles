@@ -9,7 +9,6 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // الآن نستخدم emailOrName بدل email
   const [emailOrName, setEmailOrName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -19,16 +18,22 @@ export default function Login() {
     setError("");
 
     try {
-      // إرسال emailOrName بدل email
-      const { data } = await axiosClient.post("/auth/login", { emailOrName, password });
+      const { data } = await axiosClient.post("/auth/login", {
+        emailOrName,
+        password,
+      });
+
       login(data);
       console.log("✅ Logged in:", data);
 
       const userRole = data.role || data.user?.role;
-      if (userRole === "admin") navigate("/dashboard");
+
+      // ✅ توجيه حسب الدور
+      if (userRole === "admin") navigate("/admin/dashboard");
       else if (userRole === "accounting") navigate("/accounting");
-      else if (userRole === "clerk") navigate("/cashier");
-      else navigate("/cashier");
+      else if (userRole === "clerk" || userRole === "cashier")
+        navigate("/cashier");
+      else navigate("/unauthorized");
     } catch (err) {
       console.error("❌ Login error:", err);
       setError(err.response?.data?.message || "Login failed");
@@ -45,7 +50,7 @@ export default function Login() {
           <input
             type="text"
             className="login-input"
-            placeholder="Email / UserName"
+            placeholder="Email or UserName"
             value={emailOrName}
             onChange={(e) => setEmailOrName(e.target.value)}
             required
@@ -58,11 +63,9 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-
           <button type="submit" className="login-btn">
             Login
           </button>
-
           {error && <p className="error-text">{error}</p>}
         </form>
 

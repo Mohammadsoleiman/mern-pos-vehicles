@@ -138,7 +138,7 @@ export default function UsersList() {
             type="button"
             className={`secondary ${location.pathname === "/roles" ? "active" : ""}`}
             style={{ marginLeft: "8px" }}
-            onClick={() => navigate("/roles")}
+            onClick={() => navigate("/admin/roles")}
           >
             🧩 Roles
           </button>
@@ -147,7 +147,7 @@ export default function UsersList() {
             type="button"
             className={`secondary ${location.pathname.includes("/permissions") ? "active" : ""}`}
             style={{ marginLeft: "8px" }}
-            onClick={() => navigate("/permissions")}
+            onClick={() => navigate("/admin/permissions")}
           >
             🔒 Permissions
           </button>

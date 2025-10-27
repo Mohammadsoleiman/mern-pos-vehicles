@@ -1,15 +1,15 @@
 const User = require("../models/User");
+const Role = require("../models/Role"); // 👈 ضروري نستورد الموديل
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 // 🔑 Login
 exports.login = async (req, res) => {
   try {
-    const { emailOrUsername, password } = req.body;
+    const { emailOrName, password } = req.body;
 
-    // 👇 البحث باستخدام الإيميل أو اليوزرنيم
     const user = await User.findOne({
-      $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
+      $or: [{ email: emailOrName }, { name: emailOrName }],
     }).populate({
       path: "role",
       populate: {
@@ -37,7 +37,6 @@ exports.login = async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
-        username: user.username, // 👈 أضفناه هنا
         email: user.email,
         role: user.role?.name || null,
       },
@@ -53,17 +52,29 @@ exports.register = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    const existing = await User.findOne({ email });
+    const existing = await User.findOne({
+      $or: [{ email }, { name }],
+    });
     if (existing)
       return res.status(400).json({ message: "User already exists" });
 
     const hashed = await bcrypt.hash(password, 10);
 
+    // ✅ نبحث عن الـ role بالاسم (مثل clerk أو admin)
+    let roleId = null;
+    if (role) {
+      const foundRole = await Role.findOne({ name: role });
+      if (foundRole) roleId = foundRole._id;
+    } else {
+      const defaultRole = await Role.findOne({ name: "clerk" });
+      if (defaultRole) roleId = defaultRole._id;
+    }
+
     const newUser = await User.create({
       name,
       email,
       password: hashed,
-      role: role || "clerk",
+      role: roleId,
     });
 
     res.status(201).json({
@@ -72,7 +83,7 @@ exports.register = async (req, res) => {
         id: newUser._id,
         name: newUser.name,
         email: newUser.email,
-        role: newUser.role,
+        role: role || "clerk",
       },
     });
   } catch (err) {
@@ -155,15 +166,20 @@ exports.createUser = async (req, res) => {
 
     const hashed = await bcrypt.hash(password, 10);
 
-    // ✅ تأكد أن role هو ObjectId صالح
+    // ✅ حوّل الاسم إلى ObjectId
+    let roleId = null;
+    if (role) {
+      const foundRole = await Role.findOne({ name: role });
+      if (foundRole) roleId = foundRole._id;
+    }
+
     const newUser = await User.create({
       name,
       email,
       password: hashed,
-      role, // رح يكون _id من Role
+      role: roleId,
     });
 
-    // رجّع مع الـ role details
     const populated = await newUser.populate({
       path: "role",
       select: "name",
@@ -195,8 +211,15 @@ exports.updateUser = async (req, res) => {
     user.name = name || user.name;
     user.email = email || user.email;
 
-    // ✅ تأكد أن role هو ObjectId صالح
-    if (role) user.role = role;
+    if (role) {
+      // ✅ إذا كان string (مثل "clerk") نجيب الـ ObjectId
+      if (typeof role === "string") {
+        const foundRole = await Role.findOne({ name: role });
+        if (foundRole) user.role = foundRole._id;
+      } else {
+        user.role = role;
+      }
+    }
 
     if (password) {
       user.password = await bcrypt.hash(password, 10);

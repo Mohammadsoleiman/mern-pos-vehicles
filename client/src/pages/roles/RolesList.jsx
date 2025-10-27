@@ -118,7 +118,7 @@ export default function RolesList() {
             type="button"
             className={`secondary ${location.pathname === "/users" ? "active" : ""}`}
             style={{ marginLeft: "8px" }}
-            onClick={() => navigate("/users")}
+            onClick={() => navigate("/admin/users")}
           >
             👤 Users
           </button>
@@ -127,7 +127,7 @@ export default function RolesList() {
             type="button"
             className={`secondary ${location.pathname === "/roles" ? "active" : ""}`}
             style={{ marginLeft: "8px" }}
-            onClick={() => navigate("/roles")}
+            onClick={() => navigate("/admin/roles")}
           >
             🧩 Roles
           </button>
@@ -136,7 +136,7 @@ export default function RolesList() {
             type="button"
             className={`secondary ${location.pathname === "/permissions" ? "active" : ""}`}
             style={{ marginLeft: "8px" }}
-            onClick={() => navigate("/permissions")}
+            onClick={() => navigate("/admin/permissions")}
           >
             🔒 Permissions
           </button>
