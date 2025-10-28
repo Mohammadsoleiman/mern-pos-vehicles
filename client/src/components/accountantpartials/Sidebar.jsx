@@ -1,3 +1,4 @@
+// src/components/accountant/Sidebar.jsx
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -30,37 +31,47 @@ export default function Sidebar() {
         <ul>
           <li>
             <NavLink to="/accounting" end className={({ isActive }) => (isActive ? "active" : "")}>
-              Overview
+              📊 Overview
             </NavLink>
           </li>
           <li>
             <NavLink to="/accounting/transactions" className={({ isActive }) => (isActive ? "active" : "")}>
-              Transactions
+              💳 Transactions
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/accounting/expenses" className={({ isActive }) => (isActive ? "active" : "")}>
+              💸 Expenses
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/accounting/income" className={({ isActive }) => (isActive ? "active" : "")}>
+              💰 Income
             </NavLink>
           </li>
           <li>
             <NavLink to="/accounting/reports" className={({ isActive }) => (isActive ? "active" : "")}>
-              Reports
+              📈 Reports
             </NavLink>
           </li>
           <li>
             <NavLink to="/accounting/accounts" className={({ isActive }) => (isActive ? "active" : "")}>
-              Accounts
+              🏦 Accounts
             </NavLink>
           </li>
           <li>
             <NavLink to="/accounting/vehicles" className={({ isActive }) => (isActive ? "active" : "")}>
-              Vehicles
+              🚗 Vehicles
             </NavLink>
           </li>
           <li>
-            <NavLink to="/accounting/employees" className={({ isActive }) => (isActive ? "active" : "")}>
-              Taxes
+            <NavLink to="/accounting/taxes" className={({ isActive }) => (isActive ? "active" : "")}>
+              📋 Taxes
             </NavLink>
           </li>
           <li>
             <NavLink to="/accounting/settings" className={({ isActive }) => (isActive ? "active" : "")}>
-              Settings
+              ⚙️ Settings
             </NavLink>
           </li>
         </ul>

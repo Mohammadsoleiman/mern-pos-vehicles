@@ -1,7 +1,7 @@
 /* Sidebar container */
 .sidebar {
   width: 260px;
-  min-height: 100vh;
+  height: 100vh; /* Changed from min-height */
   background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
   color: #fff;
   display: flex;
@@ -12,6 +12,7 @@
   top: 0;
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
   z-index: 1000;
+  overflow: hidden; /* Added */
 }
 
 /* ========================================
@@ -24,6 +25,7 @@
   padding: 24px 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.05);
+  flex-shrink: 0; /* Added - prevents shrinking */
 }
 
 .user-avatar {
@@ -68,9 +70,11 @@
    NAVIGATION
    ======================================== */
 .sidebar-nav {
-  flex: 1;
+  flex: 1; /* Takes available space */
   padding: 16px 12px;
   overflow-y: auto;
+  overflow-x: hidden; /* Added */
+  min-height: 0; /* Added - allows flex shrinking */
 }
 
 .sidebar-nav ul {
@@ -151,6 +155,7 @@
   transition: all 0.3s ease;
   border: none;
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+  flex-shrink: 0; /* Added - prevents shrinking */
 }
 
 .sidebar-logout:hover {

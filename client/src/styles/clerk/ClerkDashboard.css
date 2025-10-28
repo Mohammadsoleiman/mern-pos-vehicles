@@ -1,0 +1,345 @@
+/* =========================================================
+   CLERK DASHBOARD - PROFESSIONAL STYLES (LIGHT + DARK MODE)
+   ========================================================= */
+
+/* ----------- ROOT STYLING ----------- */
+:root {
+  --bg-color: #f8f9fb;
+  --card-bg: #ffffff;
+  --text-color: #222;
+  --muted-text: #666;
+  --border-color: #e0e0e0;
+  --accent-blue: #3b82f6;
+  --accent-green: #22c55e;
+  --accent-purple: #8b5cf6;
+  --accent-orange: #f97316;
+  --shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  --radius: 10px;
+}
+
+/* ----------- DARK MODE ----------- */
+.dark-mode {
+  --bg-color: #1e1e2f;
+  --card-bg: #2a2a3c;
+  --text-color: #f5f5f5;
+  --muted-text: #aaa;
+  --border-color: #3a3a4f;
+  --shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* ----------- PAGE LAYOUT ----------- */
+.clerk-dashboard {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  min-height: 100vh;
+  padding: 25px;
+  transition: all 0.3s ease;
+}
+
+.dashboard-container {
+  max-width: 1300px;
+  margin: auto;
+}
+
+/* ----------- HEADER ----------- */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.dashboard-header-content h1 {
+  font-size: 1.8rem;
+  margin-bottom: 5px;
+}
+
+.dashboard-header-content p {
+  color: var(--muted-text);
+}
+
+.dashboard-date-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card-bg);
+  padding: 8px 15px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  color: var(--muted-text);
+  border: 1px solid var(--border-color);
+}
+
+/* ----------- STAT CARDS ----------- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background-color: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-card-title {
+  color: var(--muted-text);
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+}
+
+.stat-card-value {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.stat-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--muted-text);
+}
+
+.stat-card-icon {
+  padding: 12px;
+  border-radius: 50%;
+  color: #fff;
+}
+
+.green-bg {
+  background-color: var(--accent-green);
+}
+
+.blue-bg {
+  background-color: var(--accent-blue);
+}
+
+.purple-bg {
+  background-color: var(--accent-purple);
+}
+
+.orange-bg {
+  background-color: var(--accent-orange);
+}
+
+.trend-up {
+  color: var(--accent-green);
+}
+
+.trend-down {
+  color: #ef4444;
+}
+
+/* ----------- MAIN GRID ----------- */
+.dashboard-main-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 25px;
+}
+
+@media (max-width: 992px) {
+  .dashboard-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ----------- RECENT SALES ----------- */
+.recent-sales-card {
+  background-color: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+}
+
+.card-header {
+  margin-bottom: 15px;
+}
+
+.card-header h2 {
+  font-size: 1.2rem;
+  margin-bottom: 3px;
+}
+
+.card-header p {
+  color: var(--muted-text);
+  font-size: 0.9rem;
+}
+
+.recent-sales-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.recent-sale-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-color);
+  padding: 10px 15px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+}
+
+.recent-sale-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.recent-sale-icon {
+  background: var(--accent-blue);
+  color: #fff;
+  padding: 6px;
+  border-radius: 8px;
+}
+
+.recent-sale-details h4 {
+  font-size: 0.95rem;
+}
+
+.recent-sale-details p {
+  color: var(--muted-text);
+  font-size: 0.85rem;
+}
+
+.recent-sale-right {
+  text-align: right;
+}
+
+.recent-sale-amount {
+  font-weight: 600;
+}
+
+.recent-sale-date {
+  color: var(--muted-text);
+  font-size: 0.8rem;
+}
+
+/* ----------- LOW STOCK ALERTS ----------- */
+.low-stock-card {
+  background-color: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+}
+
+.alert-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-color);
+  padding: 10px 15px;
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+  border: 1px solid var(--border-color);
+}
+
+.alert-icon {
+  color: #f59e0b;
+}
+
+.alert-content h4 {
+  font-size: 0.95rem;
+}
+
+.alert-content p {
+  font-size: 0.85rem;
+  color: var(--muted-text);
+}
+
+.alert-badge {
+  background: #f59e0b;
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 0.75rem;
+}
+
+/* ----------- TOP SELLER ----------- */
+.top-seller-card {
+  background-color: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+}
+
+.top-seller-card h3 {
+  font-size: 1rem;
+  color: var(--accent-purple);
+  margin-bottom: 5px;
+}
+
+.top-seller-card h2 {
+  font-size: 1.3rem;
+}
+
+.subtitle {
+  color: var(--muted-text);
+  font-size: 0.85rem;
+}
+
+.top-seller-divider {
+  margin-top: 10px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 10px;
+}
+
+.top-seller-price-value {
+  font-weight: bold;
+  color: var(--accent-green);
+}
+
+/* ----------- EMPTY STATE ----------- */
+.empty-state {
+  text-align: center;
+  color: var(--muted-text);
+  padding: 25px 0;
+}
+
+/* ----------- LOADING ----------- */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.loading-spinner {
+  border: 4px solid var(--border-color);
+  border-top: 4px solid var(--accent-blue);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

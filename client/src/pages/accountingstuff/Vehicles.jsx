@@ -5,21 +5,28 @@ import "../../styles/accountant/vehicles.css";
 export default function Vehicles() {
   const { vehicles, addVehicle, deleteVehicle } = useContext(VehicleContext);
   const [showForm, setShowForm] = useState(false);
-  const [selectedVehicle, setSelectedVehicle] = useState(null);
-  
+
   // Form state
   const [formData, setFormData] = useState({
     plateNumber: "",
+    vin: "",
+    make: "",
     model: "",
     year: "",
     type: "",
     purchasePrice: "",
+    salePrice: "",
     purchaseDate: "",
     insurance: "",
     insuranceExpiry: "",
     maintenanceCost: 0,
     fuelCost: 0,
-    status: "active"
+    color: "",
+    transmission: "",
+    cylinders: "",
+    fuelType: "",
+    imageUrl: "",
+    status: "active",
   });
 
   const handleSubmit = (e) => {
@@ -28,9 +35,10 @@ export default function Vehicles() {
       ...formData,
       id: Date.now(),
       purchasePrice: parseFloat(formData.purchasePrice) || 0,
+      salePrice: parseFloat(formData.salePrice) || 0,
       maintenanceCost: parseFloat(formData.maintenanceCost) || 0,
       fuelCost: parseFloat(formData.fuelCost) || 0,
-      year: parseInt(formData.year) || new Date().getFullYear()
+      year: parseInt(formData.year) || new Date().getFullYear(),
     });
     resetForm();
   };
@@ -38,16 +46,24 @@ export default function Vehicles() {
   const resetForm = () => {
     setFormData({
       plateNumber: "",
+      vin: "",
+      make: "",
       model: "",
       year: "",
       type: "",
       purchasePrice: "",
+      salePrice: "",
       purchaseDate: "",
       insurance: "",
       insuranceExpiry: "",
       maintenanceCost: 0,
       fuelCost: 0,
-      status: "active"
+      color: "",
+      transmission: "",
+      cylinders: "",
+      fuelType: "",
+      imageUrl: "",
+      status: "active",
     });
     setShowForm(false);
   };
@@ -62,12 +78,12 @@ export default function Vehicles() {
   const totalFuel = vehicles.reduce((sum, v) => sum + (v.fuelCost || 0), 0);
   const totalOperatingCost = totalMaintenance + totalFuel;
 
-  // Calculate depreciation (simple: 20% per year for demo)
+  // Depreciation (simple 20% per year)
   const calculateDepreciation = (vehicle) => {
     if (!vehicle.purchaseDate || !vehicle.purchasePrice) return 0;
     const years = (new Date() - new Date(vehicle.purchaseDate)) / (1000 * 60 * 60 * 24 * 365);
-    const depreciation = vehicle.purchasePrice * 0.20 * years;
-    return Math.min(depreciation, vehicle.purchasePrice * 0.8); // Max 80% depreciation
+    const depreciation = vehicle.purchasePrice * 0.2 * years;
+    return Math.min(depreciation, vehicle.purchasePrice * 0.8);
   };
 
   const calculateCurrentValue = (vehicle) => {
@@ -96,7 +112,6 @@ export default function Vehicles() {
             <span className="stat-label">Active Fleet</span>
           </div>
         </div>
-        
         <div className="stat-card-vehicle">
           <div className="stat-icon">💰</div>
           <div className="stat-details">
@@ -105,7 +120,6 @@ export default function Vehicles() {
             <span className="stat-label">Purchase Costs</span>
           </div>
         </div>
-        
         <div className="stat-card-vehicle">
           <div className="stat-icon">🔧</div>
           <div className="stat-details">
@@ -114,7 +128,6 @@ export default function Vehicles() {
             <span className="stat-label">Total Spent</span>
           </div>
         </div>
-        
         <div className="stat-card-vehicle">
           <div className="stat-icon">⛽</div>
           <div className="stat-details">
@@ -129,44 +142,28 @@ export default function Vehicles() {
       {showForm && (
         <div className="vehicle-form-card">
           <h3>Add New Vehicle</h3>
-          <form onSubmit={handleSubmit} className="vehicle-form">
+          <form className="vehicle-form" onSubmit={handleSubmit}>
             <div className="form-row">
               <div className="form-group">
-                <label>Plate Number *</label>
-                <input
-                  type="text"
-                  name="plateNumber"
-                  value={formData.plateNumber}
-                  onChange={handleChange}
-                  required
-                  placeholder="ABC-1234"
-                />
+                <label>VIN *</label>
+                <input type="text" name="vin" value={formData.vin} onChange={handleChange} required placeholder="1HGCM82633A123456"/>
               </div>
-              
+              <div className="form-group">
+                <label>Plate Number *</label>
+                <input type="text" name="plateNumber" value={formData.plateNumber} onChange={handleChange} required placeholder="ABC-1234"/>
+              </div>
+              <div className="form-group">
+                <label>Make *</label>
+                <input type="text" name="make" value={formData.make} onChange={handleChange} required placeholder="Toyota"/>
+              </div>
               <div className="form-group">
                 <label>Model *</label>
-                <input
-                  type="text"
-                  name="model"
-                  value={formData.model}
-                  onChange={handleChange}
-                  required
-                  placeholder="Toyota Camry"
-                />
+                <input type="text" name="model" value={formData.model} onChange={handleChange} required placeholder="Camry"/>
               </div>
-              
               <div className="form-group">
                 <label>Year *</label>
-                <input
-                  type="number"
-                  name="year"
-                  value={formData.year}
-                  onChange={handleChange}
-                  required
-                  placeholder="2023"
-                />
+                <input type="number" name="year" value={formData.year} onChange={handleChange} required placeholder="2023"/>
               </div>
-              
               <div className="form-group">
                 <label>Type</label>
                 <select name="type" value={formData.type} onChange={handleChange}>
@@ -182,82 +179,70 @@ export default function Vehicles() {
             <div className="form-row">
               <div className="form-group">
                 <label>Purchase Price *</label>
-                <input
-                  type="number"
-                  name="purchasePrice"
-                  value={formData.purchasePrice}
-                  onChange={handleChange}
-                  required
-                  placeholder="25000"
-                  step="0.01"
-                />
+                <input type="number" name="purchasePrice" value={formData.purchasePrice} onChange={handleChange} required placeholder="25000" step="0.01"/>
               </div>
-              
+              <div className="form-group">
+                <label>Sale Price ($)</label>
+                <input type="number" name="salePrice" value={formData.salePrice} onChange={handleChange} placeholder="30000" step="0.01"/>
+              </div>
               <div className="form-group">
                 <label>Purchase Date *</label>
-                <input
-                  type="date"
-                  name="purchaseDate"
-                  value={formData.purchaseDate}
-                  onChange={handleChange}
-                  required
-                />
+                <input type="date" name="purchaseDate" value={formData.purchaseDate} onChange={handleChange} required/>
               </div>
-              
               <div className="form-group">
                 <label>Insurance Provider</label>
-                <input
-                  type="text"
-                  name="insurance"
-                  value={formData.insurance}
-                  onChange={handleChange}
-                  placeholder="ABC Insurance"
-                />
+                <input type="text" name="insurance" value={formData.insurance} onChange={handleChange} placeholder="ABC Insurance"/>
               </div>
-              
               <div className="form-group">
                 <label>Insurance Expiry</label>
-                <input
-                  type="date"
-                  name="insuranceExpiry"
-                  value={formData.insuranceExpiry}
-                  onChange={handleChange}
-                />
+                <input type="date" name="insuranceExpiry" value={formData.insuranceExpiry} onChange={handleChange}/>
               </div>
             </div>
 
             <div className="form-row">
               <div className="form-group">
-                <label>Initial Maintenance Cost</label>
-                <input
-                  type="number"
-                  name="maintenanceCost"
-                  value={formData.maintenanceCost}
-                  onChange={handleChange}
-                  placeholder="0"
-                  step="0.01"
-                />
+                <label>Maintenance Cost ($)</label>
+                <input type="number" name="maintenanceCost" value={formData.maintenanceCost} onChange={handleChange} placeholder="500" step="0.01"/>
               </div>
-              
               <div className="form-group">
-                <label>Initial Fuel Cost</label>
-                <input
-                  type="number"
-                  name="fuelCost"
-                  value={formData.fuelCost}
-                  onChange={handleChange}
-                  placeholder="0"
-                  step="0.01"
-                />
+                <label>Fuel Cost ($)</label>
+                <input type="number" name="fuelCost" value={formData.fuelCost} onChange={handleChange} placeholder="100" step="0.01"/>
               </div>
-              
               <div className="form-group">
-                <label>Status</label>
-                <select name="status" value={formData.status} onChange={handleChange}>
-                  <option value="active">Active</option>
-                  <option value="maintenance">Under Maintenance</option>
-                  <option value="inactive">Inactive</option>
+                <label>Color</label>
+                <input type="text" name="color" value={formData.color} onChange={handleChange} placeholder="Red"/>
+              </div>
+              <div className="form-group">
+                <label>Transmission</label>
+                <select name="transmission" value={formData.transmission} onChange={handleChange}>
+                  <option value="">Select Transmission</option>
+                  <option value="automatic">Automatic</option>
+                  <option value="manual">Manual</option>
                 </select>
+              </div>
+              <div className="form-group">
+                <label>Cylinders</label>
+                <select name="cylinders" value={formData.cylinders} onChange={handleChange}>
+                  <option value="">Select Cylinders</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="6">6</option>
+                  <option value="8">8</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Fuel Type</label>
+                <select name="fuelType" value={formData.fuelType} onChange={handleChange}>
+                  <option value="">Select Fuel Type</option>
+                  <option value="petrol">Petrol</option>
+                  <option value="diesel">Diesel</option>
+                  <option value="electric">Electric</option>
+                  <option value="hybrid">Hybrid</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Vehicle Image URL</label>
+                <input type="text" name="imageUrl" value={formData.imageUrl} onChange={handleChange} placeholder="https://example.com/car.jpg"/>
               </div>
             </div>
 
@@ -280,6 +265,8 @@ export default function Vehicles() {
               <thead>
                 <tr>
                   <th>Plate Number</th>
+                  <th>VIN</th>
+                  <th>Make</th>
                   <th>Model</th>
                   <th>Year</th>
                   <th>Type</th>
@@ -300,10 +287,12 @@ export default function Vehicles() {
                   const currentValue = calculateCurrentValue(vehicle);
                   const totalCost = (vehicle.maintenanceCost || 0) + (vehicle.fuelCost || 0);
                   const insuranceStatus = vehicle.insuranceExpiry && new Date(vehicle.insuranceExpiry) < new Date() ? "Expired" : "Valid";
-                  
+
                   return (
                     <tr key={vehicle.id}>
                       <td><strong>{vehicle.plateNumber}</strong></td>
+                      <td>{vehicle.vin}</td>
+                      <td>{vehicle.make}</td>
                       <td>{vehicle.model}</td>
                       <td>{vehicle.year}</td>
                       <td><span className="badge-type">{vehicle.type || "N/A"}</span></td>
