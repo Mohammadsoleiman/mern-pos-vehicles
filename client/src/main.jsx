@@ -2,8 +2,6 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
-
-// Contexts
 import { TransactionProvider } from "./context/ACCOUNTANT/TransactionContext";
 import { ExpenseProvider } from "./context/ACCOUNTANT/ExpenseContext";
 import { VehicleProvider } from "./context/ACCOUNTANT/VehicleContext";

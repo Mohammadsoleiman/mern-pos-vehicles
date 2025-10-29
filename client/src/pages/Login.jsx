@@ -9,7 +9,7 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
+  const [emailOrName, setEmailOrName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -18,15 +18,22 @@ export default function Login() {
     setError("");
 
     try {
-      const { data } = await axiosClient.post("/auth/login", { email, password });
+      const { data } = await axiosClient.post("/auth/login", {
+        emailOrName,
+        password,
+      });
+
       login(data);
       console.log("✅ Logged in:", data);
 
       const userRole = data.role || data.user?.role;
-      if (userRole === "admin") navigate("/dashboard");
+
+      // ✅ توجيه حسب الدور
+      if (userRole === "admin") navigate("/admin/dashboard");
       else if (userRole === "accounting") navigate("/accounting");
-      else if (userRole === "clerk") navigate("/cashier");
-      else navigate("/cashier");
+      else if (userRole === "clerk" || userRole === "cashier")
+        navigate("/cashier");
+      else navigate("/unauthorized");
     } catch (err) {
       console.error("❌ Login error:", err);
       setError(err.response?.data?.message || "Login failed");
@@ -41,11 +48,11 @@ export default function Login() {
 
         <form onSubmit={handleSubmit}>
           <input
-            type="email"
+            type="text"
             className="login-input"
-            placeholder="Email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email or UserName"
+            value={emailOrName}
+            onChange={(e) => setEmailOrName(e.target.value)}
             required
           />
           <input
@@ -56,11 +63,9 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-
           <button type="submit" className="login-btn">
             Login
           </button>
-
           {error && <p className="error-text">{error}</p>}
         </form>
 

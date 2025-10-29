@@ -2,118 +2,102 @@ import { useEffect, useMemo, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 import { useNavigate, useLocation } from "react-router-dom";
 
-export default function RolesList() {
-  const [roles, setRoles] = useState([]);
+export default function PermissionsList() {
   const [permissions, setPermissions] = useState([]);
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [editingRole, setEditingRole] = useState(null);
-  const [form, setForm] = useState({ name: "", permissions: [] });
+  const [editingPermission, setEditingPermission] = useState(null);
+  const [form, setForm] = useState({ name: "" });
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 🔹 Fetch roles
-  const fetchRoles = async () => {
-    setLoading(true);
-    try {
-      const { data } = await axiosClient.get("/roles");
-      setRoles(data);
-    } catch (err) {
-      console.error("❌ Error fetching roles:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // 🔹 Fetch permissions
   const fetchPermissions = async () => {
+    setLoading(true);
     try {
       const { data } = await axiosClient.get("/permissions");
       setPermissions(data);
     } catch (err) {
       console.error("❌ Error fetching permissions:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchRoles();
     fetchPermissions();
   }, []);
 
-  // 🔹 Filter roles
+  // 🔹 Filter permissions
   const filtered = useMemo(() => {
-    if (!q.trim()) return roles;
+    if (!q.trim()) return permissions;
     const s = q.toLowerCase();
-    return roles.filter((r) => r.name.toLowerCase().includes(s));
-  }, [roles, q]);
+    return permissions.filter((p) => p.name.toLowerCase().includes(s));
+  }, [permissions, q]);
 
   // 🔹 Open create modal
   const openCreate = () => {
-    setEditingRole(null);
-    setForm({ name: "", permissions: [] });
+    setEditingPermission(null);
+    setForm({ name: "" });
     setModalOpen(true);
   };
 
   // 🔹 Open edit modal
-  const openEdit = (r) => {
-    setEditingRole(r);
-    setForm({
-      name: r.name,
-      permissions: r.permissions.map((p) => (typeof p === "object" ? p._id : p)),
-    });
+  const openEdit = (p) => {
+    setEditingPermission(p);
+    setForm({ name: p.name });
     setModalOpen(true);
   };
 
-  // 🔹 Delete role
-  const deleteRole = async (id) => {
-    if (!confirm("Are you sure you want to delete this role?")) return;
+  // 🔹 Delete permission
+  const deletePermission = async (id) => {
+    if (!confirm("Are you sure you want to delete this permission?")) return;
     try {
-      await axiosClient.delete(`/roles/${id}`);
-      alert("🗑️ Role deleted successfully!");
-      fetchRoles();
+      await axiosClient.delete(`/permissions/${id}`);
+      alert("🗑️ Permission deleted successfully!");
+      fetchPermissions();
     } catch (err) {
-      console.error("❌ Error deleting role:", err);
-      alert("❌ Failed to delete role!");
+      console.error("❌ Error deleting permission:", err);
+      alert("❌ Failed to delete permission!");
     }
   };
 
-  // 🔹 Submit form (Create / Edit)
+  // 🔹 Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (editingRole) {
-        await axiosClient.put(`/roles/${editingRole._id}`, form);
-        alert("✅ Role updated successfully!");
+      if (editingPermission) {
+        await axiosClient.put(`/permissions/${editingPermission._id}`, form);
+        alert("✅ Permission updated successfully!");
       } else {
-        await axiosClient.post("/roles/create", form);
-        alert("✅ Role created successfully!");
+        await axiosClient.post("/permissions/create", form);
+        alert("✅ Permission created successfully!");
       }
       setModalOpen(false);
-      fetchRoles();
+      fetchPermissions();
     } catch (err) {
-      console.error("❌ Error saving role:", err);
-      alert("❌ Failed to save role!");
+      console.error("❌ Error saving permission:", err);
+      alert("❌ Failed to save permission!");
     }
   };
 
   return (
     <div>
-      {/* ===== Header ===== */}
-      <div className="roles-header">
-        <h2>Roles</h2>
+      <div className="permissions-header">
+        <h2>Permissions</h2>
         <div className="toolbar">
           <input
-            placeholder="Search roles..."
+            placeholder="Search permissions..."
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
           <button className="primary" onClick={openCreate}>
-            + Create Role
+            + Create Permission
           </button>
 
-          {/* ✅ Navigation Buttons */}
+          {/* ✅ Navigation buttons */}
           <button
             type="button"
             className={`secondary ${location.pathname === "/users" ? "active" : ""}`}
@@ -144,32 +128,24 @@ export default function RolesList() {
       </div>
 
       {/* ===== Table ===== */}
-      <div className="roles-body card" style={{ marginTop: "25px" }}>
+      <div className="permissions-body card" style={{ marginTop: "25px" }}>
         {loading && <div className="muted">Loading…</div>}
         <table className="table">
           <thead>
             <tr>
               <th>Name</th>
-              <th>Permissions</th>
               <th style={{ width: 160 }}>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map((r) => (
-              <tr key={r._id}>
-                <td>{r.name}</td>
+            {filtered.map((p) => (
+              <tr key={p._id}>
+                <td>{p.name}</td>
                 <td>
-                  {r.permissions && r.permissions.length > 0
-                    ? r.permissions
-                        .map((p) => (typeof p === "object" ? p.name : p))
-                        .join(", ")
-                    : "No permissions"}
-                </td>
-                <td>
-                  <button className="ghost" onClick={() => openEdit(r)}>
+                  <button className="ghost" onClick={() => openEdit(p)}>
                     Edit
                   </button>
-                  <button className="danger" onClick={() => deleteRole(r._id)}>
+                  <button className="danger" onClick={() => deletePermission(p._id)}>
                     Delete
                   </button>
                 </td>
@@ -177,8 +153,8 @@ export default function RolesList() {
             ))}
             {!filtered.length && (
               <tr>
-                <td colSpan={3} className="muted">
-                  No roles found
+                <td colSpan={2} className="muted">
+                  No permissions found
                 </td>
               </tr>
             )}
@@ -196,7 +172,7 @@ export default function RolesList() {
         >
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-head">
-              <h3>{editingRole ? "Edit Role" : "Create Role"}</h3>
+              <h3>{editingPermission ? "Edit Permission" : "Create Permission"}</h3>
               <button className="icon" onClick={() => setModalOpen(false)}>
                 ✕
               </button>
@@ -204,7 +180,7 @@ export default function RolesList() {
 
             <form onSubmit={handleSubmit} className="form modal-body">
               <label>
-                <span>Role Name</span>
+                <span>Permission Name</span>
                 <input
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -212,38 +188,12 @@ export default function RolesList() {
                 />
               </label>
 
-              {/* ✅ Dynamic Permissions from DB */}
-              <label>
-                <span>Permissions</span>
-                <div className="permissions-checkboxes">
-                  {permissions.map((perm) => (
-                    <label key={perm._id} style={{ display: "block" }}>
-                      <input
-                        type="checkbox"
-                        checked={form.permissions.includes(perm._id)}
-                        onChange={(e) => {
-                          const updated = e.target.checked
-                            ? [...form.permissions, perm._id]
-                            : form.permissions.filter((p) => p !== perm._id);
-                          setForm({ ...form, permissions: updated });
-                        }}
-                      />
-                      {perm.name}
-                    </label>
-                  ))}
-                </div>
-              </label>
-
               <div className="actions-row">
-                <button
-                  type="button"
-                  className="ghost"
-                  onClick={() => setModalOpen(false)}
-                >
+                <button type="button" className="ghost" onClick={() => setModalOpen(false)}>
                   Cancel
                 </button>
                 <button type="submit" className="primary">
-                  {editingRole ? "Save Changes" : "Create"}
+                  {editingPermission ? "Save Changes" : "Create"}
                 </button>
               </div>
             </form>

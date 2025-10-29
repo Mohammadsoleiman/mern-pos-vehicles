@@ -1,86 +1,99 @@
-// src/components/accountant/Sidebar.jsx
-import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
+import {
+  BarChart2,
+  DollarSign,
+  FileText,
+  Settings,
+  LogOut,
+  TrendingUp,
+  TrendingDown,
+  Users,
+  Truck,
+  ChevronDown,
+  ChevronUp,
+} from "react-feather";
 import "../../styles/accountant/sidebar.css";
 
 export default function Sidebar() {
-  const { logout, user } = useAuth();
-  const navigate = useNavigate();
+  const [openMenu, setOpenMenu] = useState(null);
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
+  const toggleMenu = (menu) => {
+    setOpenMenu(openMenu === menu ? null : menu);
   };
 
   return (
-    <aside className="sidebar">
-      {/* User info at top */}
-      <div className="sidebar-user">
-        <div className="user-avatar">
-          <span className="avatar-icon">👤</span>
-        </div>
-        <div className="user-info">
-          <p className="user-name">{user?.name || "User"}</p>
-          <p className="user-role">Accountant</p>
-        </div>
+    <aside className="accountant-sidebar">
+      {/* ----------- Header ----------- */}
+      <div className="sidebar-header">
+        <h2>Auto<span>POS</span></h2>
+        <p>Accountant Panel</p>
       </div>
 
-      {/* Navigation links */}
+      {/* ----------- Navigation ----------- */}
       <nav className="sidebar-nav">
-        <ul>
-          <li>
-            <NavLink to="/accounting" end className={({ isActive }) => (isActive ? "active" : "")}>
-              📊 Overview
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/accounting/transactions" className={({ isActive }) => (isActive ? "active" : "")}>
-              💳 Transactions
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/accounting/expenses" className={({ isActive }) => (isActive ? "active" : "")}>
-              💸 Expenses
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/accounting/income" className={({ isActive }) => (isActive ? "active" : "")}>
-              💰 Income
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/accounting/reports" className={({ isActive }) => (isActive ? "active" : "")}>
-              📈 Reports
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/accounting/accounts" className={({ isActive }) => (isActive ? "active" : "")}>
-              🏦 Accounts
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/accounting/vehicles" className={({ isActive }) => (isActive ? "active" : "")}>
-              🚗 Vehicles
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/accounting/taxes" className={({ isActive }) => (isActive ? "active" : "")}>
-              📋 Taxes
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/accounting/settings" className={({ isActive }) => (isActive ? "active" : "")}>
-              ⚙️ Settings
-            </NavLink>
-          </li>
-        </ul>
+        <NavLink to="/accounting/FeaturesOverview" className="sidebar-link">
+          <BarChart2 className="icon" />
+          <span>Dashboard</span>
+        </NavLink>
+
+        {/* Transactions with Dropdown */}
+        <div className="sidebar-group">
+          <button
+            className={`sidebar-link ${openMenu === "transactions" ? "active" : ""}`}
+            onClick={() => toggleMenu("transactions")}
+          >
+            <DollarSign className="icon" />
+            <span>Transactions</span>
+            {openMenu === "transactions" ? (
+              <ChevronUp className="chevron" />
+            ) : (
+              <ChevronDown className="chevron" />
+            )}
+          </button>
+          {openMenu === "transactions" && (
+            <div className="submenu">
+              <NavLink to="/accounting/Transactions" className="submenu-link">
+                All Transactions
+              </NavLink>
+              <NavLink to="/accounting/Income" className="submenu-link">
+                Income
+              </NavLink>
+              <NavLink to="/accounting/Expenses" className="submenu-link">
+                Expenses
+              </NavLink>
+            </div>
+          )}
+        </div>
+
+        <NavLink to="/accounting/Reports" className="sidebar-link">
+          <FileText className="icon" />
+          <span>Reports</span>
+        </NavLink>
+
+        <NavLink to="/accounting/Employees" className="sidebar-link">
+          <Users className="icon" />
+          <span>Employees</span>
+        </NavLink>
+
+        <NavLink to="/accounting/vehicles" className="sidebar-link">
+          <Truck className="icon" />
+          <span>Vehicles</span>
+        </NavLink>
+
+        <NavLink to="/accounting/settings" className="sidebar-link">
+          <Settings className="icon" />
+          <span>Settings</span>
+        </NavLink>
       </nav>
 
-      {/* Logout button at bottom */}
-      <div className="sidebar-logout" onClick={handleLogout}>
-        <span>🚪</span>
-        <span>Logout</span>
+      {/* ----------- Footer ----------- */}
+      <div className="sidebar-footer">
+        <button className="logout-btn">
+          <LogOut className="icon" />
+          <span>Logout</span>
+        </button>
+        <p className="version">v1.0.0</p>
       </div>
     </aside>
   );
