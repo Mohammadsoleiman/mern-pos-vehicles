@@ -1,15 +1,14 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   BarChart2,
   DollarSign,
   FileText,
   Settings,
   LogOut,
-  TrendingUp,
-  TrendingDown,
   Users,
   Truck,
+  Layers,
   ChevronDown,
   ChevronUp,
 } from "react-feather";
@@ -17,27 +16,37 @@ import "../../styles/accountant/sidebar.css";
 
 export default function Sidebar() {
   const [openMenu, setOpenMenu] = useState(null);
+  const navigate = useNavigate();
 
   const toggleMenu = (menu) => {
     setOpenMenu(openMenu === menu ? null : menu);
   };
 
+  // ✅ Logout function
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login"); // redirect to login page
+  };
+
   return (
     <aside className="accountant-sidebar">
-      {/* ----------- Header ----------- */}
+      {/* -------- Header -------- */}
       <div className="sidebar-header">
-        <h2>Auto<span>POS</span></h2>
+        <h2>
+          Auto<span>POS</span>
+        </h2>
         <p>Accountant Panel</p>
       </div>
 
-      {/* ----------- Navigation ----------- */}
+      {/* -------- Navigation -------- */}
       <nav className="sidebar-nav">
-        <NavLink to="/accounting/FeaturesOverview" className="sidebar-link">
+        {/* Dashboard */}
+        <NavLink to="/accounting/featuresoverview" className="sidebar-link">
           <BarChart2 className="icon" />
           <span>Dashboard</span>
         </NavLink>
 
-        {/* Transactions with Dropdown */}
+        {/* Transactions Dropdown */}
         <div className="sidebar-group">
           <button
             className={`sidebar-link ${openMenu === "transactions" ? "active" : ""}`}
@@ -51,45 +60,56 @@ export default function Sidebar() {
               <ChevronDown className="chevron" />
             )}
           </button>
+
           {openMenu === "transactions" && (
             <div className="submenu">
-              <NavLink to="/accounting/Transactions" className="submenu-link">
+              <NavLink to="/accounting/transactions" className="submenu-link">
                 All Transactions
               </NavLink>
-              <NavLink to="/accounting/Income" className="submenu-link">
+              <NavLink to="/accounting/income" className="submenu-link">
                 Income
               </NavLink>
-              <NavLink to="/accounting/Expenses" className="submenu-link">
+              <NavLink to="/accounting/expenses" className="submenu-link">
                 Expenses
               </NavLink>
             </div>
           )}
         </div>
 
-        <NavLink to="/accounting/Reports" className="sidebar-link">
+        {/* Reports */}
+        <NavLink to="/accounting/reports" className="sidebar-link">
           <FileText className="icon" />
           <span>Reports</span>
         </NavLink>
 
-        <NavLink to="/accounting/Employees" className="sidebar-link">
+        {/* Accounts */}
+        <NavLink to="/accounting/accounts" className="sidebar-link">
+          <Layers className="icon" />
+          <span>Accounts</span>
+        </NavLink>
+
+        {/* Employees */}
+        <NavLink to="/accounting/employees" className="sidebar-link">
           <Users className="icon" />
           <span>Employees</span>
         </NavLink>
 
+        {/* Vehicles */}
         <NavLink to="/accounting/vehicles" className="sidebar-link">
           <Truck className="icon" />
           <span>Vehicles</span>
         </NavLink>
 
+        {/* Settings */}
         <NavLink to="/accounting/settings" className="sidebar-link">
           <Settings className="icon" />
           <span>Settings</span>
         </NavLink>
       </nav>
 
-      {/* ----------- Footer ----------- */}
+      {/* -------- Footer -------- */}
       <div className="sidebar-footer">
-        <button className="logout-btn">
+        <button className="logout-btn" onClick={handleLogout}>
           <LogOut className="icon" />
           <span>Logout</span>
         </button>

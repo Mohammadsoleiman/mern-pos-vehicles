@@ -1,155 +1,182 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  LabelList,
+} from "recharts";
+import Sidebar from "../../components/accountantpartials/Sidebar";
 import "../../styles/accountant/reports.css";
-import { TransactionContext } from "../../context/ACCOUNTANT/TransactionContext";
-import { ExpenseContext } from "../../context/ACCOUNTANT/ExpenseContext";
-import { VehicleContext } from "../../context/ACCOUNTANT/VehicleContext";
 
-export default function ReportsSection() {
-  const { transactions, totalIncome } = useContext(TransactionContext);
-  const { expenses, totalExpenses } = useContext(ExpenseContext);
-  const { vehicles } = useContext(VehicleContext);
-  const [selectedReport, setSelectedReport] = useState(null);
+export default function Reports() {
+  const [period, setPeriod] = useState("monthly");
 
-  // Export to PDF
-  const exportToPDF = (reportType) => {
-    const doc = new (window.jsPDF || Object)();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    let yPosition = 20;
-
-    doc.setFontSize(18);
-    doc.text(`${reportType} Report`, pageWidth / 2, yPosition, { align: "center" });
-    yPosition += 15;
-
-    doc.setFontSize(10);
-    doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, yPosition, { align: "center" });
-    yPosition += 10;
-
-    if (reportType === "Sales Summary") {
-      doc.text(`Total Vehicles Sold: ${transactions.length}`, 20, yPosition);
-      yPosition += 8;
-      doc.text(`Total Income: $${totalIncome.toLocaleString()}`, 20, yPosition);
-    } else if (reportType === "Expense Analysis") {
-      doc.text(`Total Expenses: $${totalExpenses.toLocaleString()}`, 20, yPosition);
-    } else if (reportType === "Inventory Report") {
-      doc.text(`Total Vehicles in Inventory: ${vehicles.length}`, 20, yPosition);
-    } else if (reportType === "Profit & Loss") {
-      const profit = totalIncome - totalExpenses;
-      doc.text(`Net Profit/Loss: $${profit.toLocaleString()}`, 20, yPosition);
-    }
-
-    doc.save(`${reportType.replace(" ", "_")}_Report.pdf`);
-  };
-
-  // Export to CSV
-  const exportToCSV = (reportType) => {
-    let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent += `${reportType} Report\nGenerated: ${new Date().toLocaleDateString()}\n\n`;
-
-    if (reportType === "Sales Summary") {
-      csvContent += "Transaction ID,Amount\n";
-      transactions.forEach((t, idx) => {
-        csvContent += `${idx + 1},${t.amount || 0}\n`;
-      });
-    } else if (reportType === "Expense Analysis") {
-      csvContent += "Expense ID,Category,Amount\n";
-      expenses.forEach((e, idx) => {
-        csvContent += `${idx + 1},${e.category || "General"},${e.amount || 0}\n`;
-      });
-    } else if (reportType === "Inventory Report") {
-      csvContent += "Vehicle ID,Make,Model,Price\n";
-      vehicles.forEach((v, idx) => {
-        csvContent += `${idx + 1},${v.make || "N/A"},${v.model || "N/A"},${v.price || 0}\n`;
-      });
-    } else if (reportType === "Profit & Loss") {
-      csvContent += "Metric,Amount\n";
-      csvContent += `Total Income,${totalIncome}\nTotal Expenses,${totalExpenses}\nNet Profit/Loss,${totalIncome - totalExpenses}\n`;
-    }
-
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `${reportType.replace(" ", "_")}_Report.csv`);
-    link.click();
-  };
-
-  // Reports list
-  const reports = [
-    { id: 1, name: "Sales Summary", icon: "📊", description: "Total vehicles sold and revenue" },
-    { id: 2, name: "Expense Analysis", icon: "💸", description: "Breakdown of all expenses" },
-    { id: 3, name: "Inventory Report", icon: "🚗", description: "Current inventory details" },
-    { id: 4, name: "Profit & Loss", icon: "📈", description: "P&L statement analysis" },
+  // 🔹 Dummy data — replace later with backend API data
+  const monthlyData = [
+    { name: "Jan", income: 18000, expense: 10000 },
+    { name: "Feb", income: 23000, expense: 15000 },
+    { name: "Mar", income: 20000, expense: 14000 },
+    { name: "Apr", income: 26000, expense: 18000 },
   ];
 
-  // Report preview content
-  const renderReportDetails = (report) => {
-    if (!report) return null;
+  const yearlyData = [
+    { name: "2022", income: 180000, expense: 120000 },
+    { name: "2023", income: 210000, expense: 160000 },
+    { name: "2024", income: 250000, expense: 180000 },
+    { name: "2025", income: 290000, expense: 210000 },
+  ];
 
-    if (report.name === "Sales Summary") {
-      return (
-        <>
-          <p><b>Total Vehicles Sold:</b> {transactions.length}</p>
-          <p><b>Total Income:</b> ${totalIncome.toLocaleString()}</p>
-          <p><b>Average Sale Price:</b> ${(totalIncome / (transactions.length || 1)).toLocaleString()}</p>
-        </>
-      );
-    } else if (report.name === "Expense Analysis") {
-      return (
-        <>
-          <p><b>Total Expenses:</b> ${totalExpenses.toLocaleString()}</p>
-          <p><b>Expense Items:</b> {expenses.length}</p>
-          <p><b>Average Expense:</b> ${(totalExpenses / (expenses.length || 1)).toLocaleString()}</p>
-        </>
-      );
-    } else if (report.name === "Inventory Report") {
-      return (
-        <>
-          <p><b>Total Vehicles:</b> {vehicles.length}</p>
-          <p><b>Total Inventory Value:</b> ${vehicles.reduce((sum, v) => sum + (v.price || 0), 0).toLocaleString()}</p>
-        </>
-      );
-    } else if (report.name === "Profit & Loss") {
-      const profit = totalIncome - totalExpenses;
-      return (
-        <>
-          <p><b>Total Income:</b> ${totalIncome.toLocaleString()}</p>
-          <p><b>Total Expenses:</b> ${totalExpenses.toLocaleString()}</p>
-          <p><b>Net Profit/Loss:</b> ${profit.toLocaleString()}</p>
-        </>
-      );
-    }
-  };
+  const data = period === "yearly" ? yearlyData : monthlyData;
+
+  const totalIncome = data.reduce((sum, d) => sum + d.income, 0);
+  const totalExpenses = data.reduce((sum, d) => sum + d.expense, 0);
+  const netProfit = totalIncome - totalExpenses;
+
+  const currency = "$";
 
   return (
-    <div className="reports-section">
-      <div className="reports-header">
-        <h2>📋 Reports & Data Export</h2>
-        <p>Generate and export detailed business reports</p>
-      </div>
+    <div className="reports-page">
+      <Sidebar />
 
-      <div className="reports-grid">
-        {reports.map((report) => (
-          <div key={report.id} className="report-card">
-            <div className="report-icon">{report.icon}</div>
-            <h3>{report.name}</h3>
-            <p>{report.description}</p>
-            <div className="report-actions">
-              <button className="btn-primary" onClick={() => setSelectedReport(report)}>View</button>
-              <button className="btn-secondary" onClick={() => exportToPDF(report.name)}>PDF</button>
-              <button className="btn-secondary" onClick={() => exportToCSV(report.name)}>CSV</button>
+      <div className="reports-container">
+        <header className="reports-header">
+          <h1>Financial Reports</h1>
+          <p>View summarized financial data and visual performance analysis.</p>
+        </header>
+
+        {/* ===== Summary Cards ===== */}
+        <div className="reports-summary">
+          <div className="report-card income">
+            <div className="report-card-header">
+              <span className="icon">💰</span>
+              <h3>Total Income</h3>
             </div>
+            <p className="report-value">
+              {currency}
+              {totalIncome.toLocaleString()}
+            </p>
           </div>
-        ))}
-      </div>
 
-      {selectedReport && (
-        <div className="report-modal">
-          <div className="report-modal-content">
-            <h3>{selectedReport.icon} {selectedReport.name}</h3>
-            {renderReportDetails(selectedReport)}
-            <button className="btn-secondary" onClick={() => setSelectedReport(null)}>Close</button>
+          <div className="report-card expense">
+            <div className="report-card-header">
+              <span className="icon">💸</span>
+              <h3>Total Expenses</h3>
+            </div>
+            <p className="report-value">
+              {currency}
+              {totalExpenses.toLocaleString()}
+            </p>
+          </div>
+
+          <div className="report-card profit">
+            <div className="report-card-header">
+              <span className="icon">📈</span>
+              <h3>Net Profit</h3>
+            </div>
+            <p className="report-value">
+              {currency}
+              {netProfit.toLocaleString()}
+            </p>
           </div>
         </div>
-      )}
+
+        {/* ===== Chart Section ===== */}
+        <section className="chart-section">
+          <div className="chart-header">
+            <h2>Income vs Expenses ({period})</h2>
+            <div className="period-toggle">
+              <button
+                className={period === "monthly" ? "active" : ""}
+                onClick={() => setPeriod("monthly")}
+              >
+                Monthly
+              </button>
+              <button
+                className={period === "yearly" ? "active" : ""}
+                onClick={() => setPeriod("yearly")}
+              >
+                Yearly
+              </button>
+            </div>
+          </div>
+
+          <ResponsiveContainer width="100%" height={350}>
+            <BarChart
+              data={data}
+              margin={{ top: 40, right: 30, left: 0, bottom: 10 }}
+              barSize={45}
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip
+                formatter={(value) => `${currency}${value.toLocaleString()}`}
+                contentStyle={{
+                  background: "#fff",
+                  borderRadius: "8px",
+                  border: "1px solid #e5e7eb",
+                }}
+              />
+              <Legend />
+
+              {/* Income Bar */}
+              <Bar dataKey="income" fill="#22c55e" radius={[6, 6, 0, 0]}>
+                <LabelList
+                  dataKey="income"
+                  position="top"
+                  fill="#22c55e"
+                  fontSize={13}
+                  formatter={(val) => `${currency}${val.toLocaleString()}`}
+                />
+              </Bar>
+
+              {/* Expense Bar */}
+              <Bar dataKey="expense" fill="#ef4444" radius={[6, 6, 0, 0]}>
+                <LabelList
+                  dataKey="expense"
+                  position="top"
+                  fill="#ef4444"
+                  fontSize={13}
+                  formatter={(val) => `${currency}${val.toLocaleString()}`}
+                />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </section>
+
+        {/* ===== Summary Section ===== */}
+        <section className="reports-summary-text">
+          <h2>Analysis</h2>
+          <p>
+            During the selected period, your total income was{" "}
+            <strong>
+              {currency}
+              {totalIncome.toLocaleString()}
+            </strong>
+            , while your total expenses reached{" "}
+            <strong>
+              {currency}
+              {totalExpenses.toLocaleString()}
+            </strong>
+            . This results in a net profit of{" "}
+            <strong>
+              {currency}
+              {netProfit.toLocaleString()}
+            </strong>
+            .
+          </p>
+          <p>
+            The green bars represent income and red bars represent expenses.
+            The difference between the two shows your dealership’s financial
+            performance across time.
+          </p>
+        </section>
+      </div>
     </div>
   );
 }
