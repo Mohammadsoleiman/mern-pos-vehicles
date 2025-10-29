@@ -45,9 +45,14 @@ import Income from "./pages/accountingstuff/Income";
 import Expenses from "./pages/accountingstuff/Expenses";
 import Reports from "./pages/accountingstuff/Reports";
 import Accounts from "./pages/accountingstuff/Accounts";
-import Vehicles from "./pages/accountingstuff/Vehicles";
 import Employees from "./pages/accountingstuff/Employees";
 import Settings from "./pages/accountingstuff/Settings";
+
+// 🧩 Modular Accounting Vehicle Pages
+import VehicleList from "./pages/accountingstuff/vehicles/VehicleList";
+import VehicleCreatePage from "./pages/accountingstuff/vehicles/VehicleCreate";
+import VehicleEditPage from "./pages/accountingstuff/vehicles/VehicleEdit";
+import VehicleShowPage from "./pages/accountingstuff/vehicles/VehicleShow";
 
 // 💰 Clerk Pages
 import ClerkDashboard from "./pages/clerk/ClerkDashboard";
@@ -87,8 +92,6 @@ export default function App() {
                             <Route path="vehicles/create" element={<VehicleCreate />} />
                             <Route path="vehicles/edit/:id" element={<VehicleEdit />} />
                             <Route path="vehicles/show/:id" element={<VehicleShow />} />
-                            {/* <Route path="reports" element={<Reports />} />
-                            <Route path="settings" element={<Settings />} /> */}
                           </Route>
                         </Route>
 
@@ -101,21 +104,26 @@ export default function App() {
                             </RoleRoute>
                           }
                         >
-                              <Route path="featuresoverview" element={<FeaturesOverview />} />
+                          <Route path="featuresoverview" element={<FeaturesOverview />} />
                           <Route index element={<FeaturesOverview />} />
                           <Route path="transactions" element={<Transactions />} />
-                          <Route path="Income" element={<Income />} />
-                          <Route path="Expenses" element={<Expenses />} />
+                          <Route path="income" element={<Income />} />
+                          <Route path="expenses" element={<Expenses />} />
                           <Route path="reports" element={<Reports />} />
                           <Route path="accounts" element={<Accounts />} />
-                          <Route path="vehicles" element={<Vehicles />} />
                           <Route path="employees" element={<Employees />} />
                           <Route path="settings" element={<Settings />} />
+
+                          {/* 🚗 ACCOUNTANT VEHICLE PAGES */}
+                          <Route path="vehicles" element={<VehicleList />} />
+                          <Route path="vehicles/create" element={<VehicleCreatePage />} />
+                          <Route path="vehicles/edit/:id" element={<VehicleEditPage />} />
+                          <Route path="vehicles/show/:id" element={<VehicleShowPage />} />
                         </Route>
 
                         {/* 💵 CLERK SECTION */}
                         <Route
-                          path="/Cashier"
+                          path="/cashier"
                           element={
                             <RoleRoute allowedRoles={["clerk", "cashier", "admin"]}>
                               <Cashier />

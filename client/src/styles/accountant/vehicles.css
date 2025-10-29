@@ -1,14 +1,28 @@
+/* ===============================================
+   VEHICLES PAGE - ACCOUNTANT PANEL STYLES
+   =============================================== */
+
 .vehicles-page {
-  padding: 32px;
-  background: #f8f9fa;
+  flex: 1;
+  padding: 24px 32px;
+  background: #f9fafb;
   min-height: 100vh;
+  font-family: "Inter", sans-serif;
+  color: #1f2937;
 }
 
+/* ---------- Header ---------- */
 .vehicles-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+}
+
+.vehicles-header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
 }
 
 .add-btn {
@@ -18,51 +32,644 @@
   padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  transition: 0.25s;
 }
 
 .add-btn:hover {
   background: #1d4ed8;
 }
 
+/* ---------- Table ---------- */
 .vehicles-table {
   width: 100%;
   border-collapse: collapse;
   background: #fff;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-.vehicles-table th, .vehicles-table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid #e5e7eb;
+.vehicles-table th,
+.vehicles-table td {
+  padding: 14px 16px;
   text-align: left;
+  font-size: 14px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
+.vehicles-table th {
+  background: #f3f4f6;
+  font-weight: 600;
+  color: #374151;
+}
+
+.vehicles-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.table-thumb {
+  width: 70px;
+  height: 50px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid #e5e7eb;
+}
+
+/* ---------- Status Badges ---------- */
 .status {
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-size: 12px;
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: capitalize;
 }
 
-.status.active { background: #d1fae5; color: #065f46; }
-.status.maintenance { background: #fef3c7; color: #92400e; }
+.status.active {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status.maintenance {
+  background: #fef9c3;
+  color: #b45309;
+}
+
+.status.sold {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* ---------- Action Buttons ---------- */
+.actions {
+  display: flex;
+  gap: 6px;
+}
 
 .actions button {
   border: none;
-  background: none;
+  background: transparent;
+  padding: 6px;
+  border-radius: 6px;
   cursor: pointer;
-  padding: 4px;
+  transition: 0.25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.edit-btn:hover { background: #e0f2fe; }
-.delete-btn:hover { background: #fee2e2; }
+.actions .view-btn {
+  background: #e0f2fe;
+  color: #0284c7;
+}
 
-/* Modal same as employees */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; }
-.modal-content { background: #fff; padding: 20px; border-radius: 8px; width: 400px; }
-.form-group { display: flex; flex-direction: column; margin-bottom: 10px; }
-input { padding: 6px; border: 1px solid #ccc; border-radius: 4px; }
-.modal-actions { display: flex; justify-content: end; gap: 10px; }
-.save-btn { background: #2563eb; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; }
-.cancel-btn { background: #ccc; border: none; padding: 6px 12px; border-radius: 4px; }
+.actions .view-btn:hover {
+  background: #bae6fd;
+}
+
+.actions .edit-btn {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.actions .edit-btn:hover {
+  background: #bbf7d0;
+}
+
+.actions .delete-btn {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.actions .delete-btn:hover {
+  background: #fecaca;
+}
+
+/* ---------- Empty Table Message ---------- */
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* ---------- Modal Overlay ---------- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(31, 41, 55, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+/* ---------- Modal Box ---------- */
+.modal-content {
+  background: #fff;
+  border-radius: 10px;
+  padding: 24px;
+  width: 90%;
+  max-width: 750px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.3s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content.large {
+  max-width: 850px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-header h3 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.close-btn:hover {
+  color: #111827;
+}
+
+/* ---------- Form Grid ---------- */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 13px;
+  color: #374151;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  font-size: 14px;
+  color: #111827;
+  transition: 0.25s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+/* ---------- Image Preview ---------- */
+.image-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.image-preview img {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+/* ---------- Modal Actions ---------- */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.save-btn {
+  background: #16a34a;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.save-btn:hover {
+  background: #15803d;
+}
+
+.cancel-btn {
+  background: #e5e7eb;
+  color: #111827;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.cancel-btn:hover {
+  background: #d1d5db;
+}
+
+/* ---------- Vehicle Info Grid (Show Page) ---------- */
+.vehicle-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px 20px;
+  margin-top: 12px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  background: #f9fafb;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.info-item label {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.info-item span {
+  font-size: 14px;
+  color: #111827;
+  font-weight: 500;
+}
+
+/* ---------- Vehicle Images (Show Page) ---------- */
+.vehicle-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.vehicle-images img {
+  width: 100px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}
+
+/* ---------- Color Box ---------- */
+.color-box {
+  width: 28px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* ---------- Animation ---------- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .vehicles-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .modal-content {
+    padding: 18px;
+  }
+
+  .vehicles-table th,
+  .vehicles-table td {
+    padding: 10px;
+  }
+
+  .image-preview img {
+    width: 70px;
+    height: 50px;
+  }
+}
+/* ---------- Editable Image Preview with Delete ---------- */
+.image-preview.editable {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.image-wrapper {
+  position: relative;
+}
+
+.image-wrapper img {
+  width: 90px;
+  height: 65px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.delete-img-btn {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.25s;
+}
+
+.delete-img-btn:hover {
+  background: #b91c1c;
+}
+/* ==========================================
+   ENHANCED EDIT FORM LAYOUT & IMAGE STYLING
+   ========================================== */
+
+/* Improve modal sizing and scrolling */
+.modal-content.large {
+  max-width: 850px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 12px;
+}
+
+/* Smooth scroll behavior */
+.modal-content.large::-webkit-scrollbar {
+  width: 6px;
+}
+.modal-content.large::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 10px;
+}
+
+/* Form grid tidy layout */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 18px 22px;
+  margin-bottom: 24px;
+}
+
+/* Better label and field spacing */
+.form-group label {
+  font-size: 13px;
+  color: #374151;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  transition: border-color 0.25s, box-shadow 0.25s;
+  background-color: #fff;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+  outline: none;
+}
+
+/* Full-width field (like image section) */
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+/* ---------- Image Upload Section ---------- */
+.image-preview.editable {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.image-wrapper {
+  position: relative;
+  width: 90px;
+  height: 70px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.image-wrapper:hover {
+  transform: scale(1.05);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Delete image button */
+.delete-img-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+  border: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 11px;
+  cursor: pointer;
+  line-height: 18px;
+  text-align: center;
+  transition: background 0.25s, transform 0.25s;
+}
+
+.delete-img-btn:hover {
+  background: #b91c1c;
+  transform: scale(1.1);
+}
+
+/* Buttons alignment */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.save-btn {
+  background: #16a34a;
+  color: #fff;
+  padding: 9px 18px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s, transform 0.2s;
+}
+
+.save-btn:hover {
+  background: #15803d;
+  transform: translateY(-1px);
+}
+
+.cancel-btn {
+  background: #e5e7eb;
+  color: #111827;
+  padding: 9px 18px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.25s, transform 0.2s;
+}
+
+.cancel-btn:hover {
+  background: #d1d5db;
+  transform: translateY(-1px);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .modal-content.large {
+    padding: 16px;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .image-wrapper {
+    width: 80px;
+    height: 60px;
+  }
+}
+/* ---------- Editable Image Preview with Delete ---------- */
+.image-preview.editable {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.image-wrapper {
+  position: relative;
+  width: 90px;
+  height: 70px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  transition: transform 0.25s, box-shadow 0.25s;
+  cursor: default;
+}
+
+.image-wrapper:hover {
+  transform: scale(1.05);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none; /* Fix: ensure button clicks work */
+}
+
+.delete-img-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(239, 68, 68, 0.95);
+  color: white;
+  border: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 12px;
+  cursor: pointer;
+  line-height: 18px;
+  text-align: center;
+  z-index: 10;
+  transition: background 0.25s, transform 0.25s;
+}
+
+.delete-img-btn:hover {
+  background: #b91c1c;
+  transform: scale(1.1);
+}
+
+/* Modal layout adjustments */
+.modal-content.large {
+  max-width: 850px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 18px 22px;
+  margin-bottom: 24px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}

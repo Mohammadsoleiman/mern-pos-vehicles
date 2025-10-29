@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import "../../styles/accountant/accounts.css";
+import "../../styles/accountant/account.css";
 import { TransactionContext } from "../../context/ACCOUNTANT/TransactionContext.jsx";
 import { VehicleContext } from "../../context/ACCOUNTANT/VehicleContext.jsx";
 import { ExpenseContext } from "../../context/ACCOUNTANT/ExpenseContext.jsx";
