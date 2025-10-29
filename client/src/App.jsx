@@ -22,6 +22,7 @@ import Unauthorized from "./pages/Unauthorized";
 
 // 📊 Admin Pages
 import Dashboard from "./pages/Dashboard";
+import Setting from "./pages/Settings";
 import UsersPage from "./pages/users/index";
 import RolesPage from "./pages/roles/index";
 import PermissionsPage from "./pages/permissions/PermissionsPage";
@@ -76,7 +77,7 @@ export default function App() {
                             <Route path="roles" element={<RolesPage />} />
                             <Route path="permissions" element={<PermissionsPage />} />
                               <Route path="reports" element={<div>📊 Reports</div>} />
-                            <Route path="settings" element={<div>⚙️ Settings</div>} />
+                            <Route path="settings" element={<Setting />} />
                             <Route path="vehicles" element={<VehiclesList />} />
                             <Route path="vehicles/create" element={<VehicleCreate />} />
                             <Route path="vehicles/edit/:id" element={<VehicleEdit />} />

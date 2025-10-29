@@ -1,0 +1,77 @@
+.settings-page {
+  padding: 20px;
+  background: #f5f7fb;
+}
+
+.settings-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.settings-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.settings-section h2 {
+  margin-bottom: 15px;
+  color: #0f2540;
+}
+
+.settings-section label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.settings-section input,
+.settings-section select {
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.profile-pic {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.profile-pic img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.settings-actions {
+  grid-column: span 2;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.btn-save,
+.btn-logout {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-save {
+  background: #0f2540;
+  color: white;
+}
+
+.btn-logout {
+  background: #e11d48;
+  color: white;
+}
