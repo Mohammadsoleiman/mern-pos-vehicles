@@ -1,127 +1,126 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../../../styles/accountant/vehicles.css";
+import { getVehicle, imgUrl } from "../../../api/vehicles";
 
 export default function VehicleShow({ vehicle, onClose }) {
+  const [details, setDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Load full vehicle details
+  useEffect(() => {
+    if (!vehicle?._id) return;
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const data = await getVehicle(vehicle._id);
+        setDetails(data);
+      } catch (err) {
+        console.error("❌ Error loading vehicle:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [vehicle]);
+
   if (!vehicle) return null;
 
   return (
     <div className="modal-overlay">
       <div className="modal-content large">
-        <div className="modal-header">
-          <h3>Vehicle Details</h3>
-          <button className="close-btn" onClick={onClose}>
-            ✖
-          </button>
-        </div>
+        <h3>Vehicle Details</h3>
 
-        {/* -------- Images Section -------- */}
-        {vehicle.images && vehicle.images.length > 0 && (
-          <div className="vehicle-images">
-            {vehicle.images.map((img, index) => (
-              <img key={index} src={img} alt={`Vehicle ${index + 1}`} />
-            ))}
+        {loading ? (
+          <p>Loading vehicle data...</p>
+        ) : (
+          <div className="vehicle-details">
+            {/* Images Section */}
+            <div className="vehicle-images">
+              {details?.images?.length > 0 ? (
+                details.images.map((img, idx) => (
+                  <img key={idx} src={imgUrl(img)} alt={`Vehicle ${idx}`} />
+                ))
+              ) : (
+                <p>No images available</p>
+              )}
+            </div>
+
+            {/* Info Grid */}
+            <div className="vehicle-info-grid">
+              <div className="info-item">
+                <strong>VIN:</strong> {details.VIN}
+              </div>
+              <div className="info-item">
+                <strong>Make:</strong> {details.make}
+              </div>
+              <div className="info-item">
+                <strong>Model:</strong> {details.model}
+              </div>
+              <div className="info-item">
+                <strong>Year:</strong> {details.year}
+              </div>
+              <div className="info-item">
+                <strong>Type:</strong> {details.type}
+              </div>
+              <div className="info-item">
+                <strong>Condition:</strong> {details.condition}
+              </div>
+              <div className="info-item">
+                <strong>Transmission:</strong> {details.transmission}
+              </div>
+              <div className="info-item">
+                <strong>Cylinders:</strong> {details.cylinders}
+              </div>
+              <div className="info-item">
+                <strong>Fuel Type:</strong> {details.fuelType}
+              </div>
+              <div className="info-item">
+                <strong>Color:</strong>{" "}
+                <span
+                  className="color-box"
+                  style={{ backgroundColor: details.color }}
+                ></span>
+              </div>
+              <div className="info-item">
+                <strong>Price:</strong> ${details.price?.toLocaleString()}
+              </div>
+              <div className="info-item">
+                <strong>Cost:</strong> ${details.cost?.toLocaleString()}
+              </div>
+              <div className="info-item">
+                <strong>Purchase Date:</strong>{" "}
+                {details.purchaseDate
+                  ? new Date(details.purchaseDate).toLocaleDateString()
+                  : "—"}
+              </div>
+              <div className="info-item">
+                <strong>Insurance Provider:</strong>{" "}
+                {details.insuranceProvider || "—"}
+              </div>
+              <div className="info-item">
+                <strong>Insurance Expiry:</strong>{" "}
+                {details.insuranceExpiry
+                  ? new Date(details.insuranceExpiry).toLocaleDateString()
+                  : "—"}
+              </div>
+              <div className="info-item">
+                <strong>Maintenance Cost:</strong> $
+                {details.maintenanceCost?.toLocaleString() || 0}
+              </div>
+              <div className="info-item">
+                <strong>Fuel Cost:</strong> $
+                {details.fuelCost?.toLocaleString() || 0}
+              </div>
+              <div className="info-item">
+                <strong>Status:</strong>{" "}
+                <span className={`status ${details.status?.toLowerCase()}`}>
+                  {details.status}
+                </span>
+              </div>
+            </div>
           </div>
         )}
 
-        {/* -------- Info Section -------- */}
-        <div className="vehicle-info-grid">
-          <div className="info-item">
-            <label>VIN:</label>
-            <span>{vehicle.VIN || "—"}</span>
-          </div>
-
-          <div className="info-item">
-            <label>Make:</label>
-            <span>{vehicle.make || "—"}</span>
-          </div>
-
-          <div className="info-item">
-            <label>Model:</label>
-            <span>{vehicle.model || "—"}</span>
-          </div>
-
-          <div className="info-item">
-            <label>Year:</label>
-            <span>{vehicle.year || "—"}</span>
-          </div>
-
-          <div className="info-item">
-            <label>Type:</label>
-            <span>{vehicle.type || "—"}</span>
-          </div>
-
-          <div className="info-item">
-            <label>Transmission:</label>
-            <span>{vehicle.transmission || "—"}</span>
-          </div>
-
-          <div className="info-item">
-            <label>Fuel Type:</label>
-            <span>{vehicle.fuelType || "—"}</span>
-          </div>
-
-          <div className="info-item">
-            <label>Cylinders:</label>
-            <span>{vehicle.cylinders || "—"}</span>
-          </div>
-
-          <div className="info-item">
-            <label>Condition:</label>
-            <span>{vehicle.condition || "—"}</span>
-          </div>
-
-          <div className="info-item">
-            <label>Status:</label>
-            <span className={`status ${vehicle.status?.toLowerCase()}`}>
-              {vehicle.status || "—"}
-            </span>
-          </div>
-
-          <div className="info-item">
-            <label>Color:</label>
-            <div
-              className="color-box"
-              style={{ backgroundColor: vehicle.color || "#ccc" }}
-            ></div>
-          </div>
-
-          <div className="info-item">
-            <label>Price:</label>
-            <span>${vehicle.price?.toLocaleString() || "—"}</span>
-          </div>
-
-          <div className="info-item">
-            <label>Cost:</label>
-            <span>${vehicle.cost?.toLocaleString() || "—"}</span>
-          </div>
-
-          <div className="info-item">
-            <label>Purchase Date:</label>
-            <span>{vehicle.purchaseDate || "—"}</span>
-          </div>
-
-          <div className="info-item">
-            <label>Insurance Provider:</label>
-            <span>{vehicle.insuranceProvider || "—"}</span>
-          </div>
-
-          <div className="info-item">
-            <label>Insurance Expiry:</label>
-            <span>{vehicle.insuranceExpiry || "—"}</span>
-          </div>
-
-          <div className="info-item">
-            <label>Maintenance Cost:</label>
-            <span>${vehicle.maintenanceCost?.toLocaleString() || "—"}</span>
-          </div>
-
-          <div className="info-item">
-            <label>Fuel Cost:</label>
-            <span>${vehicle.fuelCost?.toLocaleString() || "—"}</span>
-          </div>
-        </div>
-
-        {/* -------- Close Button -------- */}
         <div className="modal-actions">
           <button className="cancel-btn" onClick={onClose}>
             Close
