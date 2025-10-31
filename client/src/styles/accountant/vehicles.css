@@ -1,441 +1,68 @@
-/* =========================
-   VEHICLES PAGE STYLES (Scoped)
-   ========================= */
-
 .vehicles-page {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  width: 100%;
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 24px;
+  padding: 32px;
+  background: #f8f9fa;
   min-height: 100vh;
-  background: #f8fafc;
-  box-sizing: border-box;
-
-  /* Fix content overflow */
-  overflow-x: hidden;
-  overflow-y: auto;
-  min-width: 0;
 }
 
-/* -------------------------
-   PAGE HEADER
--------------------------- */
-.vehicles-page .page-header {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 20px 24px;
+.vehicles-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
-.vehicles-page .page-header h1 {
-  font-size: 24px;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0 0 4px 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.vehicles-page .page-header p {
-  font-size: 14px;
-  color: #64748b;
-  margin: 0;
-}
-
-.vehicles-page .btn-primary {
-  background: #3b82f6;
+.add-btn {
+  background: #2563eb;
   color: #fff;
   border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.vehicles-page .btn-primary:hover {
-  background: #2563eb;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-}
-
-/* -------------------------
-   STAT CARDS
--------------------------- */
-.vehicles-page .vehicle-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
-  width: 100%;
-}
-
-.vehicles-page .stat-card-vehicle {
-  background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  transition: all 0.3s ease;
-  border-left: 4px solid #3b82f6;
-  min-width: 0;
-}
-
-.vehicles-page .stat-card-vehicle:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-}
-
-.vehicles-page .stat-icon {
-  font-size: 32px;
-  opacity: 0.9;
-  flex-shrink: 0;
-}
-
-.vehicles-page .stat-details {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-  min-width: 0;
-}
-
-.vehicles-page .stat-details h3 {
-  font-size: 12px;
-  font-weight: 600;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 0;
-}
-
-.vehicles-page .stat-value {
-  font-size: 24px;
-  font-weight: 700;
-  color: #1e293b;
-  line-height: 1;
-  word-break: break-word;
-}
-
-.vehicles-page .stat-label {
-  font-size: 11px;
-  color: #94a3b8;
-}
-
-/* -------------------------
-   VEHICLE FORM CARD
--------------------------- */
-.vehicles-page .vehicle-form-card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 24px;
-  animation: slideDown 0.3s ease;
-}
-
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.vehicles-page .vehicle-form-card h3 {
-  font-size: 18px;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0 0 20px 0;
-  padding-bottom: 12px;
-  border-bottom: 2px solid #e2e8f0;
-}
-
-.vehicles-page .vehicle-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.vehicles-page .form-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-}
-
-.vehicles-page .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 0;
-}
-
-.vehicles-page .form-group label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #334155;
-}
-
-.vehicles-page .vehicle-form input,
-.vehicles-page .vehicle-form select {
-  width: 100%;
-  border: 1px solid #d1d5db;
+  padding: 8px 14px;
   border-radius: 6px;
-  padding: 10px 12px;
-  font-size: 14px;
-  color: #1e293b;
-  background: #fff;
-  transition: all 0.2s ease;
-  font-family: inherit;
-  box-sizing: border-box;
-}
-
-.vehicles-page .vehicle-form input:focus,
-.vehicles-page .vehicle-form select:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.vehicles-page .vehicle-form input::placeholder {
-  color: #9ca3af;
-}
-
-.vehicles-page .vehicle-form select {
   cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23475569' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 36px;
 }
 
-.vehicles-page .input-error {
-  border-color: #ef4444;
-  background-color: #fef2f2;
+.add-btn:hover {
+  background: #1d4ed8;
 }
 
-.vehicles-page .input-error:focus {
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-}
-
-.vehicles-page .error-message {
-  font-size: 12px;
-  color: #ef4444;
-  font-weight: 500;
-  margin-top: 2px;
-}
-
-.vehicles-page .form-actions {
-  display: flex;
-  gap: 12px;
-  padding-top: 8px;
-  flex-wrap: wrap;
-}
-
-.vehicles-page .btn-submit {
-  background: #3b82f6;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 20px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.vehicles-page .btn-submit:hover {
-  background: #2563eb;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-}
-
-.vehicles-page .btn-cancel {
-  background: #fff;
-  color: #64748b;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  padding: 10px 20px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.vehicles-page .btn-cancel:hover {
-  background: #f8fafc;
-  border-color: #94a3b8;
-}
-
-/* -------------------------
-   VEHICLES TABLE
--------------------------- */
-.vehicles-page .vehicles-table-container {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 24px;
-  overflow-x: auto;
-}
-
-.vehicles-page .table-wrapper {
-  overflow-x: auto;
-  width: 100%;
-  min-width: 0;
-}
-
-/* Use scoped selectors for the table inside vehicles-page */
-.vehicles-page .vehicles-table {
+.vehicles-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
-  table-layout: auto;
-}
-
-/* ----------- BADGES & STATUS ------------- */
-.vehicles-page .badge-type,
-.vehicles-page .badge-status,
-.vehicles-page .badge-insurance {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: capitalize;
-  white-space: nowrap;
-}
-
-/* Status colors */
-.vehicles-page .badge-status.status-active { background: #dcfce7; color: #166534; }
-.vehicles-page .badge-status.status-maintenance { background: #fef3c7; color: #92400e; }
-.vehicles-page .badge-status.status-inactive { background: #fee2e2; color: #991b1b; }
-
-/* Insurance colors */
-.vehicles-page .badge-insurance.valid { background: #dcfce7; color: #166534; }
-.vehicles-page .badge-insurance.expired { background: #fee2e2; color: #991b1b; }
-
-.vehicles-page .value-positive { color: #10b981; font-weight: 600; }
-.vehicles-page .value-negative { color: #ef4444; font-weight: 600; }
-
-.vehicles-page .btn-delete {
-  background: #fee2e2;
-  color: #ef4444;
-  border: 1px solid #fca5a5;
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.vehicles-page .btn-delete:hover {
-  background: #fecaca;
-  border-color: #ef4444;
-}
-
-/* -------------------------
-   FINANCIAL SUMMARY
--------------------------- */
-.vehicles-page .financial-summary {
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 24px;
-}
-
-.vehicles-page .summary-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-}
-
-.vehicles-page .summary-item {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 20px;
-  background: linear-gradient(135deg, #f8fafc 0%, #fff 100%);
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  transition: all 0.2s ease;
-  min-width: 0;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
 
-.vehicles-page .summary-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+.vehicles-table th, .vehicles-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
 }
 
-.vehicles-page .summary-label {
+.status {
+  padding: 3px 8px;
+  border-radius: 4px;
   font-size: 12px;
-  font-weight: 600;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
-.vehicles-page .summary-value {
-  font-size: 22px;
-  font-weight: 700;
-  color: #1e293b;
-  word-break: break-word;
-}
+.status.active { background: #d1fae5; color: #065f46; }
+.status.maintenance { background: #fef3c7; color: #92400e; }
 
-.vehicles-page .summary-value.negative {
-  color: #ef4444;
-}
+/* .actions button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 4px;
+} */
 
-/* -------------------------
-   RESPONSIVE
--------------------------- */
-@media (max-width: 1400px) {
-  .vehicles-page { max-width: 100%; }
-  .vehicles-page .vehicle-stats { grid-template-columns: repeat(2, 1fr); }
-  .vehicles-page .summary-grid { grid-template-columns: repeat(2, 1fr); }
-}
+.edit-btn:hover { background: #e0f2fe; }
+.delete-btn:hover { background: #fee2e2; }
 
-@media (max-width: 1024px) { .vehicles-page .form-row { grid-template-columns: repeat(2, 1fr); } }
-
-@media (max-width: 768px) {
-  .vehicles-page { padding: 16px; gap: 16px; }
-  .vehicles-page .page-header { flex-direction: column; align-items: flex-start; padding: 16px; }
-  .vehicles-page .page-header h1 { font-size: 20px; }
-  .vehicles-page .btn-primary { width: 100%; }
-  .vehicles-page .vehicle-stats { grid-template-columns: 1fr; }
-  .vehicles-page .stat-card-vehicle { padding: 16px; }
-  .vehicles-page .stat-icon { font-size: 28px; }
-  .vehicles-page .stat-value { font-size: 20px; }
-  .vehicles-page .form-row { grid-template-columns: 1fr; }
-  .vehicles-page .vehicle-form-card { padding: 20px; }
-  .vehicles-page .vehicles-table-container { padding: 20px; }
-  .vehicles-page .table-wrapper { margin: 0; padding: 0; }
-  .vehicles-page .summary-grid { grid-template-columns: 1fr; }
-  .vehicles-page .financial-summary { padding: 20px; }
-  .vehicles-page .form-actions { flex-direction: column; }
-  .vehicles-page .btn-submit,
-  .vehicles-page .btn-cancel { width: 100%; }
-  .vehicles-page .vehicles-table { font-size: 12px; }
-  .vehicles-page .vehicles-table th,
-  .vehicles-page .vehicles-table td { padding: 8px 6px; }
-}
-
-@media (max-width: 480px) {
-  .vehicles-page { padding: 12px; }
-  .vehicles-page .page-header { padding: 12px; }
-  .vehicles-page .page-header h1 { font-size: 18px; }
-  .vehicles-page .stat-value { font-size: 18px; }
-  .vehicles-page .vehicle-form-card,
-  .vehicles-page .vehicles-table-container,
-  .vehicles-page .financial-summary { padding: 16px; }
-}
+/* Modal same as employees */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; }
+.modal-content { background: #fff; padding: 20px; border-radius: 8px; width: 400px; }
+.form-group { display: flex; flex-direction: column; margin-bottom: 10px; }
+input { padding: 6px; border: 1px solid #ccc; border-radius: 4px; }
+.modal-actions { display: flex; justify-content: end; gap: 10px; }
+.save-btn { background: #2563eb; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; }
+.cancel-btn { background: #ccc; border: none; padding: 6px 12px; border-radius: 4px; }

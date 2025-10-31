@@ -1,7 +1,9 @@
+import styles from "../styles/dashboard.module.css";
+
 export default function Table({ columns = [], rows = [] }) {
   return (
-    <div className="card">
-      <table className="table">
+    <div className={styles.card}>
+      <table className={styles.table}>
         <thead>
           <tr>{columns.map((c) => <th key={c}>{c}</th>)}</tr>
         </thead>

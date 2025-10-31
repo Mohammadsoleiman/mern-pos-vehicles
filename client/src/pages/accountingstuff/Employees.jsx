@@ -1,201 +1,162 @@
-import React, { useContext, useState } from "react";
-import "../../styles/accountant/tax.css";
-import { TransactionContext } from "../../context/ACCOUNTANT/TransactionContext";
-import { ExpenseContext } from "../../context/ACCOUNTANT/ExpenseContext";
+import React, { useState } from "react";
+import "../../styles/accountant/employees.css";
+import { UserPlus, Edit2, Trash2, Mail, Phone, Calendar } from "react-feather";
 
-export default function TaxCalculationsSection() {
-  const { totalIncome } = useContext(TransactionContext);
-  const { totalExpenses } = useContext(ExpenseContext);
-  const [salesTaxRate, setSalesTaxRate] = useState(7.5);
-  const [incomeTaxRate, setIncomeTaxRate] = useState(25);
-  const [deductibleExpenses, setDeductibleExpenses] = useState(0);
+export default function Employees() {
+  const [employees, setEmployees] = useState([
+    { id: 1, name: "Ali Hassan", role: "Driver", email: "ali@autopos.com", phone: "0501234567", salary: 2500, joinDate: "2023-10-01" },
+    { id: 2, name: "Sara Khaled", role: "Accountant", email: "sara@autopos.com", phone: "0559876543", salary: 3200, joinDate: "2022-07-15" },
+  ]);
 
-  // Calculate taxes
-  const salesTax = (totalIncome * (salesTaxRate / 100)).toFixed(2);
-  const netIncome = (totalIncome - totalExpenses).toFixed(2);
-  const taxableIncome = Math.max(0, netIncome - deductibleExpenses).toFixed(2);
-  const incomeTax = (taxableIncome * (incomeTaxRate / 100)).toFixed(2);
-  const totalTaxLiability = (parseFloat(salesTax) + parseFloat(incomeTax)).toFixed(2);
+  const [showForm, setShowForm] = useState(false);
+  const [editingEmployee, setEditingEmployee] = useState(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    role: "",
+    email: "",
+    phone: "",
+    salary: "",
+    joinDate: "",
+  });
 
-  // Export Tax Report to CSV
-  const exportTaxReport = () => {
-    let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent += "TAX CALCULATION REPORT\n";
-    csvContent += `Generated: ${new Date().toLocaleDateString()}\n`;
-    csvContent += `Generated Time: ${new Date().toLocaleTimeString()}\n\n`;
-    
-    csvContent += "SALES TAX\n";
-    csvContent += `Total Income,${parseFloat(totalIncome).toLocaleString()}\n`;
-    csvContent += `Sales Tax Rate (%),%${salesTaxRate}\n`;
-    csvContent += `Sales Tax Due,${salesTax}\n\n`;
-    
-    csvContent += "INCOME TAX\n";
-    csvContent += `Total Income,${parseFloat(totalIncome).toLocaleString()}\n`;
-    csvContent += `Total Expenses,${parseFloat(totalExpenses).toLocaleString()}\n`;
-    csvContent += `Net Income,${netIncome}\n`;
-    csvContent += `Deductible Expenses,${deductibleExpenses}\n`;
-    csvContent += `Taxable Income,${taxableIncome}\n`;
-    csvContent += `Income Tax Rate (%),%${incomeTaxRate}\n`;
-    csvContent += `Income Tax Due,${incomeTax}\n\n`;
-    
-    csvContent += "TOTAL TAX LIABILITY\n";
-    csvContent += `Sales Tax,${salesTax}\n`;
-    csvContent += `Income Tax,${incomeTax}\n`;
-    csvContent += `Total Tax Liability,${totalTaxLiability}\n`;
-
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `Tax_Report_${new Date().toISOString().split('T')[0]}.csv`);
-    link.click();
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleAddOrUpdate = (e) => {
+    e.preventDefault();
+    if (editingEmployee) {
+      setEmployees(
+        employees.map((emp) =>
+          emp.id === editingEmployee.id ? { ...editingEmployee, ...formData } : emp
+        )
+      );
+      setEditingEmployee(null);
+    } else {
+      const newEmployee = {
+        id: Date.now(),
+        ...formData,
+      };
+      setEmployees([...employees, newEmployee]);
+    }
+    setFormData({
+      name: "",
+      role: "",
+      email: "",
+      phone: "",
+      salary: "",
+      joinDate: "",
+    });
+    setShowForm(false);
+  };
+
+  const handleEdit = (emp) => {
+    setEditingEmployee(emp);
+    setFormData(emp);
+    setShowForm(true);
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this employee?")) {
+      setEmployees(employees.filter((emp) => emp.id !== id));
+    }
+  };
+
+  const totalSalary = employees.reduce((sum, emp) => sum + Number(emp.salary), 0);
+
   return (
-    <div className="tax-section">
-      <div className="tax-header">
-        <h2>🧮 Tax Calculations</h2>
-        <p>Manage sales tax, income tax, and deductible expenses</p>
+    <div className="employees-page">
+      <div className="employees-header">
+        <h2>Employees</h2>
+        <button className="add-btn" onClick={() => setShowForm(true)}>
+          <UserPlus size={18} /> Add Employee
+        </button>
       </div>
 
-      <div className="tax-grid">
-        {/* Sales Tax Card */}
-        <div className="tax-card">
-          <div className="tax-card-header">
-            <h3>Sales Tax</h3>
-            <span className="tax-icon">💰</span>
-          </div>
-          
-          <div className="tax-input-group">
-            <label>Tax Rate (%)</label>
-            <input
-              type="number"
-              value={salesTaxRate}
-              onChange={(e) => setSalesTaxRate(Math.max(0, parseFloat(e.target.value) || 0))}
-              step="0.1"
-              min="0"
-              max="100"
-              className="tax-input"
-            />
-          </div>
-
-          <div className="tax-breakdown">
-            <div className="breakdown-row">
-              <span>Total Income</span>
-              <strong>${parseFloat(totalIncome).toLocaleString()}</strong>
-            </div>
-            <div className="breakdown-row">
-              <span>Tax Rate</span>
-              <strong>{salesTaxRate}%</strong>
-            </div>
-            <div className="breakdown-row highlight">
-              <span>Sales Tax Due</span>
-              <strong className="tax-amount">${salesTax}</strong>
-            </div>
-          </div>
-        </div>
-
-        {/* Income Tax Card */}
-        <div className="tax-card">
-          <div className="tax-card-header">
-            <h3>Income Tax</h3>
-            <span className="tax-icon">📊</span>
-          </div>
-
-          <div className="tax-input-group">
-            <label>Tax Rate (%)</label>
-            <input
-              type="number"
-              value={incomeTaxRate}
-              onChange={(e) => setIncomeTaxRate(Math.max(0, parseFloat(e.target.value) || 0))}
-              step="0.1"
-              min="0"
-              max="100"
-              className="tax-input"
-            />
-          </div>
-
-          <div className="tax-breakdown">
-            <div className="breakdown-row">
-              <span>Income</span>
-              <strong>${parseFloat(totalIncome).toLocaleString()}</strong>
-            </div>
-            <div className="breakdown-row">
-              <span>Expenses</span>
-              <strong>-${parseFloat(totalExpenses).toLocaleString()}</strong>
-            </div>
-            <div className="breakdown-row">
-              <span>Net Income</span>
-              <strong>${netIncome}</strong>
-            </div>
-            <div className="breakdown-row highlight">
-              <span>Income Tax Due</span>
-              <strong className="tax-amount">${incomeTax}</strong>
-            </div>
-          </div>
-        </div>
-
-        {/* Deductible Expenses Card */}
-        <div className="tax-card">
-          <div className="tax-card-header">
-            <h3>Deductible Expenses</h3>
-            <span className="tax-icon">✂️</span>
-          </div>
-
-          <div className="tax-input-group">
-            <label>Deductible Amount ($)</label>
-            <input
-              type="number"
-              value={deductibleExpenses}
-              onChange={(e) => setDeductibleExpenses(Math.max(0, parseFloat(e.target.value) || 0))}
-              step="50"
-              min="0"
-              className="tax-input"
-            />
-          </div>
-
-          <div className="tax-breakdown">
-            <div className="breakdown-row">
-              <span>Net Income</span>
-              <strong>${netIncome}</strong>
-            </div>
-            <div className="breakdown-row">
-              <span>Deductible Expenses</span>
-              <strong>-${deductibleExpenses.toLocaleString()}</strong>
-            </div>
-            <div className="breakdown-row highlight">
-              <span>Taxable Income</span>
-              <strong className="tax-amount">${taxableIncome}</strong>
-            </div>
-          </div>
-        </div>
-
-        {/* Total Tax Liability Card */}
-        <div className="tax-card tax-card-total">
-          <div className="tax-card-header">
-            <h3>Total Tax Liability</h3>
-            <span className="tax-icon">⚖️</span>
-          </div>
-
-          <div className="tax-summary">
-            <div className="summary-item">
-              <span>Sales Tax</span>
-              <span className="summary-value">${salesTax}</span>
-            </div>
-            <div className="summary-item">
-              <span>Income Tax</span>
-              <span className="summary-value">${incomeTax}</span>
-            </div>
-            <div className="summary-item total-item">
-              <span>Total Tax Due</span>
-              <span className="total-value">${totalTaxLiability}</span>
-            </div>
-          </div>
-
-          <button className="btn-export" onClick={exportTaxReport}>
-            📥 Export Tax Report
-          </button>
-        </div>
+      {/* Salary Summary */}
+      <div className="salary-summary">
+        <p>Total Employees: <strong>{employees.length}</strong></p>
+        <p>Total Monthly Payroll: <strong>{totalSalary.toLocaleString()} AED</strong></p>
       </div>
+
+      {/* Employee Table */}
+      <table className="employees-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Salary (AED)</th>
+            <th>Join Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {employees.length > 0 ? (
+            employees.map((emp) => (
+              <tr key={emp.id}>
+                <td>{emp.name}</td>
+                <td>{emp.role}</td>
+                <td><Mail size={14} /> {emp.email}</td>
+                <td><Phone size={14} /> {emp.phone}</td>
+                <td>{emp.salary}</td>
+                <td><Calendar size={14} /> {emp.joinDate}</td>
+                <td className="action-buttons">
+                  <button className="edit-btn" onClick={() => handleEdit(emp)}>
+                    <Edit2 size={16} />
+                  </button>
+                  <button className="delete-btn" onClick={() => handleDelete(emp.id)}>
+                    <Trash2 size={16} />
+                  </button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr><td colSpan="7" className="no-data">No employees found</td></tr>
+          )}
+        </tbody>
+      </table>
+
+      {/* Modal Form */}
+      {showForm && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>{editingEmployee ? "Edit Employee" : "Add New Employee"}</h3>
+            <form onSubmit={handleAddOrUpdate}>
+              <div className="form-group">
+                <label>Name:</label>
+                <input name="name" value={formData.name} onChange={handleChange} required />
+              </div>
+              <div className="form-group">
+                <label>Role:</label>
+                <input name="role" value={formData.role} onChange={handleChange} required />
+              </div>
+              <div className="form-group">
+                <label>Email:</label>
+                <input name="email" type="email" value={formData.email} onChange={handleChange} required />
+              </div>
+              <div className="form-group">
+                <label>Phone:</label>
+                <input name="phone" value={formData.phone} onChange={handleChange} required />
+              </div>
+              <div className="form-group">
+                <label>Salary (AED):</label>
+                <input name="salary" type="number" value={formData.salary} onChange={handleChange} required />
+              </div>
+              <div className="form-group">
+                <label>Join Date:</label>
+                <input name="joinDate" type="date" value={formData.joinDate} onChange={handleChange} required />
+              </div>
+
+              <div className="modal-actions">
+                <button type="submit" className="save-btn">Save</button>
+                <button type="button" className="cancel-btn" onClick={() => setShowForm(false)}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,195 +1,188 @@
-/* Sidebar container */
-.sidebar {
+/* ============================================
+   ACCOUNTANT SIDEBAR - COMPACT PROFESSIONAL STYLE
+   ============================================ */
+
+.accountant-sidebar {
   width: 260px;
-  height: 100vh; /* Changed from min-height */
-  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-  color: #fff;
+  background: #0f172a; /* dark navy */
+  color: #e2e8f0;
   display: flex;
   flex-direction: column;
-  padding: 0;
+  justify-content: space-between;
   position: fixed;
   left: 0;
   top: 0;
-  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
-  overflow: hidden; /* Added */
+  bottom: 0;
+  height: 100vh;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.15);
+  transition: width 0.3s ease;
 }
 
-/* ========================================
-   USER INFO AT TOP
-   ======================================== */
-.sidebar-user {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 24px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.05);
-  flex-shrink: 0; /* Added - prevents shrinking */
+/* --------------------------
+   HEADER - Compact & Clean
+--------------------------- */
+.sidebar-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.user-avatar {
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  flex-shrink: 0;
-}
-
-.avatar-icon {
-  filter: brightness(2);
-}
-
-.user-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.user-name {
-  font-size: 16px;
-  font-weight: 600;
+.sidebar-header h2 {
+  font-size: 18px;
+  font-weight: 700;
   color: #fff;
-  margin: 0 0 4px 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin: 0;
+  letter-spacing: -0.3px;
 }
 
-.user-role {
-  font-size: 13px;
+.sidebar-header h2 span {
+  color: #38bdf8; /* cyan accent */
+}
+
+.sidebar-header p {
+  font-size: 12px;
   color: #94a3b8;
-  margin: 0;
-  font-weight: 500;
+  margin-top: 2px;
+  line-height: 1.2;
 }
 
-/* ========================================
-   NAVIGATION
-   ======================================== */
+/* --------------------------
+   NAVIGATION LINKS
+--------------------------- */
 .sidebar-nav {
-  flex: 1; /* Takes available space */
-  padding: 16px 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
   overflow-y: auto;
-  overflow-x: hidden; /* Added */
-  min-height: 0; /* Added - allows flex shrinking */
 }
 
-.sidebar-nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.sidebar-nav li {
-  margin-bottom: 6px;
-}
-
-.sidebar-nav a {
+.sidebar-link {
   display: flex;
   align-items: center;
+  gap: 12px;
+  padding: 9px 18px;
   color: #cbd5e1;
   text-decoration: none;
-  padding: 14px 18px;
-  border-radius: 10px;
-  transition: all 0.2s ease;
-  font-size: 14px;
   font-weight: 500;
-  position: relative;
+  font-size: 14px;
+  transition: all 0.25s ease;
 }
 
-.sidebar-nav a::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 0;
-  background: #3b82f6;
-  border-radius: 0 3px 3px 0;
-  transition: height 0.2s ease;
+.sidebar-link .icon {
+  font-size: 17px;
 }
 
-.sidebar-nav a:hover {
-  background-color: rgba(59, 130, 246, 0.15);
-  color: #fff;
-  padding-left: 24px;
+.sidebar-link:hover {
+  background: rgba(56, 189, 248, 0.1);
+  color: #38bdf8;
 }
 
-.sidebar-nav a:hover::before {
-  height: 70%;
+.sidebar-link.active {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border-left: 3px solid #38bdf8;
+  padding-left: 15px;
 }
 
-.sidebar-nav a.active {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  color: #fff;
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-  padding-left: 24px;
-}
-
-.sidebar-nav a.active::before {
-  height: 80%;
-  background: #fff;
-}
-
-/* ========================================
-   LOGOUT BUTTON AT BOTTOM
-   ======================================== */
-.sidebar-logout {
+/* --------------------------
+   DROPDOWN GROUP (Transactions)
+--------------------------- */
+.sidebar-group {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+}
+
+.submenu {
+  display: flex;
+  flex-direction: column;
+  margin-left: 45px;
+  margin-top: 2px;
+}
+
+.submenu-link {
+  padding: 6px 0;
+  font-size: 13.5px;
+  color: #a1a1aa;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.submenu-link:hover {
+  color: #38bdf8;
+}
+
+/* Chevron Icon */
+.chevron {
+  margin-left: auto;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* --------------------------
+   FOOTER
+--------------------------- */
+.sidebar-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 14px 16px;
+}
+
+.logout-btn {
+  background: transparent;
+  border: none;
+  color: #fca5a5;
+  display: flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  color: #fff;
-  font-weight: 600;
-  font-size: 14px;
-  padding: 16px 20px;
-  margin: 16px;
+  font-weight: 500;
   cursor: pointer;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-  border: none;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
-  flex-shrink: 0; /* Added - prevents shrinking */
+  transition: color 0.2s;
+  font-size: 14px;
 }
 
-.sidebar-logout:hover {
-  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
-  transform: translateY(-2px);
+.logout-btn:hover {
+  color: #f87171;
 }
 
-.sidebar-logout:active {
-  transform: translateY(0);
+.version {
+  color: #64748b;
+  font-size: 12px;
+  margin-top: 6px;
+  text-align: left;
 }
 
-.sidebar-logout span:first-child {
-  font-size: 18px;
-}
-
-/* ========================================
-   SCROLLBAR STYLING
-   ======================================== */
+/* --------------------------
+   SCROLLBAR
+--------------------------- */
 .sidebar-nav::-webkit-scrollbar {
   width: 6px;
 }
 
-.sidebar-nav::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 3px;
-}
-
 .sidebar-nav::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 3px;
-  transition: background-color 0.2s ease;
 }
 
 .sidebar-nav::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* --------------------------
+   RESPONSIVE (Small Screens)
+--------------------------- */
+@media (max-width: 768px) {
+  .accountant-sidebar {
+    width: 220px;
+  }
+
+  .sidebar-header h2 {
+    font-size: 16px;
+  }
+
+  .sidebar-link {
+    padding: 8px 14px;
+  }
+
+  .submenu {
+    margin-left: 35px;
+  }
 }

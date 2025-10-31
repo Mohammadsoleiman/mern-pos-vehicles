@@ -1,6 +1,8 @@
+import styles from "../../styles/dashboard.module.css";
+
 export default function Topbar() {
   return (
-    <div className="topbar">
+    <div className={styles.topbar}>
       <div className="left">
         <h1>Admin Panel</h1>
       </div>

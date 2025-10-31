@@ -4,7 +4,7 @@ import DonutMini from "../components/charts/DonutMini";
 import Table from "../components/Table";
 
 export default function Dashboard() {
-  return (
+  return (  
     <>
       <div className="cards">
         <StatCard title="Total Vehicles" value="150" />

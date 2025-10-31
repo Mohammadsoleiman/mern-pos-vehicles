@@ -4,7 +4,6 @@ import "../../styles/accountant/overview.css";
 import { TransactionContext } from "../../context/ACCOUNTANT/TransactionContext.jsx";
 import { VehicleContext } from "../../context/ACCOUNTANT/VehicleContext.jsx";
 import { ExpenseContext } from "../../context/ACCOUNTANT/ExpenseContext.jsx";
-import StatCard from "../../components/accountantpartials/StatCard.jsx";
 import IncomeExpensesChart from "../../components/chartsA/IncomeExpensesChart.jsx";
 
 export default function FeaturesOverview() {
@@ -13,13 +12,21 @@ export default function FeaturesOverview() {
   const { vehicles, totalValue } = useContext(VehicleContext);
   const navigate = useNavigate();
 
-  // Calculate metrics
+  // Format as USD currency
+  const formatUSD = (value) =>
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+    }).format(value || 0);
+
+  // Calculations
   const totalTransactions = transactions.length;
   const totalVehicles = vehicles.length;
   const profit = totalIncome - totalExpenses;
   const profitMargin = totalIncome ? ((profit / totalIncome) * 100).toFixed(1) : 0;
 
-  // Quick access features
+  // Quick Access Features
   const features = [
     {
       id: 1,
@@ -28,153 +35,173 @@ export default function FeaturesOverview() {
       description: "Manage income and expenses",
       count: totalTransactions,
       route: "/accounting/transactions",
-      color: "blue"
+      color: "blue",
     },
     {
       id: 2,
       title: "Reports",
       icon: "📊",
-      description: "Generate and export reports",
+      description: "Generate and export financial reports",
       count: "4 Reports",
       route: "/accounting/reports",
-      color: "purple"
+      color: "purple",
     },
     {
       id: 3,
-      title: "Accounts",
-      icon: "💰",
-      description: "View financial dashboard",
-      count: `$${totalIncome.toLocaleString()}`,
-      route: "/accounting/accounts",
-      color: "green"
+      title: "Employees",
+      icon: "👥",
+      description: "View and manage employee details",
+      count: "Team Members",
+      route: "/accounting/employees",
+      color: "teal",
     },
     {
       id: 4,
       title: "Vehicles",
       icon: "🚗",
-      description: "Inventory management",
+      description: "Manage and track company vehicles",
       count: totalVehicles,
       route: "/accounting/vehicles",
-      color: "orange"
+      color: "orange",
     },
-    {
-      id: 5,
-      title: "Taxes",
-      icon: "🧮",
-      description: "Calculate tax liability",
-      count: "Sales & Income",
-      route: "/accounting/taxes",
-      color: "red"
-    }
   ];
 
   return (
-    <div className="overview-container">
+    <div className="overview-page">
       {/* Header */}
-      <div className="overview-header">
-        <h1>📊 Accounting Dashboard</h1>
-        <p>Complete overview of your car dealer finances</p>
+      <header className="overview-header">
+        <h1>Accounting Overview</h1>
+        <p>Monitor your dealership’s income, expenses, vehicles, and employees — all in one place.</p>
+      </header>
+
+      {/* 🔹 Mini Topbar Summary */}
+      <div className="topbar-summary">
+        <div className="summary-card">
+          <h4>Profit Margin</h4>
+          <p>{profitMargin}%</p>
+        </div>
+        <div className="summary-card">
+          <h4>Vehicles</h4>
+          <p>{totalVehicles}</p>
+        </div>
+        <div className="summary-card">
+          <h4>Transactions</h4>
+          <p>{totalTransactions}</p>
+        </div>
+        <div className="summary-card">
+          <h4>Employees</h4>
+          <p>Active</p>
+        </div>
       </div>
 
-      {/* Top Stats Cards */}
-      <div className="stats-grid">
+      {/* Main Stats */}
+      <div className="overview-stats">
         <div className="stat-card primary" onClick={() => navigate("/accounting/transactions")}>
           <div className="stat-header">
+            <span>💰</span>
             <h3>Total Income</h3>
-            <span className="icon">💰</span>
           </div>
-          <p className="stat-value">${totalIncome.toLocaleString()}</p>
-          <span className="stat-subtitle">From sales</span>
+          <p className="stat-value">{formatUSD(totalIncome)}</p>
+          <p className="stat-subtitle">From all sales</p>
         </div>
 
         <div className="stat-card secondary" onClick={() => navigate("/accounting/transactions")}>
           <div className="stat-header">
+            <span>💸</span>
             <h3>Total Expenses</h3>
-            <span className="icon">💸</span>
           </div>
-          <p className="stat-value">${totalExpenses.toLocaleString()}</p>
-          <span className="stat-subtitle">Operating costs</span>
+          <p className="stat-value">{formatUSD(totalExpenses)}</p>
+          <p className="stat-subtitle">Business operations</p>
         </div>
 
-        <div className={`stat-card ${profit >= 0 ? 'success' : 'danger'}`} onClick={() => navigate("/accounting/accounts")}>
+        <div
+          className={`stat-card ${profit >= 0 ? "success" : "danger"}`}
+          onClick={() => navigate("/accounting/reports")}
+        >
           <div className="stat-header">
-            <h3>Profit/Loss</h3>
-            <span className="icon">{profit >= 0 ? '✅' : '⚠️'}</span>
+            <span>{profit >= 0 ? "📈" : "📉"}</span>
+            <h3>{profit >= 0 ? "Net Profit" : "Net Loss"}</h3>
           </div>
-          <p className="stat-value" style={{ color: profit >= 0 ? '#10b981' : '#ef4444' }}>
-            ${profit.toLocaleString()}
-          </p>
-          <span className="stat-subtitle">{profitMargin}% margin</span>
+          <p className="stat-value">{formatUSD(profit)}</p>
+          <p className="stat-subtitle">{profitMargin}% margin</p>
         </div>
 
         <div className="stat-card accent" onClick={() => navigate("/accounting/vehicles")}>
           <div className="stat-header">
+            <span>🚗</span>
             <h3>Inventory Value</h3>
-            <span className="icon">🚗</span>
           </div>
-          <p className="stat-value">${totalValue.toLocaleString()}</p>
-          <span className="stat-subtitle">{totalVehicles} vehicles</span>
+          <p className="stat-value">{formatUSD(totalValue)}</p>
+          <p className="stat-subtitle">{totalVehicles} vehicles</p>
         </div>
       </div>
 
-      {/* Quick Access Features */}
-      <div className="features-section">
+      {/* Quick Access */}
+      <section className="overview-section">
         <h2>Quick Access</h2>
         <div className="features-grid">
           {features.map((feature) => (
             <div
               key={feature.id}
-              className={`feature-card feature-${feature.color}`}
+              className={`feature-card ${feature.color}`}
               onClick={() => navigate(feature.route)}
             >
               <div className="feature-icon">{feature.icon}</div>
-              <div className="feature-content">
+              <div className="feature-info">
                 <h3>{feature.title}</h3>
                 <p>{feature.description}</p>
-                <div className="feature-badge">{feature.count}</div>
+                <span className="feature-count">{feature.count}</span>
               </div>
-              <div className="feature-arrow">→</div>
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* Charts Section */}
-      <div className="charts-section">
+      {/* Chart */}
+      <section className="overview-section">
         <h2>Financial Overview</h2>
-        <div className="chart-container">
-          <h3>Income vs Expenses Trend</h3>
+        <div className="chart-box">
           <IncomeExpensesChart timeframe="monthly" />
         </div>
-      </div>
+      </section>
 
       {/* Recent Activity */}
-      <div className="recent-activity">
+      <section className="overview-section">
         <h2>Recent Activity</h2>
         <div className="activity-grid">
           <div className="activity-card">
-            <div className="activity-icon">📝</div>
-            <div className="activity-content">
+            <div className="activity-icon">🧾</div>
+            <div className="activity-info">
               <h4>Latest Transaction</h4>
-              <p>{transactions.length > 0 ? `$${transactions[0]?.amount || 0}` : 'No transactions'}</p>
+              <p>
+                {transactions.length
+                  ? formatUSD(transactions[0]?.amount)
+                  : "No transactions yet"}
+              </p>
             </div>
           </div>
+
           <div className="activity-card">
             <div className="activity-icon">💸</div>
-            <div className="activity-content">
+            <div className="activity-info">
               <h4>Latest Expense</h4>
-              <p>{expenses.length > 0 ? `$${expenses[0]?.amount || 0}` : 'No expenses'}</p>
+              <p>
+                {expenses.length
+                  ? formatUSD(expenses[0]?.amount)
+                  : "No expenses yet"}
+              </p>
             </div>
           </div>
+
           <div className="activity-card">
             <div className="activity-icon">🚗</div>
-            <div className="activity-content">
+            <div className="activity-info">
               <h4>Latest Vehicle</h4>
-              <p>{vehicles.length > 0 ? vehicles[0]?.make || 'N/A' : 'No vehicles'}</p>
+              <p>{vehicles.length ? vehicles[0]?.make || "Unknown" : "No vehicles yet"}</p>
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

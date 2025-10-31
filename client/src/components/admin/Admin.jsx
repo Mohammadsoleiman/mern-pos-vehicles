@@ -1,18 +1,15 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
-import "../../styles/dashboard.css";
+import styles from "../../styles/dashboard.module.css";
 
 export default function Admin() {
   return (
-    <div className="dashboard-shell">
-      {/* ثابت: سايدبار الإدمن */}
+    <div className={styles.dashboardShell}>
       <Sidebar />
-
-      {/* المنطقة الرئيسية */}
-      <main className="main">
+      <main className={styles.main}>
         <Topbar />
-        <div className="page-content">
+        <div className={styles.pageContent}>
           <Outlet />
         </div>
       </main>

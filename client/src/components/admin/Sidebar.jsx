@@ -1,4 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
+import styles from "../../styles/dashboard.module.css";
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -10,13 +11,13 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="sidebar">
-      <div className="brand">
-        <div className="avatar">A</div>
-        <span className="name">Admin</span>
+    <aside className={styles.sidebar}>
+      <div className={styles.brand}>
+        <div className={styles.avatar}>A</div>
+        <span className={styles.name}>Admin</span>
       </div>
 
-      <nav className="nav">
+      <nav className={styles.nav}>
         <NavLink end to="/admin/dashboard">Dashboard</NavLink>
         <NavLink to="/admin/users">Users</NavLink>
         <NavLink to="/admin/vehicles">Vehicles</NavLink>
@@ -24,12 +25,13 @@ export default function Sidebar() {
         <NavLink to="/admin/settings">Settings</NavLink>
       </nav>
 
-      <button className="logout-btn" onClick={handleLogout}>
-        <div className="garage-door">
-          <div className="door"></div>
-          <div className="car">🚗</div>
+      <button className={styles.logoutBtn} onClick={handleLogout}>
+        <div className={styles.garageDoor}>
+          {/* 👇 استخدم styles هون! */}
+          <div className={styles.door}></div>
+          <div className={styles.car}>🚗</div>
         </div>
-        <span className="logout-text">Logout</span>
+        <span className={styles.logoutText}>Logout</span>
       </button>
     </aside>
   );
