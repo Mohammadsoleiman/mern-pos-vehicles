@@ -1,11 +1,6 @@
 // src/App.jsx
 import React from "react";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // 🔐 Contexts
 import { AuthProvider } from "./context/AuthContext";
@@ -44,15 +39,24 @@ import Transactions from "./pages/accountingstuff/Transactions";
 import Income from "./pages/accountingstuff/Income";
 import Expenses from "./pages/accountingstuff/Expenses";
 import Reports from "./pages/accountingstuff/Reports";
-import Accounts from "./pages/accountingstuff/Accounts";
-import Employees from "./pages/accountingstuff/Employees";
 import Settings from "./pages/accountingstuff/Settings";
+
+// 🧩 Modular Accounting Employee Pages
+import EmployeeList from "./pages/accountingstuff/employees/EmployeeList";
+import EmployeeCreate from "./pages/accountingstuff/employees/EmployeeCreate";
+import EmployeeEdit from "./pages/accountingstuff/employees/EmployeeEdit";
 
 // 🧩 Modular Accounting Vehicle Pages
 import VehicleList from "./pages/accountingstuff/vehicles/VehicleList";
 import VehicleCreatePage from "./pages/accountingstuff/vehicles/VehicleCreate";
 import VehicleEditPage from "./pages/accountingstuff/vehicles/VehicleEdit";
 import VehicleShowPage from "./pages/accountingstuff/vehicles/VehicleShow";
+
+// 🧾 Modular Accounting Accounts Pages (NEW)
+import AccountList from "./pages/accountingstuff/accounts/AccountList";
+import AccountCreate from "./pages/accountingstuff/accounts/AccountCreate";
+import AccountEdit from "./pages/accountingstuff/accounts/AccountEdit";
+import AccountShow from "./pages/accountingstuff/accounts/AccountShow";
 
 // 💰 Clerk Pages
 import ClerkDashboard from "./pages/clerk/ClerkDashboard";
@@ -104,21 +108,30 @@ export default function App() {
                             </RoleRoute>
                           }
                         >
-                          <Route path="featuresoverview" element={<FeaturesOverview />} />
                           <Route index element={<FeaturesOverview />} />
+                          <Route path="featuresoverview" element={<FeaturesOverview />} />
                           <Route path="transactions" element={<Transactions />} />
                           <Route path="income" element={<Income />} />
                           <Route path="expenses" element={<Expenses />} />
                           <Route path="reports" element={<Reports />} />
-                          <Route path="accounts" element={<Accounts />} />
-                          <Route path="employees" element={<Employees />} />
                           <Route path="settings" element={<Settings />} />
 
-                          {/* 🚗 ACCOUNTANT VEHICLE PAGES */}
+                          {/* 👥 EMPLOYEES */}
+                          <Route path="employees" element={<EmployeeList />} />
+                          <Route path="employees/create" element={<EmployeeCreate />} />
+                          <Route path="employees/edit/:id" element={<EmployeeEdit />} />
+
+                          {/* 🚗 VEHICLES */}
                           <Route path="vehicles" element={<VehicleList />} />
                           <Route path="vehicles/create" element={<VehicleCreatePage />} />
                           <Route path="vehicles/edit/:id" element={<VehicleEditPage />} />
                           <Route path="vehicles/show/:id" element={<VehicleShowPage />} />
+
+                          {/* 💳 ACCOUNTS (MODULAR) */}
+                          <Route path="accounts" element={<AccountList />} />
+                          <Route path="accounts/create" element={<AccountCreate />} />
+                          <Route path="accounts/edit/:id" element={<AccountEdit />} />
+                          <Route path="accounts/show/:id" element={<AccountShow />} />
                         </Route>
 
                         {/* 💵 CLERK SECTION */}

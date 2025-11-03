@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Plus, Edit2, Trash2, Eye } from "react-feather";
-import "../../../styles/accountant/vehicles.css";
+import "../../../styles/accountant/vehicles.module.css";
 
 // 🧩 Import modal components
 import VehicleCreate from "./VehicleCreate";

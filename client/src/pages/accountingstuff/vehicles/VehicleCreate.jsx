@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { createVehicle } from "../../../api/vehicles";
-import "../../../styles/accountant/vehicles.css";
+import styles from "../../../styles/accountant/vehicles.module.css";
 
 export default function VehicleCreate({ onSaved, onClose }) {
   const [formData, setFormData] = useState({
@@ -27,11 +27,13 @@ export default function VehicleCreate({ onSaved, onClose }) {
 
   const [saving, setSaving] = useState(false);
 
+  // 🔄 Handle form inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // 🖼️ Handle file uploads
   const handleFiles = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -39,6 +41,7 @@ export default function VehicleCreate({ onSaved, onClose }) {
     }));
   };
 
+  // 💾 Submit vehicle form
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -49,42 +52,77 @@ export default function VehicleCreate({ onSaved, onClose }) {
       onClose?.();
     } catch (err) {
       console.error("❌ Error creating vehicle:", err);
-      alert("Failed to create vehicle");
+      alert("Failed to create vehicle. Please try again.");
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content large">
-        <h3>Add Vehicle</h3>
+    <div className={styles.modalOverlay}>
+      <div className={`${styles.modalContent} ${styles.large}`}>
+        <div className={styles.modalHeader}>
+          <h3>Add Vehicle</h3>
+          <button className={styles.closeBtn} onClick={onClose}>
+            ✖
+          </button>
+        </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="form-grid">
-            <div className="form-group">
+          <div className={styles.formGrid}>
+            {/* VIN */}
+            <div className={styles.formGroup}>
               <label>VIN</label>
-              <input name="VIN" value={formData.VIN} onChange={handleChange} required />
+              <input
+                name="VIN"
+                value={formData.VIN}
+                onChange={handleChange}
+                required
+              />
             </div>
 
-            <div className="form-group">
+            {/* Make */}
+            <div className={styles.formGroup}>
               <label>Make</label>
-              <input name="make" value={formData.make} onChange={handleChange} required />
+              <input
+                name="make"
+                value={formData.make}
+                onChange={handleChange}
+                required
+              />
             </div>
 
-            <div className="form-group">
+            {/* Model */}
+            <div className={styles.formGroup}>
               <label>Model</label>
-              <input name="model" value={formData.model} onChange={handleChange} required />
+              <input
+                name="model"
+                value={formData.model}
+                onChange={handleChange}
+                required
+              />
             </div>
 
-            <div className="form-group">
+            {/* Year */}
+            <div className={styles.formGroup}>
               <label>Year</label>
-              <input name="year" type="number" value={formData.year} onChange={handleChange} required />
+              <input
+                name="year"
+                type="number"
+                value={formData.year}
+                onChange={handleChange}
+                required
+              />
             </div>
 
-            <div className="form-group">
+            {/* Type */}
+            <div className={styles.formGroup}>
               <label>Type</label>
-              <select name="type" value={formData.type} onChange={handleChange}>
+              <select
+                name="type"
+                value={formData.type}
+                onChange={handleChange}
+              >
                 <option>Sedan</option>
                 <option>SUV</option>
                 <option>Truck</option>
@@ -94,52 +132,101 @@ export default function VehicleCreate({ onSaved, onClose }) {
               </select>
             </div>
 
-            <div className="form-group">
+            {/* Price */}
+            <div className={styles.formGroup}>
               <label>Price ($)</label>
-              <input name="price" type="number" value={formData.price} onChange={handleChange} />
+              <input
+                name="price"
+                type="number"
+                value={formData.price}
+                onChange={handleChange}
+              />
             </div>
 
-            <div className="form-group">
+            {/* Cost */}
+            <div className={styles.formGroup}>
               <label>Cost ($)</label>
-              <input name="cost" type="number" value={formData.cost} onChange={handleChange} />
+              <input
+                name="cost"
+                type="number"
+                value={formData.cost}
+                onChange={handleChange}
+              />
             </div>
 
-            <div className="form-group">
+            {/* Purchase Date */}
+            <div className={styles.formGroup}>
               <label>Purchase Date</label>
-              <input name="purchaseDate" type="date" value={formData.purchaseDate} onChange={handleChange} />
+              <input
+                name="purchaseDate"
+                type="date"
+                value={formData.purchaseDate}
+                onChange={handleChange}
+              />
             </div>
 
-            <div className="form-group">
+            {/* Insurance */}
+            <div className={styles.formGroup}>
               <label>Insurance Provider</label>
-              <input name="insuranceProvider" value={formData.insuranceProvider} onChange={handleChange} />
+              <input
+                name="insuranceProvider"
+                value={formData.insuranceProvider}
+                onChange={handleChange}
+              />
             </div>
 
-            <div className="form-group">
+            <div className={styles.formGroup}>
               <label>Insurance Expiry</label>
-              <input name="insuranceExpiry" type="date" value={formData.insuranceExpiry} onChange={handleChange} />
+              <input
+                name="insuranceExpiry"
+                type="date"
+                value={formData.insuranceExpiry}
+                onChange={handleChange}
+              />
             </div>
 
-            <div className="form-group">
+            {/* Maintenance / Fuel */}
+            <div className={styles.formGroup}>
               <label>Maintenance Cost ($)</label>
-              <input name="maintenanceCost" type="number" value={formData.maintenanceCost} onChange={handleChange} />
+              <input
+                name="maintenanceCost"
+                type="number"
+                value={formData.maintenanceCost}
+                onChange={handleChange}
+              />
             </div>
 
-            <div className="form-group">
+            <div className={styles.formGroup}>
               <label>Fuel Cost ($)</label>
-              <input name="fuelCost" type="number" value={formData.fuelCost} onChange={handleChange} />
+              <input
+                name="fuelCost"
+                type="number"
+                value={formData.fuelCost}
+                onChange={handleChange}
+              />
             </div>
 
-            <div className="form-group">
+            {/* Transmission */}
+            <div className={styles.formGroup}>
               <label>Transmission</label>
-              <select name="transmission" value={formData.transmission} onChange={handleChange}>
+              <select
+                name="transmission"
+                value={formData.transmission}
+                onChange={handleChange}
+              >
                 <option>Automatic</option>
                 <option>Manual</option>
               </select>
             </div>
 
-            <div className="form-group">
+            {/* Cylinders */}
+            <div className={styles.formGroup}>
               <label>Cylinders</label>
-              <select name="cylinders" value={formData.cylinders} onChange={handleChange}>
+              <select
+                name="cylinders"
+                value={formData.cylinders}
+                onChange={handleChange}
+              >
                 <option>4</option>
                 <option>6</option>
                 <option>8</option>
@@ -147,9 +234,14 @@ export default function VehicleCreate({ onSaved, onClose }) {
               </select>
             </div>
 
-            <div className="form-group">
+            {/* Fuel Type */}
+            <div className={styles.formGroup}>
               <label>Fuel Type</label>
-              <select name="fuelType" value={formData.fuelType} onChange={handleChange}>
+              <select
+                name="fuelType"
+                value={formData.fuelType}
+                onChange={handleChange}
+              >
                 <option>Petrol</option>
                 <option>Diesel</option>
                 <option>Electric</option>
@@ -157,39 +249,69 @@ export default function VehicleCreate({ onSaved, onClose }) {
               </select>
             </div>
 
-            <div className="form-group">
+            {/* Condition */}
+            <div className={styles.formGroup}>
               <label>Condition</label>
-              <select name="condition" value={formData.condition} onChange={handleChange}>
+              <select
+                name="condition"
+                value={formData.condition}
+                onChange={handleChange}
+              >
                 <option>New</option>
                 <option>Used</option>
               </select>
             </div>
 
-            <div className="form-group">
+            {/* Color */}
+            <div className={styles.formGroup}>
               <label>Color</label>
-              <input type="color" name="color" value={formData.color} onChange={handleChange} />
+              <input
+                type="color"
+                name="color"
+                value={formData.color}
+                onChange={handleChange}
+              />
             </div>
 
-            <div className="form-group">
+            {/* Status */}
+            <div className={styles.formGroup}>
               <label>Status</label>
-              <select name="status" value={formData.status} onChange={handleChange}>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+              >
                 <option>Active</option>
                 <option>Sold</option>
                 <option>Maintenance</option>
               </select>
             </div>
 
-            <div className="form-group">
+            {/* Images */}
+            <div className={styles.formGroup}>
               <label>Images (max 5)</label>
-              <input type="file" accept="image/*" multiple onChange={handleFiles} />
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleFiles}
+              />
             </div>
           </div>
 
-          <div className="modal-actions">
-            <button type="submit" className="save-btn" disabled={saving}>
+          <div className={styles.modalActions}>
+            <button
+              type="submit"
+              className={styles.saveBtn}
+              disabled={saving}
+            >
               {saving ? "Saving..." : "Save"}
             </button>
-            <button type="button" className="cancel-btn" onClick={onClose}>
+            <button
+              type="button"
+              className={styles.cancelBtn}
+              onClick={onClose}
+            >
               Cancel
             </button>
           </div>
