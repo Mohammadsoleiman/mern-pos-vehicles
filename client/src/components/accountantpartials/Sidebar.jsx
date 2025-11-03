@@ -94,11 +94,11 @@ export default function Sidebar() {
           <span>Employees</span>
         </NavLink>
 
-        {/* Vehicles */}
+        {/* Vehicles
         <NavLink to="/accounting/vehicles" className="sidebar-link">
           <Truck className="icon" />
           <span>Vehicles</span>
-        </NavLink>
+        </NavLink> */}
 
         {/* Settings */}
         <NavLink to="/accounting/settings" className="sidebar-link">

@@ -104,3 +104,47 @@ table button:hover {
   opacity: 0.8;
 }
 
+.summary-cards {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.summary-cards .card {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.summary-cards .card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.summary-cards .card h3 {
+  margin-bottom: 8px;
+  color: #1f2937;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.summary-cards .card p {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.summary-cards .card.grand {
+  background: #2563eb;
+  color: white;
+}
+
+.summary-cards .card.grand p {
+  color: #fff;
+}
