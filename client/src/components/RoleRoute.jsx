@@ -8,10 +8,16 @@ export default function RoleRoute({ allowedRoles, children }) {
 
   if (!user) return <Navigate to="/" replace />;
 
-  if (!allowedRoles.includes(user.role)) {
+  // ✅ تطبيع الدور ليصير String مهما كان Object أو ObjectId
+  const normalizedRole =
+    user.role?.name ||
+    user.role ||
+    "";
+
+  // ✅ clerk و cashier نفس الشي (ما غيرنا المنطق)
+  if (!allowedRoles.includes(normalizedRole)) {
     return <Navigate to="/unauthorized" replace />;
   }
 
-  // ✅ دائماً نرجع children أو Outlet - لكن نعطي أولوية للـ Outlet إذا كان في nested routes
   return children || <Outlet />;
 }

@@ -1,7 +1,7 @@
 // src/components/clerk/ClerkSidebar.jsx
-import React, { useContext } from 'react';
+import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { ClerkAuthContext } from '../../context/clerk/ClerkAuthContext';
+import { useAuth } from '../../context/AuthContext';
 import {
   LayoutDashboard,
   Package,
@@ -16,23 +16,21 @@ import {
 import '../../styles/clerk/ClerkSidebar.css';
 
 const ClerkSidebar = ({ isOpen, onClose }) => {
-  const { clerk, logout } = useContext(ClerkAuthContext);
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    if (window.confirm('Are you sure you want to logout?')) {
-      logout();
-      navigate('/login');
-    }
+    logout();
+    navigate('/login');
   };
 
   const menuItems = [
-    { path: '/cashier/dashboard', icon: LayoutDashboard, label: 'Dashboard', description: 'Overview & stats' },
-    { path: '/cashier/vehicles', icon: Package, label: 'Vehicles', description: 'Manage inventory' },
-    { path: '/cashier/sales', icon: ShoppingCart, label: 'Sales', description: 'Process transactions' },
-    { path: '/cashier/customers', icon: Users, label: 'Customers', description: 'Manage clients' },
-    { path: '/cashier/reports', icon: BarChart3, label: 'Reports', description: 'View analytics' },
-    { path: '/cashier/settings', icon: Settings, label: 'Settings', description: 'Account settings' }
+    { path: '/cashier/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { path: '/cashier/vehicles', icon: Package, label: 'Vehicles' },
+    { path: '/cashier/sales', icon: ShoppingCart, label: 'Sales' },
+    { path: '/cashier/customers', icon: Users, label: 'Customers' },
+    { path: '/cashier/reports', icon: BarChart3, label: 'Reports' },
+    { path: '/cashier/settings', icon: Settings, label: 'Settings' }
   ];
 
   return (
@@ -40,16 +38,16 @@ const ClerkSidebar = ({ isOpen, onClose }) => {
       {isOpen && <div className="sidebar-overlay" onClick={onClose}></div>}
 
       <aside className={`clerk-sidebar ${isOpen ? 'open' : ''}`}>
+        
         {/* Header */}
         <div className="sidebar-header">
-          
           <div className="sidebar-user">
             <div className="user-avatar">
               <User size={20} />
             </div>
             <div className="user-details">
-              <p className="user-name">{clerk?.name || 'Clerk User'}</p>
-              <p className="user-role">{clerk?.role || 'Clerk'}</p>
+              <p className="user-name">{user?.name || 'Clerk User'}</p>
+              <p className="user-role">{user?.role?.name || user?.role || 'clerk'}</p>
             </div>
           </div>
         </div>
@@ -82,6 +80,7 @@ const ClerkSidebar = ({ isOpen, onClose }) => {
             <span>Logout</span>
           </button>
         </div>
+
       </aside>
     </>
   );

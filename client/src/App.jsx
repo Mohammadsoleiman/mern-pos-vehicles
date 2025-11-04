@@ -145,7 +145,7 @@ export default function App() {
 
                             {/* 💵 Clerk */}
                             <Route
-                              path="/Cashier"
+                              path="/cashier"
                               element={
                                 <RoleRoute allowedRoles={["clerk", "cashier", "admin"]}>
                                   <Cashier />
@@ -153,6 +153,7 @@ export default function App() {
                               }
                             >
                               <Route index element={<ClerkDashboard />} />
+                                <Route path="dashboard" element={<ClerkDashboard />} />
                               <Route path="sales" element={<ClerkSales />} />
                               <Route path="vehicles" element={<ClerkVehicles />} />
                               <Route path="customers" element={<ClerkCustomers />} />
