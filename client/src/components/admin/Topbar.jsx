@@ -1,12 +1,14 @@
 import styles from "../../styles/dashboard.module.css";
+import { useSettings } from "../../context/SettingsContext";
 
 export default function Topbar() {
+  const { settings } = useSettings();
+  const title = (settings?.dashboardName || "Admin Panel").trim();
+
   return (
     <div className={styles.topbar}>
-      <div className="left">
-        <h1>Admin Panel</h1>
-      </div>
-      <div className="actions">
+      <h1>{title}</h1>
+      <div className={styles.actions}>
         <i>🔔</i>
         <i>⚙️</i>
       </div>

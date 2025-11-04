@@ -4,6 +4,39 @@
   width: 100%;
   box-sizing: border-box;
 }
+.vehicles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.vehicle-card {
+  background: white;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: var(--card-shadow);
+  text-align: center;
+}
+
+.vehicle-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.vehicle-card .price {
+  font-weight: bold;
+  margin: 6px 0;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 6px;
+}
 
 .page-title {
   font-size: 22px;

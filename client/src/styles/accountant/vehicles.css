@@ -116,16 +116,13 @@
   padding: 6px;
   border-radius: 6px;
   cursor: pointer;
-<<<<<<< HEAD
   padding: 4px;
 } */
-=======
-  transition: 0.25s;
+  /* transition: 0.25s;
   display: flex;
   align-items: center;
   justify-content: center;
-}
->>>>>>> 733d77010d631b76cd6af78185e92a8b9b2d3506
+} */
 
 .actions .view-btn {
   background: #e0f2fe;

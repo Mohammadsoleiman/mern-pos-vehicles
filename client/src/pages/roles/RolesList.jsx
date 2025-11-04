@@ -1,8 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useSettings } from "../../context/SettingsContext"; // ✅ NEW
+import "../../styles/usersGrid.css"; // ✅ نستخدم نفس ستايل الـ grid
 
 export default function RolesList() {
+  const { settings } = useSettings(); // ✅ نقرأ إعداد الواجهة
+  const layout = settings.layout || "list"; // ✅ list أو grid
+
   const [roles, setRoles] = useState([]);
   const [permissions, setPermissions] = useState([]);
   const [q, setQ] = useState("");
@@ -14,26 +19,24 @@ export default function RolesList() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 🔹 Fetch roles
   const fetchRoles = async () => {
     setLoading(true);
     try {
       const { data } = await axiosClient.get("/roles");
       setRoles(data);
     } catch (err) {
-      console.error("❌ Error fetching roles:", err);
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  // 🔹 Fetch permissions
   const fetchPermissions = async () => {
     try {
       const { data } = await axiosClient.get("/permissions");
       setPermissions(data);
     } catch (err) {
-      console.error("❌ Error fetching permissions:", err);
+      console.error(err);
     }
   };
 
@@ -42,21 +45,18 @@ export default function RolesList() {
     fetchPermissions();
   }, []);
 
-  // 🔹 Filter roles
   const filtered = useMemo(() => {
     if (!q.trim()) return roles;
     const s = q.toLowerCase();
     return roles.filter((r) => r.name.toLowerCase().includes(s));
   }, [roles, q]);
 
-  // 🔹 Open create modal
   const openCreate = () => {
     setEditingRole(null);
     setForm({ name: "", permissions: [] });
     setModalOpen(true);
   };
 
-  // 🔹 Open edit modal
   const openEdit = (r) => {
     setEditingRole(r);
     setForm({
@@ -66,42 +66,27 @@ export default function RolesList() {
     setModalOpen(true);
   };
 
-  // 🔹 Delete role
   const deleteRole = async (id) => {
-    if (!confirm("Are you sure you want to delete this role?")) return;
-    try {
-      await axiosClient.delete(`/roles/${id}`);
-      alert("🗑️ Role deleted successfully!");
-      fetchRoles();
-    } catch (err) {
-      console.error("❌ Error deleting role:", err);
-      alert("❌ Failed to delete role!");
-    }
+    if (!confirm("Delete role?")) return;
+    await axiosClient.delete(`/roles/${id}`);
+    fetchRoles();
   };
 
-  // 🔹 Submit form (Create / Edit)
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if (editingRole) {
-        await axiosClient.put(`/roles/${editingRole._id}`, form);
-        alert("✅ Role updated successfully!");
-      } else {
-        await axiosClient.post("/roles/create", form);
-        alert("✅ Role created successfully!");
-      }
-      setModalOpen(false);
-      fetchRoles();
-    } catch (err) {
-      console.error("❌ Error saving role:", err);
-      alert("❌ Failed to save role!");
+    if (editingRole) {
+      await axiosClient.put(`/roles/${editingRole._id}`, form);
+    } else {
+      await axiosClient.post("/roles/create", form);
     }
+    setModalOpen(false);
+    fetchRoles();
   };
 
   return (
     <div>
       {/* ===== Header ===== */}
-      <div className="roles-header">
+      <div className="users-header">
         <h2>Roles</h2>
         <div className="toolbar">
           <input
@@ -113,93 +98,75 @@ export default function RolesList() {
             + Create Role
           </button>
 
-          {/* ✅ Navigation Buttons */}
-          <button
-            type="button"
-            className={`secondary ${location.pathname === "/users" ? "active" : ""}`}
-            style={{ marginLeft: "8px" }}
-            onClick={() => navigate("/admin/users")}
-          >
-            👤 Users
-          </button>
-
-          <button
-            type="button"
-            className={`secondary ${location.pathname === "/roles" ? "active" : ""}`}
-            style={{ marginLeft: "8px" }}
-            onClick={() => navigate("/admin/roles")}
-          >
-            🧩 Roles
-          </button>
-
-          <button
-            type="button"
-            className={`secondary ${location.pathname === "/permissions" ? "active" : ""}`}
-            style={{ marginLeft: "8px" }}
-            onClick={() => navigate("/admin/permissions")}
-          >
-            🔒 Permissions
-          </button>
+          <button className="secondary" onClick={() => navigate("/admin/users")}>👤 Users</button>
+          <button className="secondary" onClick={() => navigate("/admin/roles")}>🧩 Roles</button>
+          <button className="secondary" onClick={() => navigate("/admin/permissions")}>🔒 Permissions</button>
         </div>
       </div>
 
-      {/* ===== Table ===== */}
-      <div className="roles-body card" style={{ marginTop: "25px" }}>
-        {loading && <div className="muted">Loading…</div>}
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Permissions</th>
-              <th style={{ width: 160 }}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((r) => (
-              <tr key={r._id}>
-                <td>{r.name}</td>
-                <td>
-                  {r.permissions && r.permissions.length > 0
-                    ? r.permissions
-                        .map((p) => (typeof p === "object" ? p.name : p))
-                        .join(", ")
-                    : "No permissions"}
-                </td>
-                <td>
-                  <button className="ghost" onClick={() => openEdit(r)}>
-                    Edit
-                  </button>
-                  <button className="danger" onClick={() => deleteRole(r._id)}>
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {!filtered.length && (
+      {/* ✅ LIST MODE */}
+      {layout === "list" && (
+        <div className="users-body card" style={{ marginTop: 25 }}>
+          {loading && <div className="muted">Loading…</div>}
+          <table className="table">
+            <thead>
               <tr>
-                <td colSpan={3} className="muted">
-                  No roles found
-                </td>
+                <th>Name</th>
+                <th>Permissions</th>
+                <th style={{ width: 160 }}>Actions</th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {filtered.map((r) => (
+                <tr key={r._id}>
+                  <td>{r.name}</td>
+                  <td>
+                    {r.permissions?.length
+                      ? r.permissions.map((p) => (typeof p === "object" ? p.name : p)).join(", ")
+                      : "No permissions"}
+                  </td>
+                  <td>
+                    <button className="ghost" onClick={() => openEdit(r)}>✏ Edit</button>
+                    <button className="danger" onClick={() => deleteRole(r._id)}>🗑 Delete</button>
+                  </td>
+                </tr>
+              ))}
+              {!filtered.length && <tr><td colSpan={3} className="muted">No roles found</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      )}
 
-      {/* ===== Modal (Create / Edit) ===== */}
+      {/* ✅ GRID MODE */}
+      {layout === "grid" && (
+        <div className="grid-users">
+          {filtered.map((r) => (
+            <div className="user-card" key={r._id}>
+              <div className="avatar-circle">{r.name.charAt(0).toUpperCase()}</div>
+
+              <p><strong>{r.name}</strong></p>
+              <p className="role small">
+                {r.permissions?.length
+                  ? r.permissions.map((p) => (typeof p === "object" ? p.name : p)).join(", ")
+                  : "No permissions"}
+              </p>
+
+              <div className="card-actions">
+                <button className="edit" onClick={() => openEdit(r)}>✏ Edit</button>
+                <button className="delete" onClick={() => deleteRole(r._id)}>🗑 Delete</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ===== MODAL ===== */}
       {modalOpen && (
-        <div
-          className="modal-backdrop"
-          onClick={(e) => {
-            if (e.target.classList.contains("modal-backdrop")) setModalOpen(false);
-          }}
-        >
+        <div className="modal-backdrop" onClick={() => setModalOpen(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-head">
               <h3>{editingRole ? "Edit Role" : "Create Role"}</h3>
-              <button className="icon" onClick={() => setModalOpen(false)}>
-                ✕
-              </button>
+              <button className="icon" onClick={() => setModalOpen(false)}>✕</button>
             </div>
 
             <form onSubmit={handleSubmit} className="form modal-body">
@@ -212,7 +179,6 @@ export default function RolesList() {
                 />
               </label>
 
-              {/* ✅ Dynamic Permissions from DB */}
               <label>
                 <span>Permissions</span>
                 <div className="permissions-checkboxes">
@@ -221,11 +187,13 @@ export default function RolesList() {
                       <input
                         type="checkbox"
                         checked={form.permissions.includes(perm._id)}
-                        onChange={(e) => {
-                          const updated = e.target.checked
-                            ? [...form.permissions, perm._id]
-                            : form.permissions.filter((p) => p !== perm._id);
-                          setForm({ ...form, permissions: updated });
+                        onChange={() => {
+                          setForm((prev) => ({
+                            ...prev,
+                            permissions: prev.permissions.includes(perm._id)
+                              ? prev.permissions.filter((p) => p !== perm._id)
+                              : [...prev.permissions, perm._id],
+                          }));
                         }}
                       />
                       {perm.name}
@@ -235,16 +203,8 @@ export default function RolesList() {
               </label>
 
               <div className="actions-row">
-                <button
-                  type="button"
-                  className="ghost"
-                  onClick={() => setModalOpen(false)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="primary">
-                  {editingRole ? "Save Changes" : "Create"}
-                </button>
+                <button type="button" className="ghost" onClick={() => setModalOpen(false)}>Cancel</button>
+                <button type="submit" className="primary">{editingRole ? "Save Changes" : "Create"}</button>
               </div>
             </form>
           </div>

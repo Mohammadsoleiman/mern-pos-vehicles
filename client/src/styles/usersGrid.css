@@ -1,0 +1,71 @@
+.grid-users {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 25px;
+}
+
+.user-card {
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--card-border, #e5e7eb);
+  border-radius: 12px;
+  padding: 18px;
+  text-align: center;
+  transition: 0.25s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+}
+
+.user-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.avatar-circle {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  background: #6366f1;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.user-card .email {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.user-card .role {
+  margin: 6px 0 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.card-actions button {
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.card-actions .edit {
+  background: #3b82f6;
+  color: white;
+}
+
+.card-actions .delete {
+  background: #ef4444;
+  color: white;
+}

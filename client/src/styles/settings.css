@@ -1,77 +1,107 @@
-.settings-page {
-  padding: 20px;
-  background: #f5f7fb;
+/* ================= SETTINGS PAGE ================= */
+.settingsPage {
+  padding: 28px;
+  background: var(--bg);
+  color: var(--text);
 }
 
-.settings-container {
+/* Grid Layout */
+.settingsContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-top: 20px;
+  gap: 26px;
+  margin-top: 24px;
 }
 
-.settings-section {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+/* Section Box */
+.settingsSection {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+  transition: 0.3s;
 }
 
-.settings-section h2 {
-  margin-bottom: 15px;
-  color: #0f2540;
+.settingsSection h2 {
+  margin-bottom: 18px;
+  color: var(--text);
 }
 
-.settings-section label {
+/* Labels */
+.settingsSection label {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   font-weight: 500;
 }
 
-.settings-section input,
-.settings-section select {
+/* Inputs */
+.settingsSection input,
+.settingsSection select {
   width: 100%;
-  padding: 8px 10px;
-  margin-top: 4px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--bg-card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  margin-bottom: 14px;
+  transition: 0.3s;
 }
 
-.profile-pic {
+.settingsSection input:focus,
+.settingsSection select:focus {
+  border-color: #6366f1;
+  outline: none;
+}
+
+/* Profile Image */
+.profilePic {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
+  gap: 14px;
+  margin-bottom: 20px;
 }
 
-.profile-pic img {
-  width: 80px;
-  height: 80px;
+.profilePic img {
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   object-fit: cover;
+  border: 2px solid var(--border);
 }
 
-.settings-actions {
+/* Save Button */
+.btnSave {
   grid-column: span 2;
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-}
-
-.btn-save,
-.btn-logout {
-  padding: 10px 20px;
+  padding: 12px 24px;
+  margin-top: 8px;
+  background: linear-gradient(135deg,#6366f1,#8b5cf6);
   border: none;
-  border-radius: 6px;
+  outline: none;
+  color: white;
+  border-radius: 10px;
+  font-weight: 600;
   cursor: pointer;
+  transition: 0.25s;
+  display: block;
+  width: fit-content;
 }
 
-.btn-save {
-  background: #0f2540;
-  color: white;
+.btnSave:hover {
+  transform: translateY(-3px);
 }
 
-.btn-logout {
+/* Logout Button (Optional) */
+.btnLogout {
+  padding: 12px 18px;
   background: #e11d48;
+  border: none;
   color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btnLogout:hover {
+  transform: translateY(-2px);
 }

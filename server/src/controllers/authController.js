@@ -24,11 +24,11 @@ exports.login = async (req, res) => {
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign(
-      { id: user._id, role: user.role?._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+const token = jwt.sign(
+  { id: user._id, role: user.role?.name || "no-role" }, // اسم الرول
+  process.env.JWT_SECRET,
+  { expiresIn: "1d" }
+);
 
     res.json({
       token,
@@ -257,6 +257,25 @@ exports.deleteUser = async (req, res) => {
     res.json({ message: "🗑️ User deleted successfully!" });
   } catch (err) {
     console.error("❌ Delete user error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+exports.updateSettings = async (req, res) => {
+  try {
+    const { dashboardName, layout, theme, profilePic } = req.body;
+
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // احفظ فقط بالإعدادات المحلية الآن
+    // لاحقًا نعمل model للsettings أو نضيفهم ل user schema
+
+    user.settings = { dashboardName, layout, theme, profilePic };
+    await user.save();
+
+    return res.json({ message: "✅ Settings updated!", settings: user.settings });
+  } catch (err) {
+    console.error("❌ updateSettings error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
