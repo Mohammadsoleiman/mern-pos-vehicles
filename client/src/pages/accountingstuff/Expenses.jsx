@@ -32,8 +32,11 @@ export default function ExpensesPurchasesPayroll() {
 
   // ---------------- HANDLE FORM INPUT ----------------
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
   };
 
   const resetForm = () => {
@@ -47,11 +50,27 @@ export default function ExpensesPurchasesPayroll() {
     try {
       setLoading(true);
       const endpoint = `/${currentTab}`;
-      if (editing) {
-        await axiosClient.put(`${endpoint}/${editing}`, formData);
+
+      // Auto-compute total + date formatting
+      let payload = { ...formData };
+      if (currentTab !== "payroll") {
+        payload.total =
+          (Number(payload.unitCost) || 0) * (Number(payload.quantity) || 1);
       } else {
-        await axiosClient.post(endpoint, formData);
+        payload.totalPaid =
+          Number(payload.salary || 0) -
+          Number(payload.deduction || 0) +
+          Number(payload.bonus || 0);
       }
+      if (!payload.date)
+        payload.date = new Date().toISOString().split("T")[0];
+
+      if (editing) {
+        await axiosClient.put(`${endpoint}/${editing}`, payload);
+      } else {
+        await axiosClient.post(endpoint, payload);
+      }
+
       const { data } = await axiosClient.get(endpoint);
       if (currentTab === "expenses") setExpenses(data);
       if (currentTab === "purchases") setPurchases(data);
@@ -89,7 +108,9 @@ export default function ExpensesPurchasesPayroll() {
   const handlePrint = (item) => {
     const w = window.open("", "PRINT", "width=600,height=600");
     w.document.write("<html><head><title>Invoice</title>");
-    w.document.write("<style>body{font-family:sans-serif;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #333;padding:8px;text-align:left;} </style>");
+    w.document.write(
+      "<style>body{font-family:sans-serif;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #333;padding:8px;text-align:left;}</style>"
+    );
     w.document.write("</head><body>");
     w.document.write(`<h2>${currentTab.toUpperCase()} RECORD</h2><table>`);
     for (let key in item) {
@@ -103,9 +124,22 @@ export default function ExpensesPurchasesPayroll() {
 
   // ---------------- CALCULATE TOTALS ----------------
   const totals = useMemo(() => {
-    const expensesTotal = expenses.reduce((sum, e) => sum + (e.unitCost * e.quantity || 0), 0);
-    const purchasesTotal = purchases.reduce((sum, p) => sum + (p.unitCost * p.quantity || 0), 0);
-    const payrollTotal = payroll.reduce((sum, emp) => sum + (emp.totalPaid || (emp.salary - emp.deduction + emp.bonus) || 0), 0);
+    const expensesTotal = expenses.reduce(
+      (sum, e) => sum + (e.unitCost * e.quantity || 0),
+      0
+    );
+    const purchasesTotal = purchases.reduce(
+      (sum, p) => sum + (p.unitCost * p.quantity || 0),
+      0
+    );
+    const payrollTotal = payroll.reduce(
+      (sum, emp) =>
+        sum +
+        (emp.totalPaid ||
+          (emp.salary - emp.deduction + emp.bonus) ||
+          0),
+      0
+    );
     const grandTotal = expensesTotal + purchasesTotal + payrollTotal;
 
     return {
@@ -171,9 +205,11 @@ export default function ExpensesPurchasesPayroll() {
                   <td>
                     $
                     {row.totalPaid ||
-                      (Number(row.salary) -
+                      (
+                        Number(row.salary) -
                         Number(row.deduction) +
-                        Number(row.bonus)).toFixed(2)}
+                        Number(row.bonus)
+                      ).toFixed(2)}
                   </td>
                   <td>{row.paid ? "✅" : "❌"}</td>
                   <td>{row.date}</td>
@@ -198,6 +234,115 @@ export default function ExpensesPurchasesPayroll() {
           ))}
         </tbody>
       </table>
+    );
+  };
+
+  // ---------------- FORM ----------------
+  const renderForm = () => {
+    if (currentTab === "payroll") {
+      return (
+        <>
+          <input
+            type="text"
+            name="name"
+            placeholder="Employee Name"
+            value={formData.name || ""}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            name="role"
+            placeholder="Role"
+            value={formData.role || ""}
+            onChange={handleChange}
+          />
+          <input
+            type="number"
+            name="salary"
+            placeholder="Salary"
+            value={formData.salary || ""}
+            onChange={handleChange}
+          />
+          <input
+            type="number"
+            name="deduction"
+            placeholder="Deduction"
+            value={formData.deduction || ""}
+            onChange={handleChange}
+          />
+          <input
+            type="number"
+            name="bonus"
+            placeholder="Bonus"
+            value={formData.bonus || ""}
+            onChange={handleChange}
+          />
+          <input
+            type="date"
+            name="date"
+            value={formData.date || ""}
+            onChange={handleChange}
+          />
+          <label>
+            <input
+              type="checkbox"
+              name="paid"
+              checked={formData.paid || false}
+              onChange={handleChange}
+            />{" "}
+            Paid
+          </label>
+        </>
+      );
+    }
+
+    // Expense / Purchase
+    return (
+      <>
+        <input
+          type="text"
+          name="itemName"
+          placeholder="Item Name"
+          value={formData.itemName || ""}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="company"
+          placeholder="Company / Supplier"
+          value={formData.company || ""}
+          onChange={handleChange}
+        />
+        <input
+          type="number"
+          name="quantity"
+          placeholder="Quantity"
+          value={formData.quantity || ""}
+          onChange={handleChange}
+        />
+        <input
+          type="number"
+          name="unitCost"
+          placeholder="Unit Cost"
+          value={formData.unitCost || ""}
+          onChange={handleChange}
+        />
+        <input
+          type="date"
+          name="date"
+          value={formData.date || ""}
+          onChange={handleChange}
+        />
+        <label>
+          <input
+            type="checkbox"
+            name="paid"
+            checked={formData.paid || false}
+            onChange={handleChange}
+          />{" "}
+          Paid
+        </label>
+      </>
     );
   };
 
@@ -261,8 +406,11 @@ export default function ExpensesPurchasesPayroll() {
             {editing ? "Edit" : "Add New"}{" "}
             {currentTab === "payroll" ? "Employee" : "Item"}
           </h2>
-          {/* Existing form inputs remain unchanged */}
-          {/* ... */}
+          {renderForm()}
+          <div className="form-buttons">
+            <button onClick={handleAddOrEdit}>💾 Save</button>
+            <button onClick={resetForm}>❌ Cancel</button>
+          </div>
         </div>
       )}
 

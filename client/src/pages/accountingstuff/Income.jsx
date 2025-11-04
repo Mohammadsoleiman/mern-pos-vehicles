@@ -78,7 +78,7 @@ export default function Income() {
     setEditingIncome(null);
   };
 
-  // ✅ Add
+  // ✅ Add new income
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -121,7 +121,6 @@ export default function Income() {
 
   // ✅ Print invoice
   const printInvoice = (income) => {
-    const date = new Date().toLocaleDateString();
     const win = window.open("", "PRINT", "height=700,width=900");
     win.document.write(`
       <html>
@@ -138,7 +137,10 @@ export default function Income() {
         </head>
         <body>
           <h1>Income Invoice</h1>
-          <p><strong>Date:</strong> ${date}</p>
+          <p><strong>Date:</strong> ${
+            income.date || new Date(income.createdAt).toISOString().split("T")[0]
+          }</p>
+          <p><strong>Month:</strong> ${income.month || "N/A"}</p>
           <p><strong>Category:</strong> ${income.category}</p>
           <table>
             <tr><th>Field</th><th>Details</th></tr>
@@ -150,7 +152,9 @@ export default function Income() {
             <tr><td>Part</td><td>${income.servicePart || "-"}</td></tr>
             <tr><td>Tax Type</td><td>${income.taxType || "-"}</td></tr>
             <tr><td>Description</td><td>${income.description || "-"}</td></tr>
-            <tr><td class="total">Total</td><td class="total">$${parseFloat(income.cost || 0).toFixed(2)}</td></tr>
+            <tr><td class="total">Total</td><td class="total">$${parseFloat(
+              income.cost || 0
+            ).toFixed(2)}</td></tr>
           </table>
         </body>
       </html>
@@ -166,7 +170,12 @@ export default function Income() {
   );
 
   const categoryTotals = useMemo(() => {
-    const totals = { "Vehicle Sale": 0, "Service & Maintenance": 0, Taxes: 0, "Other Services": 0 };
+    const totals = {
+      "Vehicle Sale": 0,
+      "Service & Maintenance": 0,
+      Taxes: 0,
+      "Other Services": 0,
+    };
     incomeList.forEach((i) => {
       totals[i.category] += parseFloat(i.cost || 0);
     });
@@ -180,7 +189,9 @@ export default function Income() {
           <h1>💰 Income</h1>
           <p>Track all revenue and services in one place</p>
         </div>
-        <button className="btn-primary" onClick={() => setShowAdd(true)}>+ Add Income</button>
+        <button className="btn-primary" onClick={() => setShowAdd(true)}>
+          + Add Income
+        </button>
       </div>
 
       {/* Summary Cards */}
@@ -206,6 +217,8 @@ export default function Income() {
             <thead>
               <tr>
                 <th>ID</th>
+                <th>Date</th>
+                <th>Month</th>
                 <th>Category</th>
                 <th>Type / Model</th>
                 <th>Plate / VIN</th>
@@ -219,16 +232,44 @@ export default function Income() {
               {incomeList.map((inc) => (
                 <tr key={inc._id}>
                   <td>{inc._id.slice(-5).toUpperCase()}</td>
+                  <td>
+                    {inc.date ||
+                      new Date(inc.createdAt).toISOString().split("T")[0]}
+                  </td>
+                  <td>{inc.month || "N/A"}</td>
                   <td>{inc.category}</td>
                   <td>{inc.type ? `${inc.type} / ${inc.model}` : "-"}</td>
-                  <td>{inc.plate || inc.vin ? `${inc.plate} / ${inc.vin}` : "-"}</td>
-                  <td>{inc.serviceType ? `${inc.serviceType} / ${inc.servicePart}` : inc.taxType || "-"}</td>
+                  <td>
+                    {inc.plate || inc.vin
+                      ? `${inc.plate} / ${inc.vin}`
+                      : "-"}
+                  </td>
+                  <td>
+                    {inc.serviceType
+                      ? `${inc.serviceType} / ${inc.servicePart}`
+                      : inc.taxType || "-"}
+                  </td>
                   <td>${parseFloat(inc.cost).toFixed(2)}</td>
                   <td>{inc.description || "-"}</td>
                   <td>
-                    <button className="btn-edit" onClick={() => openEdit(inc)}>✏️</button>
-                    <button className="btn-delete" onClick={() => handleDelete(inc._id)}>🗑️</button>
-                    <button className="btn-print" onClick={() => printInvoice(inc)}>🖨️</button>
+                    <button
+                      className="btn-edit"
+                      onClick={() => openEdit(inc)}
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      className="btn-delete"
+                      onClick={() => handleDelete(inc._id)}
+                    >
+                      🗑️
+                    </button>
+                    <button
+                      className="btn-print"
+                      onClick={() => printInvoice(inc)}
+                    >
+                      🖨️
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -243,10 +284,14 @@ export default function Income() {
           <div className="modalContent">
             <h3>Add New Income</h3>
             <form onSubmit={handleSubmit}>
-              {/* Category */}
               <div className="formGroup">
                 <label>Category</label>
-                <input list="catOpt" name="category" value={formData.category} onChange={handleChange} />
+                <input
+                  list="catOpt"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                />
                 <datalist id="catOpt">
                   <option value="Vehicle Sale" />
                   <option value="Service & Maintenance" />
@@ -255,30 +300,52 @@ export default function Income() {
                 </datalist>
               </div>
 
-              {/* Vehicle Sale */}
+              {/* Vehicle Sale Fields */}
               {formData.category === "Vehicle Sale" && (
                 <>
                   <div className="formGroup">
                     <label>Vehicle Type</label>
-                    <input list="typeOpt" name="type" value={formData.type} onChange={handleChange} />
+                    <input
+                      list="typeOpt"
+                      name="type"
+                      value={formData.type}
+                      onChange={handleChange}
+                    />
                     <datalist id="typeOpt">
-                      {Object.keys(vehicleModelsByType).map((t) => <option key={t} value={t} />)}
+                      {Object.keys(vehicleModelsByType).map((t) => (
+                        <option key={t} value={t} />
+                      ))}
                     </datalist>
                   </div>
                   <div className="formGroup">
                     <label>Model</label>
-                    <input list="modelOpt" name="model" value={formData.model} onChange={handleChange} />
+                    <input
+                      list="modelOpt"
+                      name="model"
+                      value={formData.model}
+                      onChange={handleChange}
+                    />
                     <datalist id="modelOpt">
-                      {(vehicleModelsByType[formData.type] || []).map((m) => <option key={m} value={m} />)}
+                      {(vehicleModelsByType[formData.type] || []).map((m) => (
+                        <option key={m} value={m} />
+                      ))}
                     </datalist>
                   </div>
                   <div className="formGroup">
                     <label>Plate</label>
-                    <input name="plate" value={formData.plate} onChange={handleChange} />
+                    <input
+                      name="plate"
+                      value={formData.plate}
+                      onChange={handleChange}
+                    />
                   </div>
                   <div className="formGroup">
                     <label>VIN</label>
-                    <input name="vin" value={formData.vin} onChange={handleChange} />
+                    <input
+                      name="vin"
+                      value={formData.vin}
+                      onChange={handleChange}
+                    />
                   </div>
                 </>
               )}
@@ -288,7 +355,12 @@ export default function Income() {
                 <>
                   <div className="formGroup">
                     <label>Service Type</label>
-                    <input list="serviceOpt" name="serviceType" value={formData.serviceType} onChange={handleChange} />
+                    <input
+                      list="serviceOpt"
+                      name="serviceType"
+                      value={formData.serviceType}
+                      onChange={handleChange}
+                    />
                     <datalist id="serviceOpt">
                       <option value="Repair" />
                       <option value="Oil Change" />
@@ -299,7 +371,11 @@ export default function Income() {
                   </div>
                   <div className="formGroup">
                     <label>Part</label>
-                    <input name="servicePart" value={formData.servicePart} onChange={handleChange} />
+                    <input
+                      name="servicePart"
+                      value={formData.servicePart}
+                      onChange={handleChange}
+                    />
                   </div>
                 </>
               )}
@@ -308,7 +384,12 @@ export default function Income() {
               {formData.category === "Taxes" && (
                 <div className="formGroup">
                   <label>Tax Type</label>
-                  <input list="taxOpt" name="taxType" value={formData.taxType} onChange={handleChange} />
+                  <input
+                    list="taxOpt"
+                    name="taxType"
+                    value={formData.taxType}
+                    onChange={handleChange}
+                  />
                   <datalist id="taxOpt">
                     <option value="Late Payment" />
                     <option value="Shipping" />
@@ -317,19 +398,35 @@ export default function Income() {
                 </div>
               )}
 
-              {/* Common Fields */}
               <div className="formGroup">
                 <label>Description</label>
-                <input name="description" value={formData.description} onChange={handleChange} />
+                <input
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                />
               </div>
               <div className="formGroup">
                 <label>Cost ($)</label>
-                <input type="number" name="cost" step="0.01" value={formData.cost} onChange={handleChange} required />
+                <input
+                  type="number"
+                  name="cost"
+                  step="0.01"
+                  value={formData.cost}
+                  onChange={handleChange}
+                  required
+                />
               </div>
 
               <div className="modalActions">
                 <button className="saveBtn">Save</button>
-                <button type="button" className="cancelBtn" onClick={resetForm}>Cancel</button>
+                <button
+                  type="button"
+                  className="cancelBtn"
+                  onClick={resetForm}
+                >
+                  Cancel
+                </button>
               </div>
             </form>
           </div>
@@ -342,29 +439,48 @@ export default function Income() {
           <div className="modalContent">
             <h3>Edit Income</h3>
             <form onSubmit={handleEditSubmit}>
-              {/* Same Fields as Add */}
               <div className="formGroup">
                 <label>Category</label>
-                <input name="category" value={formData.category} onChange={handleChange} />
+                <input
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                />
               </div>
 
               {formData.category === "Vehicle Sale" && (
                 <>
                   <div className="formGroup">
                     <label>Vehicle Type</label>
-                    <input name="type" value={formData.type} onChange={handleChange} />
+                    <input
+                      name="type"
+                      value={formData.type}
+                      onChange={handleChange}
+                    />
                   </div>
                   <div className="formGroup">
                     <label>Model</label>
-                    <input name="model" value={formData.model} onChange={handleChange} />
+                    <input
+                      name="model"
+                      value={formData.model}
+                      onChange={handleChange}
+                    />
                   </div>
                   <div className="formGroup">
                     <label>Plate</label>
-                    <input name="plate" value={formData.plate} onChange={handleChange} />
+                    <input
+                      name="plate"
+                      value={formData.plate}
+                      onChange={handleChange}
+                    />
                   </div>
                   <div className="formGroup">
                     <label>VIN</label>
-                    <input name="vin" value={formData.vin} onChange={handleChange} />
+                    <input
+                      name="vin"
+                      value={formData.vin}
+                      onChange={handleChange}
+                    />
                   </div>
                 </>
               )}
@@ -373,11 +489,19 @@ export default function Income() {
                 <>
                   <div className="formGroup">
                     <label>Service Type</label>
-                    <input name="serviceType" value={formData.serviceType} onChange={handleChange} />
+                    <input
+                      name="serviceType"
+                      value={formData.serviceType}
+                      onChange={handleChange}
+                    />
                   </div>
                   <div className="formGroup">
                     <label>Part</label>
-                    <input name="servicePart" value={formData.servicePart} onChange={handleChange} />
+                    <input
+                      name="servicePart"
+                      value={formData.servicePart}
+                      onChange={handleChange}
+                    />
                   </div>
                 </>
               )}
@@ -385,22 +509,43 @@ export default function Income() {
               {formData.category === "Taxes" && (
                 <div className="formGroup">
                   <label>Tax Type</label>
-                  <input name="taxType" value={formData.taxType} onChange={handleChange} />
+                  <input
+                    name="taxType"
+                    value={formData.taxType}
+                    onChange={handleChange}
+                  />
                 </div>
               )}
 
               <div className="formGroup">
                 <label>Description</label>
-                <input name="description" value={formData.description} onChange={handleChange} />
+                <input
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                />
               </div>
               <div className="formGroup">
                 <label>Cost ($)</label>
-                <input type="number" name="cost" step="0.01" value={formData.cost} onChange={handleChange} required />
+                <input
+                  type="number"
+                  name="cost"
+                  step="0.01"
+                  value={formData.cost}
+                  onChange={handleChange}
+                  required
+                />
               </div>
 
               <div className="modalActions">
                 <button className="saveBtn">Update</button>
-                <button type="button" className="cancelBtn" onClick={resetForm}>Cancel</button>
+                <button
+                  type="button"
+                  className="cancelBtn"
+                  onClick={resetForm}
+                >
+                  Cancel
+                </button>
               </div>
             </form>
           </div>
