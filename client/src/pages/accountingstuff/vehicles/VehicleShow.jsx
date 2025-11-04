@@ -1,128 +1,82 @@
-import React, { useEffect, useState } from "react";
-import "../../../styles/accountant/vehicles.css";
-import { getVehicle, imgUrl } from "../../../api/vehicles";
+import React from "react";
+import { imgUrl } from "../../../api/vehicles";
+import styles from "../../../styles/accountant/vehicles.module.css";
 
 export default function VehicleShow({ vehicle, onClose }) {
-  const [details, setDetails] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  // Load full vehicle details
-  useEffect(() => {
-    if (!vehicle?._id) return;
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const data = await getVehicle(vehicle._id);
-        setDetails(data);
-      } catch (err) {
-        console.error("❌ Error loading vehicle:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [vehicle]);
-
   if (!vehicle) return null;
 
+  const infoFields = [
+    { label: "VIN", value: vehicle.VIN },
+    { label: "Make", value: vehicle.make },
+    { label: "Model", value: vehicle.model },
+    { label: "Year", value: vehicle.year },
+    { label: "Type", value: vehicle.type },
+    { label: "Condition", value: vehicle.condition },
+    { label: "Transmission", value: vehicle.transmission },
+    { label: "Cylinders", value: vehicle.cylinders },
+    { label: "Fuel Type", value: vehicle.fuelType },
+    { label: "Status", value: vehicle.status },
+    { label: "Price ($)", value: vehicle.price?.toLocaleString() },
+    { label: "Cost ($)", value: vehicle.cost?.toLocaleString() },
+    { label: "Maintenance Cost ($)", value: vehicle.maintenanceCost },
+    { label: "Fuel Cost ($)", value: vehicle.fuelCost },
+    { label: "Purchase Date", value: vehicle.purchaseDate?.slice(0, 10) },
+    { label: "Insurance Provider", value: vehicle.insuranceProvider },
+    { label: "Insurance Expiry", value: vehicle.insuranceExpiry?.slice(0, 10) },
+  ];
+
   return (
-    <div className="modal-overlay">
-      <div className="modal-content large">
-        <h3>Vehicle Details</h3>
+    <div className={styles.modalOverlay}>
+      <div className={`${styles.modalContent} ${styles.large}`}>
+        <div className={styles.modalHeader}>
+          <h3>Vehicle Details</h3>
+          <button className={styles.closeBtn} onClick={onClose}>
+            ✖
+          </button>
+        </div>
 
-        {loading ? (
-          <p>Loading vehicle data...</p>
-        ) : (
-          <div className="vehicle-details">
-            {/* Images Section */}
-            <div className="vehicle-images">
-              {details?.images?.length > 0 ? (
-                details.images.map((img, idx) => (
-                  <img key={idx} src={imgUrl(img)} alt={`Vehicle ${idx}`} />
-                ))
-              ) : (
-                <p>No images available</p>
-              )}
+        {/* Information Grid */}
+        <div className={styles.formGrid}>
+          {infoFields.map(
+            (item, idx) =>
+              item.value && (
+                <div key={idx} className={styles.formGroup}>
+                  <label>{item.label}</label>
+                  <input value={item.value} readOnly />
+                </div>
+              )
+          )}
+
+          {/* Color Display */}
+          {vehicle.color && (
+            <div className={styles.formGroup}>
+              <label>Color</label>
+              <input type="color" value={vehicle.color} disabled />
             </div>
+          )}
+        </div>
 
-            {/* Info Grid */}
-            <div className="vehicle-info-grid">
-              <div className="info-item">
-                <strong>VIN:</strong> {details.VIN}
-              </div>
-              <div className="info-item">
-                <strong>Make:</strong> {details.make}
-              </div>
-              <div className="info-item">
-                <strong>Model:</strong> {details.model}
-              </div>
-              <div className="info-item">
-                <strong>Year:</strong> {details.year}
-              </div>
-              <div className="info-item">
-                <strong>Type:</strong> {details.type}
-              </div>
-              <div className="info-item">
-                <strong>Condition:</strong> {details.condition}
-              </div>
-              <div className="info-item">
-                <strong>Transmission:</strong> {details.transmission}
-              </div>
-              <div className="info-item">
-                <strong>Cylinders:</strong> {details.cylinders}
-              </div>
-              <div className="info-item">
-                <strong>Fuel Type:</strong> {details.fuelType}
-              </div>
-              <div className="info-item">
-                <strong>Color:</strong>{" "}
-                <span
-                  className="color-box"
-                  style={{ backgroundColor: details.color }}
-                ></span>
-              </div>
-              <div className="info-item">
-                <strong>Price:</strong> ${details.price?.toLocaleString()}
-              </div>
-              <div className="info-item">
-                <strong>Cost:</strong> ${details.cost?.toLocaleString()}
-              </div>
-              <div className="info-item">
-                <strong>Purchase Date:</strong>{" "}
-                {details.purchaseDate
-                  ? new Date(details.purchaseDate).toLocaleDateString()
-                  : "—"}
-              </div>
-              <div className="info-item">
-                <strong>Insurance Provider:</strong>{" "}
-                {details.insuranceProvider || "—"}
-              </div>
-              <div className="info-item">
-                <strong>Insurance Expiry:</strong>{" "}
-                {details.insuranceExpiry
-                  ? new Date(details.insuranceExpiry).toLocaleDateString()
-                  : "—"}
-              </div>
-              <div className="info-item">
-                <strong>Maintenance Cost:</strong> $
-                {details.maintenanceCost?.toLocaleString() || 0}
-              </div>
-              <div className="info-item">
-                <strong>Fuel Cost:</strong> $
-                {details.fuelCost?.toLocaleString() || 0}
-              </div>
-              <div className="info-item">
-                <strong>Status:</strong>{" "}
-                <span className={`status ${details.status?.toLowerCase()}`}>
-                  {details.status}
-                </span>
-              </div>
+        {/* Image Gallery */}
+        <div className={styles.formGroup}>
+          <label>Images</label>
+          {vehicle.images?.length ? (
+            <div className={styles.imagePreview}>
+              {vehicle.images.map((img) => (
+                <img
+                  key={img}
+                  src={imgUrl(img)}
+                  alt="Vehicle"
+                  className={styles.tableThumb}
+                />
+              ))}
             </div>
-          </div>
-        )}
+          ) : (
+            <p className={styles.noData}>No images uploaded</p>
+          )}
+        </div>
 
-        <div className="modal-actions">
-          <button className="cancel-btn" onClick={onClose}>
+        <div className={styles.modalActions}>
+          <button className={styles.cancelBtn} onClick={onClose}>
             Close
           </button>
         </div>
