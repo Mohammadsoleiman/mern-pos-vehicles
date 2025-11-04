@@ -50,7 +50,7 @@ const incomeRoutes = require("./routes/incomes");
 const expenseRoutes = require("./routes/expenses");
 const purchaseRoutes = require("./routes/purchases");
 const payrollRoutes = require("./routes/payroll");
-
+const reportRoutes = require("./routes/reportRoutes");
 // 📊 Financial Summary Route
 const transactionRoutes = require("./routes/transactions");
 
@@ -68,7 +68,7 @@ app.use("/api/expenses", expenseRoutes);
 app.use("/api/purchases", purchaseRoutes);
 app.use("/api/payroll", payrollRoutes);
 app.use("/api/transactions", transactionRoutes); // ✅ NEW financial summary route
-
+app.use("/api/reports", reportRoutes);
 console.log("✅ All API routes registered successfully.");
 
 // 🧪 Health check route

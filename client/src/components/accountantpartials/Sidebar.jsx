@@ -113,7 +113,7 @@ export default function Sidebar() {
           <LogOut className="icon" />
           <span>Logout</span>
         </button>
-        <p className="version">v1.0.0</p>
+        
       </div>
     </aside>
   );

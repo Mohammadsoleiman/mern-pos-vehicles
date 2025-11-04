@@ -16,6 +16,21 @@ const incomeSchema = new mongoose.Schema(
     servicePart: { type: String, default: "" },
     taxType: { type: String, default: "" },
     description: { type: String, default: "" },
+
+    // 🗓️ Automatically save today's date (YYYY-MM-DD)
+    date: {
+      type: String,
+      default: () => new Date().toISOString().split("T")[0],
+    },
+
+    // 📅 Automatically store month name and year
+    month: {
+      type: String,
+      default: () => {
+        const now = new Date();
+        return `${now.toLocaleString("default", { month: "long" })} ${now.getFullYear()}`;
+      },
+    },
   },
   { timestamps: true }
 );

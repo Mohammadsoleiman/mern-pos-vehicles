@@ -1,32 +1,45 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/accountant/overview.css";
-import { TransactionContext } from "../../context/ACCOUNTANT/TransactionContext.jsx";
+
+// Live transaction summary (NEW)
+import { TransactionSummaryContext } from "../../context/ACCOUNTANT/TransactionSummaryContext.jsx";
+
+// Existing contexts
 import { VehicleContext } from "../../context/ACCOUNTANT/VehicleContext.jsx";
 import { ExpenseContext } from "../../context/ACCOUNTANT/ExpenseContext.jsx";
+
+// Chart
 import IncomeExpensesChart from "../../components/chartsA/IncomeExpensesChart.jsx";
 
 export default function FeaturesOverview() {
-  const { transactions, totalIncome, totalExpenses } = useContext(TransactionContext);
-  const { expenses } = useContext(ExpenseContext);
-  const { vehicles, totalValue } = useContext(VehicleContext);
   const navigate = useNavigate();
 
-  // Format as USD currency
+  // ✅ Live transactions & totals from backend
+  const { transactions, summary, loading, refresh } = useContext(TransactionSummaryContext);
+  // Vehicles / Expenses from existing contexts
+  const { vehicles, totalValue } = useContext(VehicleContext);
+  const { expenses } = useContext(ExpenseContext);
+
+  useEffect(() => {
+    // make sure we have the latest when landing here
+    if (refresh) refresh();
+  }, [refresh]);
+
   const formatUSD = (value) =>
     new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
       minimumFractionDigits: 2,
-    }).format(value || 0);
+    }).format(Number.isFinite(value) ? value : 0);
 
-  // Calculations
+  // 🔢 Live calculations
   const totalTransactions = transactions.length;
-  const totalVehicles = vehicles.length;
-  const profit = totalIncome - totalExpenses;
-  const profitMargin = totalIncome ? ((profit / totalIncome) * 100).toFixed(1) : 0;
+  const totalIncome = summary.totalIncome || 0;
+  const totalExpenses = summary.totalExpenses || 0;
+  const netBalance = summary.netBalance || 0; // profit/loss
+  const profitMargin = totalIncome ? ((netBalance / totalIncome) * 100).toFixed(1) : 0;
 
-  // Quick Access Features
   const features = [
     {
       id: 1,
@@ -60,7 +73,7 @@ export default function FeaturesOverview() {
       title: "Vehicles",
       icon: "🚗",
       description: "Manage and track company vehicles",
-      count: totalVehicles,
+      count: vehicles.length,
       route: "/accounting/vehicles",
       color: "orange",
     },
@@ -74,23 +87,23 @@ export default function FeaturesOverview() {
         <p>Monitor your dealership’s income, expenses, vehicles, and employees — all in one place.</p>
       </header>
 
-      {/* 🔹 Mini Topbar Summary */}
+      {/* Topbar Summary */}
       <div className="topbar-summary">
         <div className="summary-card">
+          <h4>Profit / Loss</h4>
+          <p>{loading ? "…" : formatUSD(netBalance)}</p>
+        </div>
+        <div className="summary-card">
           <h4>Profit Margin</h4>
-          <p>{profitMargin}%</p>
+          <p>{loading ? "…" : `${profitMargin}%`}</p>
         </div>
         <div className="summary-card">
           <h4>Vehicles</h4>
-          <p>{totalVehicles}</p>
+          <p>{vehicles.length}</p>
         </div>
         <div className="summary-card">
           <h4>Transactions</h4>
-          <p>{totalTransactions}</p>
-        </div>
-        <div className="summary-card">
-          <h4>Employees</h4>
-          <p>Active</p>
+          <p>{loading ? "…" : totalTransactions}</p>
         </div>
       </div>
 
@@ -101,8 +114,8 @@ export default function FeaturesOverview() {
             <span>💰</span>
             <h3>Total Income</h3>
           </div>
-          <p className="stat-value">{formatUSD(totalIncome)}</p>
-          <p className="stat-subtitle">From all sales</p>
+          <p className="stat-value">{loading ? "Loading…" : formatUSD(totalIncome)}</p>
+          <p className="stat-subtitle">From all sales & services</p>
         </div>
 
         <div className="stat-card secondary" onClick={() => navigate("/accounting/transactions")}>
@@ -110,20 +123,20 @@ export default function FeaturesOverview() {
             <span>💸</span>
             <h3>Total Expenses</h3>
           </div>
-          <p className="stat-value">{formatUSD(totalExpenses)}</p>
+          <p className="stat-value">{loading ? "Loading…" : formatUSD(totalExpenses)}</p>
           <p className="stat-subtitle">Business operations</p>
         </div>
 
         <div
-          className={`stat-card ${profit >= 0 ? "success" : "danger"}`}
+          className={`stat-card ${netBalance >= 0 ? "success" : "danger"}`}
           onClick={() => navigate("/accounting/reports")}
         >
           <div className="stat-header">
-            <span>{profit >= 0 ? "📈" : "📉"}</span>
-            <h3>{profit >= 0 ? "Net Profit" : "Net Loss"}</h3>
+            <span>{netBalance >= 0 ? "📈" : "📉"}</span>
+            <h3>{netBalance >= 0 ? "Net Profit" : "Net Loss"}</h3>
           </div>
-          <p className="stat-value">{formatUSD(profit)}</p>
-          <p className="stat-subtitle">{profitMargin}% margin</p>
+          <p className="stat-value">{loading ? "Loading…" : formatUSD(netBalance)}</p>
+          <p className="stat-subtitle">{loading ? "…" : `${profitMargin}% margin`}</p>
         </div>
 
         <div className="stat-card accent" onClick={() => navigate("/accounting/vehicles")}>
@@ -132,7 +145,7 @@ export default function FeaturesOverview() {
             <h3>Inventory Value</h3>
           </div>
           <p className="stat-value">{formatUSD(totalValue)}</p>
-          <p className="stat-subtitle">{totalVehicles} vehicles</p>
+          <p className="stat-subtitle">{vehicles.length} vehicles</p>
         </div>
       </div>
 
@@ -157,7 +170,7 @@ export default function FeaturesOverview() {
         </div>
       </section>
 
-      {/* Chart */}
+      {/* Financial Chart (can also be wired to summary if you prefer) */}
       <section className="overview-section">
         <h2>Financial Overview</h2>
         <div className="chart-box">
@@ -174,9 +187,11 @@ export default function FeaturesOverview() {
             <div className="activity-info">
               <h4>Latest Transaction</h4>
               <p>
-                {transactions.length
-                  ? formatUSD(transactions[0]?.amount)
-                  : "No transactions yet"}
+                {loading
+                  ? "Loading…"
+                  : transactions.length
+                    ? `${transactions[0]?.type} • ${formatUSD(transactions[0]?.amount)}`
+                    : "No transactions yet"}
               </p>
             </div>
           </div>
@@ -197,7 +212,7 @@ export default function FeaturesOverview() {
             <div className="activity-icon">🚗</div>
             <div className="activity-info">
               <h4>Latest Vehicle</h4>
-              <p>{vehicles.length ? vehicles[0]?.make || "Unknown" : "No vehicles yet"}</p>
+              <p>{vehicles.length ? (vehicles[0]?.model || vehicles[0]?.make || "Unknown") : "No vehicles yet"}</p>
             </div>
           </div>
         </div>
