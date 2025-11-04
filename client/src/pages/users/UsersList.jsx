@@ -1,8 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useSettings } from "../../context/SettingsContext"; // ✅ تمت الإضافة
+import "../../styles/usersGrid.css"; // ✅ GRID STYLES
 
 export default function UsersList() {
+  const { settings } = useSettings(); // ✅ أخذ إعدادات الواجهة
+  const layout = settings.layout || "list"; // ✅ list | grid
+
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [q, setQ] = useState("");
@@ -19,7 +24,6 @@ export default function UsersList() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 🔹 Fetch users
   const fetchUsers = async () => {
     setLoading(true);
     try {
@@ -32,7 +36,6 @@ export default function UsersList() {
     }
   };
 
-  // 🔹 Fetch roles
   const fetchRoles = async () => {
     try {
       const { data } = await axiosClient.get("/roles");
@@ -47,7 +50,6 @@ export default function UsersList() {
     fetchRoles();
   }, []);
 
-  // 🔹 Filter users by search
   const filtered = useMemo(() => {
     if (!q.trim()) return users;
     const s = q.toLowerCase();
@@ -59,14 +61,12 @@ export default function UsersList() {
     );
   }, [users, q]);
 
-  // 🔹 Open Create Modal
   const openCreate = () => {
     setEditingUser(null);
     setForm({ name: "", email: "", password: "", role: "" });
     setModalOpen(true);
   };
 
-  // 🔹 Open Edit Modal
   const openEdit = (u) => {
     setEditingUser(u);
     setForm({
@@ -78,84 +78,57 @@ export default function UsersList() {
     setModalOpen(true);
   };
 
-  // 🔹 Delete user
   const deleteUser = async (id) => {
-    if (!confirm("Are you sure you want to delete this user?")) return;
-    try {
-      await axiosClient.delete(`/auth/users/${id}`);
-      alert("🗑️ User deleted successfully!");
-      fetchUsers();
-    } catch (err) {
-      console.error("❌ Error deleting user:", err);
-      alert("❌ Failed to delete user!");
-    }
+    if (!confirm("Delete user?")) return;
+    await axiosClient.delete(`/auth/users/${id}`);
+    fetchUsers();
   };
 
-  // 🔹 Submit form (Create / Edit)
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const payload = {
-      name: form.name,
-      email: form.email,
-      role: form.role,
-    };
-    if (form.password && form.password.trim() !== "") {
-      payload.password = form.password;
+    const payload = { name: form.name, email: form.email, role: form.role };
+    if (form.password.trim() !== "") payload.password = form.password;
+
+    if (editingUser) {
+      await axiosClient.put(`/auth/users/${editingUser._id || editingUser.id}`, payload);
+    } else {
+      await axiosClient.post("/auth/users", payload);
     }
-    try {
-      if (editingUser) {
-        await axiosClient.put(`/auth/users/${editingUser._id || editingUser.id}`, payload);
-        alert("✅ User updated successfully!");
-      } else {
-        await axiosClient.post("/auth/users", payload);
-        alert("✅ User created successfully!");
-      }
-      setModalOpen(false);
-      fetchUsers();
-    } catch (err) {
-      console.error("❌ Error saving user:", err);
-      alert("❌ Failed to save user!");
-    }
+
+    setModalOpen(false);
+    fetchUsers();
   };
 
-  return (
-    <div>
-      {/* ===== Header ===== */}
-      <div className="users-header">
-        <h2>Users</h2>
-        <div className="toolbar">
-          <input
-            placeholder="Search users..."
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-          />
-          <button className="primary" onClick={openCreate}>
-            + Create User
-          </button>
+return (
+  <div>
+    {/* ===== Header ===== */}
+    <div className="usersHeader">
+      <h2>Users</h2>
 
-          {/* 🔹 Navigation Buttons */}
-          <button
-            type="button"
-            className={`secondary ${location.pathname === "/roles" ? "active" : ""}`}
-            style={{ marginLeft: "8px" }}
-            onClick={() => navigate("/admin/roles")}
-          >
-            🧩 Roles
-          </button>
+      <div className="toolbar">
+        <input
+          placeholder="Search users..."
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+        />
 
-          <button
-            type="button"
-            className={`secondary ${location.pathname.includes("/permissions") ? "active" : ""}`}
-            style={{ marginLeft: "8px" }}
-            onClick={() => navigate("/admin/permissions")}
-          >
-            🔒 Permissions
-          </button>
-        </div>
+        <button className="primary" onClick={openCreate}>
+          + Create User
+        </button>
+
+        <button className="secondary" onClick={() => navigate("/admin/roles")}>
+          🧩 Roles
+        </button>
+
+        <button className="secondary" onClick={() => navigate("/admin/permissions")}>
+          🔒 Permissions
+        </button>
       </div>
+    </div>
 
-      {/* ===== Table ===== */}
-      <div className="users-body card" style={{ marginTop: "25px" }}>
+    {/* ✅ LIST VIEW */}
+    {layout === "list" && (
+      <div className="usersBody card" style={{ marginTop: "25px" }}>
         {loading && <div className="muted">Loading…</div>}
         <table className="table">
           <thead>
@@ -173,103 +146,81 @@ export default function UsersList() {
                 <td>{u.email}</td>
                 <td>{u.role?.name || u.role || "no-role"}</td>
                 <td>
-                  <button className="ghost" onClick={() => openEdit(u)}>
-                    Edit
-                  </button>
+                  <button className="ghost" onClick={() => openEdit(u)}>✏ Edit</button>
                   <button className="danger" onClick={() => deleteUser(u._id || u.id)}>
-                    Delete
+                    🗑 Delete
                   </button>
                 </td>
               </tr>
             ))}
             {!filtered.length && (
-              <tr>
-                <td colSpan={4} className="muted">
-                  No users
-                </td>
-              </tr>
+              <tr><td colSpan={4} className="muted">No users</td></tr>
             )}
           </tbody>
         </table>
       </div>
+    )}
 
-      {/* ===== Modal (Create / Edit) ===== */}
-      {modalOpen && (
-        <div
-          className="modal-backdrop"
-          onClick={(e) => {
-            if (e.target.classList.contains("modal-backdrop")) setModalOpen(false);
-          }}
-        >
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-head">
-              <h3>{editingUser ? "Edit User" : "Create User"}</h3>
-              <button className="icon" onClick={() => setModalOpen(false)}>
-                ✕
-              </button>
+    {/* ✅ GRID VIEW */}
+    {layout === "grid" && (
+      <div className="gridUsers">
+        {filtered.map((u) => (
+          <div className="userCard" key={u._id || u.id}>
+            <div className="avatarCircle">
+              {u.name.charAt(0).toUpperCase()}
             </div>
-
-            <form onSubmit={handleSubmit} className="form modal-body">
-              <label>
-                <span>Name</span>
-                <input
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  required
-                />
-              </label>
-
-              <label>
-                <span>Email</span>
-                <input
-                  type="email"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  required
-                />
-              </label>
-
-              <label>
-                <span>Password</span>
-                <input
-                  type="password"
-                  value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  placeholder={editingUser ? "Leave blank to keep current" : ""}
-                />
-              </label>
-
-              <label>
-                <span>Role</span>
-                <select
-                  value={form.role}
-                  onChange={(e) => setForm({ ...form, role: e.target.value })}
-                >
-                  <option value="">Select role</option>
-                  {roles.map((r) => (
-                    <option key={r._id} value={r._id}>
-                      {r.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <div className="actions-row">
-                <button
-                  type="button"
-                  className="ghost"
-                  onClick={() => setModalOpen(false)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="primary">
-                  {editingUser ? "Save Changes" : "Create"}
-                </button>
-              </div>
-            </form>
+            <p><strong>{u.name}</strong></p>
+            <p className="email">{u.email}</p>
+            <p className="role">{u.role?.name || u.role || "No Role"}</p>
+            <div className="cardActions">
+              <button className="edit" onClick={() => openEdit(u)}>✏ Edit</button>
+              <button className="delete" onClick={() => deleteUser(u._id || u.id)}>🗑 Delete</button>
+            </div>
           </div>
+        ))}
+      </div>
+    )}
+
+    {/* ===== Modal ===== */}
+    {modalOpen && (
+      <div className="modalBackdrop" onClick={() => setModalOpen(false)}>
+        <div className="modal" onClick={(e) => e.stopPropagation()}>
+          <div className="modalHead">
+            <h3>{editingUser ? "Edit User" : "Create User"}</h3>
+            <button className="icon" onClick={() => setModalOpen(false)}>✕</button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="form modalBody">
+            <label><span>Name</span>
+              <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+            </label>
+
+            <label><span>Email</span>
+              <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
+            </label>
+
+            <label><span>Password</span>
+              <input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder={editingUser ? "Leave blank to keep current" : ""} />
+            </label>
+
+            <label><span>Role</span>
+              <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>
+                <option value="">Select role</option>
+                {roles.map((r) => (
+                  <option key={r._id} value={r._id}>{r.name}</option>
+                ))}
+              </select>
+            </label>
+
+            <div className="actionsRow">
+              <button type="button" className="ghost" onClick={() => setModalOpen(false)}>Cancel</button>
+              <button type="submit" className="primary">{editingUser ? "Save" : "Create"}</button>
+            </div>
+          </form>
         </div>
-      )}
-    </div>
-  );
+      </div>
+    )}
+  </div>
+);
+
 }

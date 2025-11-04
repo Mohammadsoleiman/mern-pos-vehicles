@@ -15,20 +15,22 @@ const data = [
 
 export default function AreaMini() {
   return (
-    <ResponsiveContainer width="100%" height={230}>
-      <AreaChart data={data}>
-        <defs>
-          <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="10%" stopColor="#2563eb" stopOpacity={0.8}/>
-            <stop offset="95%" stopColor="#2563eb" stopOpacity={0.05}/>
-          </linearGradient>
-        </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e8eef6" />
-        <XAxis dataKey="name" tick={{ fill: "#64748b" }} />
-        <YAxis tick={{ fill: "#64748b" }} />
-        <Tooltip />
-        <Area type="monotone" dataKey="sales" stroke="#2563eb" fill="url(#colorSales)" />
-      </AreaChart>
-    </ResponsiveContainer>
+    <div style={{ all: 'initial' }}>
+      <ResponsiveContainer width="100%" height={230}>
+        <AreaChart data={data}>
+          <defs>
+            <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="10%" stopColor="#2563eb" stopOpacity={0.8}/>
+              <stop offset="95%" stopColor="#2563eb" stopOpacity={0.05}/>
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke="#e8eef6" />
+          <XAxis dataKey="name" tick={{ fill: "#64748b" }} />
+          <YAxis tick={{ fill: "#64748b" }} />
+          <Tooltip />
+          <Area type="monotone" dataKey="sales" stroke="#2563eb" fill="url(#colorSales)" />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
   );
 }

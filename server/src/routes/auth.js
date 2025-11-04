@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+
+const auth = require("../middlewares/auth"); // ✅ مش authMiddleware
+
 const {
   login,
   register,
@@ -8,17 +11,21 @@ const {
   createUser,
   updateUser,
   deleteUser,
+  updateSettings,
 } = require("../controllers/authController");
 
-// Auth routes
+// ---------------- Auth ----------------
 router.post("/login", login);
 router.post("/register", register);
-router.put("/update-role", updateRole);
 
-// User management
-router.get("/users", getAllUsers);
-router.post("/users", createUser);
-router.put("/users/:id", updateUser);
-router.delete("/users/:id", deleteUser);
+// ------------ Users & Roles -----------
+router.put("/update-role", auth(["admin"]), updateRole);
+router.get("/users", auth(["admin"]), getAllUsers);
+router.post("/users", auth(["admin"]), createUser);
+router.put("/users/:id", auth(["admin"]), updateUser);
+router.delete("/users/:id", auth(["admin"]), deleteUser);
+
+// -------------- Settings --------------
+router.put("/settings", auth(["admin"]), updateSettings);
 
 module.exports = router;

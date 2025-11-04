@@ -3,7 +3,7 @@ import { useState } from "react";
 import UsersList from "./UsersList";
 import UserCreate from "./UserCreate";
 import UserEdit from "./UserEdit";
-import "../../styles/users.css";
+import styles from "../../styles/users.module.css";
 
 export default function UsersPage() {
   const [view, setView] = useState("list"); // list | create | edit
@@ -20,7 +20,7 @@ export default function UsersPage() {
   };
 
   return (
-    <div className="users-page">
+    <div className={styles.usersPage}>
       {view === "list" && (
         <UsersList onCreate={() => setView("create")} onEdit={handleEdit} />
       )}

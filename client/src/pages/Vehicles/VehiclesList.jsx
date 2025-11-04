@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../../api/axiosClient";
+import { useSettings } from "../../context/SettingsContext"; // ✅ مهم
+import "../../styles/usersGrid.css"; // ✅ نفس ملف Users grid
 import {
   BarChart,
   Bar,
@@ -16,6 +18,9 @@ import "../../styles/vehicles.css";
 
 export default function VehiclesList() {
   const navigate = useNavigate();
+  const { settings } = useSettings(); // ✅ أخذنا الـ Layout من الإعدادات
+  const layout = settings.layout || "list"; // "list" أو "grid"
+
   const [vehicles, setVehicles] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -113,34 +118,16 @@ export default function VehiclesList() {
           </div>
         </div>
 
-        {/* Bar Chart */}
         <div className="chart-container">
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis 
-                dataKey="name" 
-                tick={{ fill: '#666', fontSize: 13, fontWeight: 500 }} 
-              />
-              <YAxis 
-                tick={{ fill: '#666', fontSize: 13 }} 
-              />
-              <Tooltip 
-                contentStyle={{
-                  background: '#fff',
-                  border: '1px solid #e0e0e0',
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                  padding: '10px 14px'
-                }}
-                cursor={{ fill: 'rgba(0,0,0,0.05)' }}
-              />
+              <XAxis dataKey="name" tick={{ fill: '#666', fontSize: 13, fontWeight: 500 }} />
+              <YAxis tick={{ fill: '#666', fontSize: 13 }} />
+              <Tooltip contentStyle={{ background: '#fff', border: '1px solid #e0e0e0', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', padding: '10px 14px' }} cursor={{ fill: 'rgba(0,0,0,0.05)' }} />
               <Bar dataKey="value" radius={[8, 8, 0, 0]}>
                 {chartData.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
-                    fill={COLORS[index % COLORS.length]} 
-                  />
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Bar>
             </BarChart>
@@ -157,125 +144,96 @@ export default function VehiclesList() {
           onChange={(e) => setSearch(e.target.value)}
           className="search-input"
         />
-        <button
-          className="btn-primary"
-          onClick={() => navigate("/admin/vehicles/create")}
-        >
+        <button className="btn-primary" onClick={() => navigate("/admin/vehicles/create")}>
           + Add Vehicle
         </button>
       </div>
 
-      {/* 🔹 Vehicles Table */}
-      <div className="card table-card">
-        <table className="vehicles-table">
-          <thead>
-            <tr>
-              <th>Image</th>
-              <th>Model</th>
-              <th>Year</th>
-              <th>Type</th>
-              <th>Status</th>
-              <th>Price</th>
-              <th style={{ textAlign: "center" }}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginated.length === 0 ? (
+      {/* ✅ LIST MODE */}
+      {layout === "list" && (
+        <div className="card table-card">
+          <table className="vehicles-table">
+            <thead>
               <tr>
-                <td colSpan="7" style={{ textAlign: "center" }}>
-                  No vehicles found
-                </td>
+                <th>Image</th>
+                <th>Model</th>
+                <th>Year</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Price</th>
+                <th style={{ textAlign: "center" }}>Actions</th>
               </tr>
-            ) : (
-              paginated.map((v) => {
-                const currentIndex = imageIndexes[v._id] || 0;
-                const currentImage = v.images?.[currentIndex]
-                  ? v.images[currentIndex].startsWith("http")
-                    ? v.images[currentIndex]
-                    : `http://localhost:5000${v.images[currentIndex]}`
-                  : null;
+            </thead>
+            <tbody>
+              {paginated.length === 0 ? (
+                <tr><td colSpan="7" style={{ textAlign: "center" }}>No vehicles found</td></tr>
+              ) : (
+                paginated.map((v) => {
+                  const currentIndex = imageIndexes[v._id] || 0;
+                  const currentImage = v.images?.[currentIndex]
+                    ? v.images[currentIndex].startsWith("http")
+                      ? v.images[currentIndex]
+                      : `http://localhost:5000${v.images[currentIndex]}`
+                    : null;
 
-                return (
-                  <tr key={v._id}>
-                    <td>
-                      {currentImage ? (
-                        <img
-                          src={currentImage}
-                          alt={v.model}
-                          className="vehicle-thumb fade-in"
-                        />
-                      ) : (
-                        <span>No Img</span>
-                      )}
-                    </td>
-                    <td>{v.model}</td>
-                    <td>{v.year}</td>
-                    <td>{v.type}</td>
-                    <td>
-                      <span
-                        className={`status-badge status-${v.status?.toLowerCase()}`}
-                      >
-                        {v.status}
-                      </span>
-                    </td>
-                    <td>${v.price}</td>
-                    <td className="actions">
-                      <button
-                        className="btn-sm btn-info"
-                        onClick={() =>
-                          navigate(`/admin/vehicles/show/${v._id}`)
-                        }
-                      >
-                        👁
-                      </button>
-                      <button
-                        className="btn-sm btn-edit"
-                        onClick={() =>
-                          navigate(`/admin/vehicles/edit/${v._id}`)
-                        }
-                      >
-                        ✏
-                      </button>
-                      <button
-                        className="btn-sm btn-danger"
-                        onClick={() => handleDelete(v._id)}
-                      >
-                        🗑
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
-      </div>
+                  return (
+                    <tr key={v._id}>
+                      <td><img src={currentImage} alt={v.model} className="vehicle-thumb fade-in" /></td>
+                      <td>{v.model}</td>
+                      <td>{v.year}</td>
+                      <td>{v.type}</td>
+                      <td><span className={`status-badge status-${v.status?.toLowerCase()}`}>{v.status}</span></td>
+                      <td>${v.price}</td>
+                      <td className="actions">
+                        <button className="btn-sm btn-info" onClick={() => navigate(`/admin/vehicles/show/${v._id}`)}>👁</button>
+                        <button className="btn-sm btn-edit" onClick={() => navigate(`/admin/vehicles/edit/${v._id}`)}>✏</button>
+                        <button className="btn-sm btn-danger" onClick={() => handleDelete(v._id)}>🗑</button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* ✅ GRID MODE */}
+      {layout === "grid" && (
+        <div className="vehicles-grid">
+          {filtered.map((v) => {
+           const currentIndex = imageIndexes[v._id] || 0;
+const currentImage = v.images?.[currentIndex]
+  ? v.images[currentIndex].startsWith("http")
+    ? v.images[currentIndex]
+    : `http://localhost:5000${v.images[currentIndex]}`
+  : null;
+
+            return (
+              <div className="vehicle-card" key={v._id}>
+                <img src={currentImage} className="vehicle-img" />
+                <h3>{v.model}</h3>
+                <p>{v.year} • {v.type}</p>
+                <span className={`status-badge status-${v.status?.toLowerCase()}`}>{v.status}</span>
+                <p className="price">${v.price}</p>
+                <div className="card-actions">
+                  <button className="btn-sm btn-info" onClick={() => navigate(`/admin/vehicles/show/${v._id}`)}>👁</button>
+                  <button className="btn-sm btn-edit" onClick={() => navigate(`/admin/vehicles/edit/${v._id}`)}>✏</button>
+                  <button className="btn-sm btn-danger" onClick={() => handleDelete(v._id)}>🗑</button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Pagination */}
       <div className="pagination">
-        <button
-          className="page-btn"
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage(currentPage - 1)}
-        >
-          ◀ Prev
-        </button>
+        <button className="page-btn" disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>◀ Prev</button>
         {Array.from({ length: totalPages }, (_, i) => (
-          <button
-            key={i}
-            className={`page-btn ${currentPage === i + 1 ? "active" : ""}`}
-            onClick={() => setCurrentPage(i + 1)}
-          >
-            {i + 1}
-          </button>
+          <button key={i} className={`page-btn ${currentPage === i + 1 ? "active" : ""}`} onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
         ))}
-        <button
-          className="page-btn"
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage(currentPage + 1)}
-        >
-          Next ▶
-        </button>
+        <button className="page-btn" disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>Next ▶</button>
       </div>
     </div>
   );
