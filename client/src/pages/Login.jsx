@@ -26,7 +26,9 @@ export default function Login() {
       login(data);
       console.log("✅ Logged in:", data);
 
-      const userRole = data.role || data.user?.role;
+     // Normalize role to string
+const userRole = data.role?.name || data.user?.role?.name || data.role || data.user?.role;
+
 
       // ✅ توجيه حسب الدور
       if (userRole === "admin") navigate("/admin/dashboard");

@@ -1,3 +1,4 @@
+// src/App.jsx
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
@@ -9,8 +10,6 @@ import { VehicleProvider } from "./context/ACCOUNTANT/VehicleContext";
 import { IncomeProvider } from "./context/ACCOUNTANT/IncomeContext";
 import { SettingsProvider } from "./context/SettingsContext";
 import ThemeSync from "./components/ThemeSync";
-
-// 🧾 NEW — Live Summary Context
 import { TransactionSummaryProvider } from "./context/ACCOUNTANT/TransactionSummaryContext";
 
 // Clerk Contexts
@@ -80,7 +79,6 @@ export default function App() {
         <ExpenseProvider>
           <VehicleProvider>
             <IncomeProvider>
-              {/* ✅ Wrap inside Summary Provider (safe placement) */}
               <TransactionSummaryProvider>
                 <ClerkAuthProvider>
                   <ClerkVehicleProvider>
@@ -88,14 +86,16 @@ export default function App() {
                       <ClerkCustomerProvider>
                         <SettingsProvider>
                           <ThemeSync>
+
                             <BrowserRouter>
                               <Routes>
-                                {/* 🟢 Public */}
+
+                                {/* PUBLIC */}
                                 <Route path="/" element={<Login />} />
                                 <Route path="/login" element={<Login />} />
                                 <Route path="/unauthorized" element={<Unauthorized />} />
 
-                                {/* 🟣 Admin */}
+                                {/* ADMIN */}
                                 <Route element={<RoleRoute allowedRoles={["admin"]} />}>
                                   <Route path="/admin" element={<Admin />}>
                                     <Route index element={<Dashboard />} />
@@ -111,7 +111,7 @@ export default function App() {
                                   </Route>
                                 </Route>
 
-                                {/* 💼 Accounting */}
+                                {/* ACCOUNTING */}
                                 <Route
                                   path="/accounting"
                                   element={
@@ -128,25 +128,22 @@ export default function App() {
                                   <Route path="reports" element={<Reports />} />
                                   <Route path="settings" element={<Settings />} />
 
-                                  {/* 👥 Employees */}
                                   <Route path="employees" element={<EmployeeList />} />
                                   <Route path="employees/create" element={<EmployeeCreate />} />
                                   <Route path="employees/edit/:id" element={<EmployeeEdit />} />
 
-                                  {/* 🚗 Vehicles */}
                                   <Route path="vehicles" element={<VehicleList />} />
                                   <Route path="vehicles/create" element={<VehicleCreatePage />} />
                                   <Route path="vehicles/edit/:id" element={<VehicleEditPage />} />
                                   <Route path="vehicles/show/:id" element={<VehicleShowPage />} />
 
-                                  {/* 💳 Accounts */}
                                   <Route path="accounts" element={<AccountList />} />
                                   <Route path="accounts/create" element={<AccountCreate />} />
                                   <Route path="accounts/edit/:id" element={<AccountEdit />} />
                                   <Route path="accounts/show/:id" element={<AccountShow />} />
                                 </Route>
 
-                                {/* 💵 Clerk */}
+                                {/* CLERK / CASHIER */}
                                 <Route
                                   path="/cashier"
                                   element={
@@ -156,6 +153,7 @@ export default function App() {
                                   }
                                 >
                                   <Route index element={<ClerkDashboard />} />
+                                  <Route path="dashboard" element={<ClerkDashboard />} />
                                   <Route path="sales" element={<ClerkSales />} />
                                   <Route path="vehicles" element={<ClerkVehicles />} />
                                   <Route path="customers" element={<ClerkCustomers />} />
@@ -163,10 +161,11 @@ export default function App() {
                                   <Route path="settings" element={<ClerkSettings />} />
                                 </Route>
 
-                                {/* 🚫 Catch-all */}
                                 <Route path="*" element={<Navigate to="/unauthorized" replace />} />
+
                               </Routes>
                             </BrowserRouter>
+
                           </ThemeSync>
                         </SettingsProvider>
                       </ClerkCustomerProvider>
