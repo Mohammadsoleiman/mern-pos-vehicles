@@ -68,7 +68,7 @@ import AccountShow from "./pages/accountingstuff/accounts/AccountShow";
 import ClerkDashboard from "./pages/clerk/ClerkDashboard";
 import ClerkSales from "./pages/clerk/ClerkSales";
 import ClerkVehicles from "./pages/clerk/ClerkVehicles";
-import ClerkCustomers from "./pages/clerk/ClerkCustomers";
+import ClerkCustomers from "./pages/clerk/customers/ClerkCustomers"; // ✅ FIXED PATH
 import ClerkReports from "./pages/clerk/ClerkReports";
 import ClerkSettings from "./pages/clerk/ClerkSettings";
 
@@ -90,12 +90,12 @@ export default function App() {
                             <BrowserRouter>
                               <Routes>
 
-                                {/* PUBLIC */}
+                                {/* 🌐 PUBLIC */}
                                 <Route path="/" element={<Login />} />
                                 <Route path="/login" element={<Login />} />
                                 <Route path="/unauthorized" element={<Unauthorized />} />
 
-                                {/* ADMIN */}
+                                {/* 🧭 ADMIN */}
                                 <Route element={<RoleRoute allowedRoles={["admin"]} />}>
                                   <Route path="/admin" element={<Admin />}>
                                     <Route index element={<Dashboard />} />
@@ -111,7 +111,7 @@ export default function App() {
                                   </Route>
                                 </Route>
 
-                                {/* ACCOUNTING */}
+                                {/* 💼 ACCOUNTING */}
                                 <Route
                                   path="/accounting"
                                   element={
@@ -143,7 +143,7 @@ export default function App() {
                                   <Route path="accounts/show/:id" element={<AccountShow />} />
                                 </Route>
 
-                                {/* CLERK / CASHIER */}
+                                {/* 💰 CLERK / CASHIER */}
                                 <Route
                                   path="/cashier"
                                   element={
@@ -156,11 +156,12 @@ export default function App() {
                                   <Route path="dashboard" element={<ClerkDashboard />} />
                                   <Route path="sales" element={<ClerkSales />} />
                                   <Route path="vehicles" element={<ClerkVehicles />} />
-                                  <Route path="customers" element={<ClerkCustomers />} />
+                                  <Route path="customers" element={<ClerkCustomers />} /> {/* ✅ FIXED */}
                                   <Route path="reports" element={<ClerkReports />} />
                                   <Route path="settings" element={<ClerkSettings />} />
                                 </Route>
 
+                                {/* 🚫 FALLBACK */}
                                 <Route path="*" element={<Navigate to="/unauthorized" replace />} />
 
                               </Routes>
