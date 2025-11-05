@@ -32,9 +32,7 @@ const ClerkReports = () => {
   const { customers } = useContext(CustomerContext);
 
   const [dateRange, setDateRange] = useState({
-    start: new Date(
-      new Date().setDate(new Date().getDate() - 30)
-    )
+    start: new Date(new Date().setDate(new Date().getDate() - 30))
       .toISOString()
       .split("T")[0],
     end: new Date().toISOString().split("T")[0],
@@ -53,44 +51,74 @@ const ClerkReports = () => {
     COLORS: ["#4ade80", "#60a5fa", "#facc15"],
   });
 
+  // ✅ Fetch aggregated data from backend (optional enhancement)
   useEffect(() => {
-    generateReport();
+    const fetchBackendReport = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/clerk/reports");
+        const data = await res.json();
+
+        if (data && typeof data === "object") {
+          setReportData((prev) => ({
+            ...prev,
+            totalRevenue: data.totalRevenue || 0,
+            totalSales: data.totalSales || 0,
+            averageSale: data.averageSale || 0,
+            topVehicles: data.topVehicles || [],
+            topCustomers: data.topCustomers || [],
+            recentTransactions: data.recentTransactions || [],
+          }));
+        }
+      } catch (err) {
+        console.error("❌ Failed to fetch backend report:", err);
+      }
+    };
+
+    fetchBackendReport();
+  }, []);
+
+  useEffect(() => {
+    if (Array.isArray(sales) && Array.isArray(customers) && Array.isArray(vehicles)) {
+      generateReport();
+    }
   }, [sales, dateRange, customers, vehicles]);
 
-  const getId = (obj) => String(obj?._id || obj?.id || obj);
+  const getId = (obj) => String(obj?._id || obj?.id || obj || "");
 
   const getCustomerId = (sale) =>
     String(
-      sale.customerId ||
-        sale.customer ||
-        sale.customer_id ||
-        sale.customerRef ||
+      sale?.customerId ||
+        sale?.customer ||
+        sale?.customer_id ||
+        sale?.customerRef ||
         ""
     );
 
   const getVehicleId = (sale) =>
     String(
-      sale.vehicleId || sale.vehicle || sale.vehicle_id || sale.vehicleRef || ""
+      sale?.vehicleId ||
+        sale?.vehicle ||
+        sale?.vehicle_id ||
+        sale?.vehicleRef ||
+        ""
     );
 
   const generateReport = () => {
     const start = new Date(dateRange.start);
     const end = new Date(dateRange.end);
 
-    // Filter by date
-    const filteredSales = sales.filter((sale) => {
-      const saleDate = new Date(sale.date);
+    const filteredSales = (sales || []).filter((sale) => {
+      const saleDate = new Date(sale.date || sale.createdAt || Date.now());
       return saleDate >= start && saleDate <= end;
     });
 
     const totalRevenue = filteredSales.reduce(
-      (sum, sale) => sum + (sale.totalAmount || 0),
+      (sum, sale) => sum + (Number(sale.totalAmount) || 0),
       0
     );
     const totalSales = filteredSales.length;
     const averageSale = totalSales > 0 ? totalRevenue / totalSales : 0;
-    const growth =
-      totalSales > 0 ? ((totalSales - 1) / totalSales) * 100 : 0;
+    const growth = totalSales > 1 ? ((totalSales - 1) / totalSales) * 100 : 0;
 
     // ✅ Top Vehicles
     const vehicleSales = {};
@@ -99,14 +127,12 @@ const ClerkReports = () => {
       if (!id) return;
       if (!vehicleSales[id]) vehicleSales[id] = { count: 0, revenue: 0 };
       vehicleSales[id].count += 1;
-      vehicleSales[id].revenue += sale.totalAmount || 0;
+      vehicleSales[id].revenue += Number(sale.totalAmount) || 0;
     });
 
     const topVehicles = Object.entries(vehicleSales)
       .map(([id, data]) => {
-        const vehicle = vehicles.find(
-          (v) => getId(v) === id
-        );
+        const vehicle = vehicles.find((v) => getId(v) === id);
         return { vehicle, ...data };
       })
       .filter((item) => item.vehicle)
@@ -120,7 +146,7 @@ const ClerkReports = () => {
       if (!id) return;
       if (!customerSales[id]) customerSales[id] = { purchases: 0, totalSpent: 0 };
       customerSales[id].purchases += 1;
-      customerSales[id].totalSpent += sale.totalAmount || 0;
+      customerSales[id].totalSpent += Number(sale.totalAmount) || 0;
     });
 
     const topCustomers = customers
@@ -142,30 +168,22 @@ const ClerkReports = () => {
       .slice(-10)
       .reverse()
       .map((sale) => {
-        const customer = customers.find(
-          (c) => getId(c) === getCustomerId(sale)
-        );
-        const vehicle = vehicles.find(
-          (v) => getId(v) === getVehicleId(sale)
-        );
-        return {
-          ...sale,
-          customer,
-          vehicle,
-        };
+        const customer = customers.find((c) => getId(c) === getCustomerId(sale));
+        const vehicle = vehicles.find((v) => getId(v) === getVehicleId(sale));
+        return { ...sale, customer, vehicle };
       });
 
     // ✅ Sales Trend Data
     const salesTrendMap = {};
     filteredSales.forEach((sale) => {
-      const dateKey = new Date(sale.date).toLocaleDateString();
-      salesTrendMap[dateKey] =
-        (salesTrendMap[dateKey] || 0) + sale.totalAmount;
+      const dateKey = new Date(sale.date || sale.createdAt || Date.now()).toLocaleDateString();
+      salesTrendMap[dateKey] = (salesTrendMap[dateKey] || 0) + (Number(sale.totalAmount) || 0);
     });
 
-    const salesTrendData = Object.entries(salesTrendMap).map(
-      ([date, amount]) => ({ date, amount })
-    );
+    const salesTrendData = Object.entries(salesTrendMap).map(([date, amount]) => ({
+      date,
+      amount,
+    }));
 
     // ✅ Payment Methods
     const paymentMethodsData = [
@@ -257,19 +275,19 @@ const ClerkReports = () => {
             },
             {
               title: "Total Revenue",
-              value: `$${reportData.totalRevenue.toLocaleString()}`,
+              value: `$${(reportData.totalRevenue || 0).toLocaleString()}`,
               icon: <DollarSign size={24} />,
               color: "green",
             },
             {
               title: "Average Sale",
-              value: `$${reportData.averageSale.toFixed(0)}`,
+              value: `$${(reportData.averageSale || 0).toFixed(0)}`,
               icon: <Package size={24} />,
               color: "purple",
             },
             {
               title: "Active Customers",
-              value: customers.length,
+              value: customers.length || 0,
               icon: <Users size={24} />,
               color: "orange",
             },
@@ -280,12 +298,10 @@ const ClerkReports = () => {
                   <h3>{stat.title}</h3>
                   <p className="stat-card-value">{stat.value}</p>
                   <div className="stat-card-change positive">
-                    <ArrowUp size={16} /> {reportData.growth.toFixed(1)}%
+                    <ArrowUp size={16} /> {(reportData.growth || 0).toFixed(1)}%
                   </div>
                 </div>
-                <div className={`stat-card-icon ${stat.color}`}>
-                  {stat.icon}
-                </div>
+                <div className={`stat-card-icon ${stat.color}`}>{stat.icon}</div>
               </div>
             </div>
           ))}
@@ -313,7 +329,7 @@ const ClerkReports = () => {
                 </a>
               </div>
               <div className="top-items-list">
-                {section.data.length ? (
+                {section.data?.length ? (
                   section.data.map((item, index) => (
                     <div key={index} className="top-item">
                       <div
@@ -332,18 +348,18 @@ const ClerkReports = () => {
                       <div className="item-info">
                         <p className="item-name">
                           {item.vehicle
-                            ? `${item.vehicle.make} ${item.vehicle.model}`
+                            ? `${item.vehicle.make || ""} ${item.vehicle.model || ""}`
                             : item.customer?.name || "Unknown"}
                         </p>
                         <p className="item-details">
-                          {item.purchases}{" "}
+                          {item.purchases || 0}{" "}
                           {section.title.includes("Vehicles")
                             ? "sales"
                             : "purchases"}
                         </p>
                       </div>
                       <div className="item-value">
-                        ${item.revenue.toLocaleString()}
+                        ${((item.revenue || 0).toLocaleString())}
                       </div>
                     </div>
                   ))
@@ -366,7 +382,7 @@ const ClerkReports = () => {
               View All
             </a>
           </div>
-          {reportData.recentTransactions.length ? (
+          {reportData.recentTransactions?.length ? (
             <table className="transactions-table">
               <thead>
                 <tr>
@@ -381,15 +397,17 @@ const ClerkReports = () => {
               <tbody>
                 {reportData.recentTransactions.map((sale) => (
                   <tr key={sale._id || sale.id}>
-                    <td>{sale.invoiceNumber}</td>
+                    <td>{sale.invoiceNumber || "N/A"}</td>
                     <td>{sale.customer?.name || "Unknown"}</td>
                     <td>
                       {sale.vehicle
-                        ? `${sale.vehicle.make} ${sale.vehicle.model}`
+                        ? `${sale.vehicle.make || ""} ${sale.vehicle.model || ""}`
                         : "Unknown"}
                     </td>
-                    <td>{new Date(sale.date).toLocaleDateString()}</td>
-                    <td>${sale.totalAmount?.toLocaleString()}</td>
+                    <td>
+                      {new Date(sale.date || sale.createdAt || Date.now()).toLocaleDateString()}
+                    </td>
+                    <td>${((sale.totalAmount || 0).toLocaleString())}</td>
                     <td>
                       <span className="transaction-status completed">
                         {sale.status || "completed"}

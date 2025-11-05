@@ -60,6 +60,8 @@ const reportRoutes = require("./routes/reportRoutes");
 const transactionRoutes = require("./routes/transactions");
 const customerRoutes = require("./routes/customerRoutes");
 const salesRoutes = require("./routes/sales"); // ✅ Clerk Sales route
+const dashboardClerkRoutes = require("./routes/dashboardClerk");
+const clerkReportRoutes = require("./routes/clerkReportRoutes"); // ✅ New Clerk Reports route
 
 // ✅ Register All Routes
 app.use("/api/auth", authRoutes);
@@ -79,6 +81,10 @@ app.use("/api/customers", customerRoutes);
 app.use("/api/sales", salesRoutes); // ✅ New POS Sales API
 app.use("/api/reports", reportRoutes);
 
+// 🧩 Clerk-specific routes
+app.use("/api/clerk/dashboard", dashboardClerkRoutes);
+app.use("/api/clerk/reports", clerkReportRoutes);
+
 console.log("✅ All API routes registered successfully.");
 
 // 🧪 Health Check
@@ -86,14 +92,15 @@ app.get("/", (req, res) => {
   res.status(200).send("🚀 Server running successfully!");
 });
 
-// 🧭 List all routes for debugging (optional)
+// 🧭 List all routes for debugging
 setTimeout(() => {
   if (app._router && app._router.stack) {
     console.log("\n📋 Registered route paths:");
     app._router.stack.forEach((layer) => {
       if (layer.name === "router" && layer.handle && layer.handle.stack) {
         layer.handle.stack.forEach((r) => {
-          if (r.route && r.route.path) console.log("  •", r.route.path);
+          if (r.route && r.route.path)
+            console.log("  •", r.route.path);
         });
       }
     });
