@@ -510,6 +510,21 @@ body {
   background: var(--tableHeader, #f8fafc);
 }
 
+/* ================= TABLE ACTIONS (أزرار جنب بعض) ================= */
+.tableActions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  /* flex-wrap: nowrap; */
+   flex-direction: row !important;
+
+}
+
+.tableActions button {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 /* ================= RESPONSIVE ================= */
 
 /* 📱 Tablets (1200px and below) */
@@ -573,6 +588,15 @@ body {
   
   .topbar h1 {
     font-size: 20px;
+  }
+
+  .tableActions {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .tableActions button {
+    width: 100%;
   }
 }
 

@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import axiosClient from "../../api/axiosClient";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useSettings } from "../../context/SettingsContext"; // ✅ NEW
-import "../../styles/usersGrid.css"; // ✅ نستخدم نفس ستايل الـ grid
+import { useNavigate } from "react-router-dom";
+import { useSettings } from "../../context/SettingsContext";
+import styles from "../../styles/users.module.css";
 
 export default function RolesList() {
-  const { settings } = useSettings(); // ✅ نقرأ إعداد الواجهة
-  const layout = settings.layout || "list"; // ✅ list أو grid
+  const { settings } = useSettings();
+  const layout = settings.layout || "list";
 
   const [roles, setRoles] = useState([]);
   const [permissions, setPermissions] = useState([]);
@@ -17,7 +17,6 @@ export default function RolesList() {
   const [form, setForm] = useState({ name: "", permissions: [] });
 
   const navigate = useNavigate();
-  const location = useLocation();
 
   const fetchRoles = async () => {
     setLoading(true);
@@ -86,74 +85,101 @@ export default function RolesList() {
   return (
     <div>
       {/* ===== Header ===== */}
-      <div className="users-header">
+      <div className={styles.usersHeader}>
         <h2>Roles</h2>
-        <div className="toolbar">
+        <div className={styles.toolbar}>
           <input
             placeholder="Search roles..."
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
-          <button className="primary" onClick={openCreate}>
+          <button className={styles.primary} onClick={openCreate}>
             + Create Role
           </button>
 
-          <button className="secondary" onClick={() => navigate("/admin/users")}>👤 Users</button>
-          <button className="secondary" onClick={() => navigate("/admin/roles")}>🧩 Roles</button>
-          <button className="secondary" onClick={() => navigate("/admin/permissions")}>🔒 Permissions</button>
+          <button className={styles.secondary} onClick={() => navigate("/admin/users")}>
+            👤 Users
+          </button>
+          <button className={styles.secondary} onClick={() => navigate("/admin/roles")}>
+            🧩 Roles
+          </button>
+          <button className={styles.secondary} onClick={() => navigate("/admin/permissions")}>
+            🔒 Permissions
+          </button>
         </div>
       </div>
 
       {/* ✅ LIST MODE */}
       {layout === "list" && (
-        <div className="users-body card" style={{ marginTop: 25 }}>
-          {loading && <div className="muted">Loading…</div>}
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Permissions</th>
-                <th style={{ width: 160 }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((r) => (
-                <tr key={r._id}>
-                  <td>{r.name}</td>
-                  <td>
-                    {r.permissions?.length
-                      ? r.permissions.map((p) => (typeof p === "object" ? p.name : p)).join(", ")
-                      : "No permissions"}
-                  </td>
-                  <td>
-                    <button className="ghost" onClick={() => openEdit(r)}>✏ Edit</button>
-                    <button className="danger" onClick={() => deleteRole(r._id)}>🗑 Delete</button>
-                  </td>
-                </tr>
-              ))}
-              {!filtered.length && <tr><td colSpan={3} className="muted">No roles found</td></tr>}
-            </tbody>
-          </table>
+        <div className={styles.usersBody}>
+          <div className={styles.card}>
+            {loading && <div className={styles.muted}>Loading…</div>}
+            {!loading && (
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Permissions</th>
+                    <th style={{ width: 180 }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((r) => (
+                    <tr key={r._id}>
+                      <td>{r.name}</td>
+                      <td>
+                        {r.permissions?.length
+                          ? r.permissions.map((p) => (typeof p === "object" ? p.name : p)).join(", ")
+                          : "No permissions"}
+                      </td>
+                     <td>
+  <div className={styles.tableActions} style={{ display: "flex", flexWrap: "nowrap", gap: "6px" }}>
+    <button className={styles.ghost} style={{ whiteSpace: "nowrap" }} onClick={() => openEdit(r)}>
+      ✏ Edit
+    </button>
+    <button className={styles.danger} style={{ whiteSpace: "nowrap" }} onClick={() => deleteRole(r._id)}>
+      🗑 Delete
+    </button>
+  </div>
+</td>
+
+                    </tr>
+                  ))}
+                  {!filtered.length && (
+                    <tr>
+                      <td colSpan={3} className={styles.muted}>
+                        No roles found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            )}
+          </div>
         </div>
       )}
 
       {/* ✅ GRID MODE */}
       {layout === "grid" && (
-        <div className="grid-users">
+        <div className={styles.gridUsers}>
           {filtered.map((r) => (
-            <div className="user-card" key={r._id}>
-              <div className="avatar-circle">{r.name.charAt(0).toUpperCase()}</div>
+            <div className={styles.userCard} key={r._id}>
+              <div className={styles.avatarCircle}>{r.name.charAt(0).toUpperCase()}</div>
 
               <p><strong>{r.name}</strong></p>
-              <p className="role small">
+              <p className={styles.role}>
                 {r.permissions?.length
                   ? r.permissions.map((p) => (typeof p === "object" ? p.name : p)).join(", ")
                   : "No permissions"}
               </p>
 
-              <div className="card-actions">
-                <button className="edit" onClick={() => openEdit(r)}>✏ Edit</button>
-                <button className="delete" onClick={() => deleteRole(r._id)}>🗑 Delete</button>
+              <div className={styles.cardActions}>
+                <button className={styles.edit} onClick={() => openEdit(r)}>
+                  ✏ Edit
+                </button>
+                <button className={styles.delete} onClick={() => deleteRole(r._id)}>
+                  🗑 Delete
+                </button>
               </div>
             </div>
           ))}
@@ -162,14 +188,16 @@ export default function RolesList() {
 
       {/* ===== MODAL ===== */}
       {modalOpen && (
-        <div className="modal-backdrop" onClick={() => setModalOpen(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-head">
+        <div className={styles.modalBackdrop} onClick={() => setModalOpen(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHead}>
               <h3>{editingRole ? "Edit Role" : "Create Role"}</h3>
-              <button className="icon" onClick={() => setModalOpen(false)}>✕</button>
+              <button className={styles.icon} onClick={() => setModalOpen(false)}>
+                ✕
+              </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="form modal-body">
+            <form onSubmit={handleSubmit} className={`${styles.form} ${styles.modalBody}`}>
               <label>
                 <span>Role Name</span>
                 <input
@@ -181,9 +209,9 @@ export default function RolesList() {
 
               <label>
                 <span>Permissions</span>
-                <div className="permissions-checkboxes">
+                <div className={styles.permGrid}>
                   {permissions.map((perm) => (
-                    <label key={perm._id} style={{ display: "block" }}>
+                    <div key={perm._id} className={styles.check}>
                       <input
                         type="checkbox"
                         checked={form.permissions.includes(perm._id)}
@@ -196,15 +224,19 @@ export default function RolesList() {
                           }));
                         }}
                       />
-                      {perm.name}
-                    </label>
+                      <span>{perm.name}</span>
+                    </div>
                   ))}
                 </div>
               </label>
 
-              <div className="actions-row">
-                <button type="button" className="ghost" onClick={() => setModalOpen(false)}>Cancel</button>
-                <button type="submit" className="primary">{editingRole ? "Save Changes" : "Create"}</button>
+              <div className={styles.actionsRow}>
+                <button type="button" className={styles.ghost} onClick={() => setModalOpen(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className={styles.primary}>
+                  {editingRole ? "Save Changes" : "Create"}
+                </button>
               </div>
             </form>
           </div>
