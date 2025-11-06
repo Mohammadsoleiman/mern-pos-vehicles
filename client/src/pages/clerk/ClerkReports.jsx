@@ -1,429 +1,237 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useMemo } from "react";
 import { SalesContext } from "../../context/clerk/SalesContext";
-import { VehicleContext } from "../../context/clerk/VehicleContext";
-import { CustomerContext } from "../../context/clerk/CustomerContext";
-import {
-  BarChart3,
-  TrendingUp,
-  Download,
-  DollarSign,
-  Package,
-  Users,
-  ArrowUp,
-  FileText,
-} from "lucide-react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
-} from "recharts";
 import "../../styles/clerk/clerkReports.css";
+import { Package, Users, DollarSign, TrendingUp } from "lucide-react";
 
 const ClerkReports = () => {
-  const { sales, loading: salesLoading } = useContext(SalesContext);
-  const { vehicles } = useContext(VehicleContext);
-  const { customers } = useContext(CustomerContext);
+  const { sales, loading, error } = useContext(SalesContext);
 
-  const [dateRange, setDateRange] = useState({
-    start: new Date(new Date().setDate(new Date().getDate() - 30))
-      .toISOString()
-      .split("T")[0],
-    end: new Date().toISOString().split("T")[0],
-  });
+  /* ==========================================================
+     📊 COMPUTED METRICS
+  ========================================================== */
+  const stats = useMemo(() => {
+    if (!Array.isArray(sales))
+      return {
+        totalSales: 0,
+        totalRevenue: 0,
+        totalCustomers: 0,
+        totalVehicles: 0,
+      };
 
-  const [reportData, setReportData] = useState({
-    totalRevenue: 0,
-    totalSales: 0,
-    averageSale: 0,
-    growth: 0,
-    topVehicles: [],
-    topCustomers: [],
-    recentTransactions: [],
-    salesTrendData: [],
-    paymentMethodsData: [],
-    COLORS: ["#4ade80", "#60a5fa", "#facc15"],
-  });
-
-  // ✅ Fetch aggregated data from backend (optional enhancement)
-  useEffect(() => {
-    const fetchBackendReport = async () => {
-      try {
-        const res = await fetch("http://localhost:5000/api/clerk/reports");
-        const data = await res.json();
-
-        if (data && typeof data === "object") {
-          setReportData((prev) => ({
-            ...prev,
-            totalRevenue: data.totalRevenue || 0,
-            totalSales: data.totalSales || 0,
-            averageSale: data.averageSale || 0,
-            topVehicles: data.topVehicles || [],
-            topCustomers: data.topCustomers || [],
-            recentTransactions: data.recentTransactions || [],
-          }));
-        }
-      } catch (err) {
-        console.error("❌ Failed to fetch backend report:", err);
-      }
-    };
-
-    fetchBackendReport();
-  }, []);
-
-  useEffect(() => {
-    if (Array.isArray(sales) && Array.isArray(customers) && Array.isArray(vehicles)) {
-      generateReport();
-    }
-  }, [sales, dateRange, customers, vehicles]);
-
-  const getId = (obj) => String(obj?._id || obj?.id || obj || "");
-
-  const getCustomerId = (sale) =>
-    String(
-      sale?.customerId ||
-        sale?.customer ||
-        sale?.customer_id ||
-        sale?.customerRef ||
-        ""
-    );
-
-  const getVehicleId = (sale) =>
-    String(
-      sale?.vehicleId ||
-        sale?.vehicle ||
-        sale?.vehicle_id ||
-        sale?.vehicleRef ||
-        ""
-    );
-
-  const generateReport = () => {
-    const start = new Date(dateRange.start);
-    const end = new Date(dateRange.end);
-
-    const filteredSales = (sales || []).filter((sale) => {
-      const saleDate = new Date(sale.date || sale.createdAt || Date.now());
-      return saleDate >= start && saleDate <= end;
-    });
-
-    const totalRevenue = filteredSales.reduce(
-      (sum, sale) => sum + (Number(sale.totalAmount) || 0),
+    const totalSales = sales.length;
+    const totalRevenue = sales.reduce(
+      (sum, s) => sum + (s.totalAmount || 0),
       0
     );
-    const totalSales = filteredSales.length;
-    const averageSale = totalSales > 0 ? totalRevenue / totalSales : 0;
-    const growth = totalSales > 1 ? ((totalSales - 1) / totalSales) * 100 : 0;
+    const uniqueCustomers = new Set(
+      sales.map((s) => s.customerId?._id || s.customerId)
+    ).size;
+    const uniqueVehicles = new Set(
+      sales.map((s) => s.vehicleId?._id || s.vehicleId)
+    ).size;
 
-    // ✅ Top Vehicles
-    const vehicleSales = {};
-    filteredSales.forEach((sale) => {
-      const id = getVehicleId(sale);
-      if (!id) return;
-      if (!vehicleSales[id]) vehicleSales[id] = { count: 0, revenue: 0 };
-      vehicleSales[id].count += 1;
-      vehicleSales[id].revenue += Number(sale.totalAmount) || 0;
-    });
-
-    const topVehicles = Object.entries(vehicleSales)
-      .map(([id, data]) => {
-        const vehicle = vehicles.find((v) => getId(v) === id);
-        return { vehicle, ...data };
-      })
-      .filter((item) => item.vehicle)
-      .sort((a, b) => b.revenue - a.revenue)
-      .slice(0, 5);
-
-    // ✅ Top Customers
-    const customerSales = {};
-    filteredSales.forEach((sale) => {
-      const id = getCustomerId(sale);
-      if (!id) return;
-      if (!customerSales[id]) customerSales[id] = { purchases: 0, totalSpent: 0 };
-      customerSales[id].purchases += 1;
-      customerSales[id].totalSpent += Number(sale.totalAmount) || 0;
-    });
-
-    const topCustomers = customers
-      .map((c) => {
-        const id = getId(c);
-        const data = customerSales[id];
-        return {
-          customer: c,
-          purchases: data?.purchases || 0,
-          revenue: data?.totalSpent || 0,
-        };
-      })
-      .filter((x) => x.revenue > 0)
-      .sort((a, b) => b.revenue - a.revenue)
-      .slice(0, 5);
-
-    // ✅ Recent Transactions
-    const recentTransactions = filteredSales
-      .slice(-10)
-      .reverse()
-      .map((sale) => {
-        const customer = customers.find((c) => getId(c) === getCustomerId(sale));
-        const vehicle = vehicles.find((v) => getId(v) === getVehicleId(sale));
-        return { ...sale, customer, vehicle };
-      });
-
-    // ✅ Sales Trend Data
-    const salesTrendMap = {};
-    filteredSales.forEach((sale) => {
-      const dateKey = new Date(sale.date || sale.createdAt || Date.now()).toLocaleDateString();
-      salesTrendMap[dateKey] = (salesTrendMap[dateKey] || 0) + (Number(sale.totalAmount) || 0);
-    });
-
-    const salesTrendData = Object.entries(salesTrendMap).map(([date, amount]) => ({
-      date,
-      amount,
-    }));
-
-    // ✅ Payment Methods
-    const paymentMethodsData = [
-      {
-        name: "Cash",
-        value: filteredSales.filter((s) => s.paymentMethod === "cash").length,
-      },
-      {
-        name: "Credit Card",
-        value: filteredSales.filter((s) => s.paymentMethod === "credit_card").length,
-      },
-      {
-        name: "Financing",
-        value: filteredSales.filter((s) => s.paymentMethod === "financing").length,
-      },
-    ];
-
-    setReportData({
-      totalRevenue,
+    return {
       totalSales,
-      averageSale,
-      growth,
-      topVehicles,
-      topCustomers,
-      recentTransactions,
-      salesTrendData,
-      paymentMethodsData,
-      COLORS: ["#4ade80", "#60a5fa", "#facc15"],
+      totalRevenue,
+      totalCustomers: uniqueCustomers,
+      totalVehicles: uniqueVehicles,
+    };
+  }, [sales]);
+
+  /* ==========================================================
+     🏆 TOP CUSTOMERS
+  ========================================================== */
+  const topCustomers = useMemo(() => {
+    const map = {};
+    sales.forEach((s) => {
+      const name = s.customerId?.name || "Unknown";
+      if (!map[name]) {
+        map[name] = { name, purchases: 0, totalSpent: 0 };
+      }
+      map[name].purchases += 1;
+      map[name].totalSpent += s.totalAmount || 0;
     });
-  };
 
-  const exportToPDF = () => alert("PDF export coming soon");
-  const exportToCSV = () => alert("CSV export coming soon");
+    return Object.values(map)
+      .sort((a, b) => b.totalSpent - a.totalSpent)
+      .slice(0, 5);
+  }, [sales]);
 
-  if (salesLoading)
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-      </div>
-    );
+  /* ==========================================================
+     🚗 TOP SELLING VEHICLES
+  ========================================================== */
+  const topVehicles = useMemo(() => {
+    const map = {};
+    sales.forEach((s) => {
+      const vehicle = s.vehicleId;
+      if (!vehicle) return;
+      const key = vehicle._id || vehicle.id;
+      const label = `${vehicle.make || "Unknown"} ${vehicle.model || ""}`.trim();
+      if (!map[key]) {
+        map[key] = { label, count: 0, total: 0 };
+      }
+      map[key].count += s.quantity || 1;
+      map[key].total += s.totalAmount || 0;
+    });
 
+    return Object.values(map)
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 5);
+  }, [sales]);
+
+  /* ==========================================================
+     💳 RECENT TRANSACTIONS
+  ========================================================== */
+  const recentTransactions = useMemo(() => {
+    return [...sales]
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date)
+      )
+      .slice(0, 5);
+  }, [sales]);
+
+  /* ==========================================================
+     🧠 UI STATES
+  ========================================================== */
+  if (loading) return <p className="reports-loading">Loading reports...</p>;
+  if (error) return <p className="reports-error">Error: {error}</p>;
+
+  /* ==========================================================
+     🎨 UI LAYOUT
+  ========================================================== */
   return (
-    <div className="reports-page">
-      <div className="reports-container">
-        {/* Header */}
-        <div className="reports-header">
-          <div className="reports-header-content">
-            <h1>
-              <BarChart3 size={32} /> Sales Reports
-            </h1>
-            <p>Analytics and performance insights</p>
-          </div>
-          <div className="date-range-selector">
-            <label>From</label>
-            <input
-              type="date"
-              value={dateRange.start}
-              onChange={(e) =>
-                setDateRange({ ...dateRange, start: e.target.value })
-              }
-            />
-            <label>To</label>
-            <input
-              type="date"
-              value={dateRange.end}
-              onChange={(e) =>
-                setDateRange({ ...dateRange, end: e.target.value })
-              }
-            />
-          </div>
-          <div className="export-buttons">
-            <button className="btn-export" onClick={exportToPDF}>
-              <FileText size={18} /> PDF
-            </button>
-            <button className="btn-export" onClick={exportToCSV}>
-              <Download size={18} /> CSV
-            </button>
+    <div className="clerk-reports-page">
+      <h1 className="reports-title">Sales Reports Overview</h1>
+
+      {/* ======================= STATS CARDS ======================= */}
+      <div className="reports-stats-grid">
+        <div className="stat-card">
+          <DollarSign className="stat-icon" />
+          <div>
+            <h2>${stats.totalRevenue.toLocaleString()}</h2>
+            <p>Total Revenue</p>
           </div>
         </div>
 
-        {/* Stats Overview */}
-        <div className="stats-overview">
-          {[
-            {
-              title: "Total Sales",
-              value: reportData.totalSales,
-              icon: <TrendingUp size={24} />,
-              color: "blue",
-            },
-            {
-              title: "Total Revenue",
-              value: `$${(reportData.totalRevenue || 0).toLocaleString()}`,
-              icon: <DollarSign size={24} />,
-              color: "green",
-            },
-            {
-              title: "Average Sale",
-              value: `$${(reportData.averageSale || 0).toFixed(0)}`,
-              icon: <Package size={24} />,
-              color: "purple",
-            },
-            {
-              title: "Active Customers",
-              value: customers.length || 0,
-              icon: <Users size={24} />,
-              color: "orange",
-            },
-          ].map((stat, i) => (
-            <div key={i} className="stat-card">
-              <div className="stat-card-header">
-                <div className="stat-card-info">
-                  <h3>{stat.title}</h3>
-                  <p className="stat-card-value">{stat.value}</p>
-                  <div className="stat-card-change positive">
-                    <ArrowUp size={16} /> {(reportData.growth || 0).toFixed(1)}%
-                  </div>
-                </div>
-                <div className={`stat-card-icon ${stat.color}`}>{stat.icon}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Top Sections */}
-        <div className="top-items-section">
-          {[
-            {
-              title: "Top Selling Vehicles",
-              data: reportData.topVehicles,
-              icon: <Package size={48} />,
-            },
-            {
-              title: "Top Customers",
-              data: reportData.topCustomers,
-              icon: <Users size={48} />,
-            },
-          ].map((section, idx) => (
-            <div key={idx} className="top-items-card">
-              <div className="top-items-card-header">
-                <h2>{section.title}</h2>
-                <a href="#" className="view-all-link">
-                  View All
-                </a>
-              </div>
-              <div className="top-items-list">
-                {section.data?.length ? (
-                  section.data.map((item, index) => (
-                    <div key={index} className="top-item">
-                      <div
-                        className={`item-rank ${
-                          index === 0
-                            ? "gold"
-                            : index === 1
-                            ? "silver"
-                            : index === 2
-                            ? "bronze"
-                            : ""
-                        }`}
-                      >
-                        {index + 1}
-                      </div>
-                      <div className="item-info">
-                        <p className="item-name">
-                          {item.vehicle
-                            ? `${item.vehicle.make || ""} ${item.vehicle.model || ""}`
-                            : item.customer?.name || "Unknown"}
-                        </p>
-                        <p className="item-details">
-                          {item.purchases || 0}{" "}
-                          {section.title.includes("Vehicles")
-                            ? "sales"
-                            : "purchases"}
-                        </p>
-                      </div>
-                      <div className="item-value">
-                        ${((item.revenue || 0).toLocaleString())}
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="empty-state">
-                    {section.icon}
-                    <p>No data available</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Recent Transactions */}
-        <div className="transactions-section">
-          <div className="transactions-header">
-            <h2>Recent Transactions</h2>
-            <a href="#" className="view-all-link">
-              View All
-            </a>
+        <div className="stat-card">
+          <TrendingUp className="stat-icon" />
+          <div>
+            <h2>{stats.totalSales}</h2>
+            <p>Total Sales</p>
           </div>
-          {reportData.recentTransactions?.length ? (
-            <table className="transactions-table">
-              <thead>
-                <tr>
-                  <th>Invoice</th>
-                  <th>Customer</th>
-                  <th>Vehicle</th>
-                  <th>Date</th>
-                  <th>Amount</th>
-                  <th>Status</th>
+        </div>
+
+        <div className="stat-card">
+          <Users className="stat-icon" />
+          <div>
+            <h2>{stats.totalCustomers}</h2>
+            <p>Unique Customers</p>
+          </div>
+        </div>
+
+        <div className="stat-card">
+          <Package className="stat-icon" />
+          <div>
+            <h2>{stats.totalVehicles}</h2>
+            <p>Vehicles Sold</p>
+          </div>
+        </div>
+      </div>
+
+      {/* ======================= TOP SELLING VEHICLES ======================= */}
+      <div className="reports-section">
+        <h2>Top Selling Vehicles</h2>
+        {topVehicles.length > 0 ? (
+          <table className="reports-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Vehicle</th>
+                <th>Units Sold</th>
+                <th>Total Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              {topVehicles.map((v, idx) => (
+                <tr key={idx}>
+                  <td>{idx + 1}</td>
+                  <td>{v.label}</td>
+                  <td>{v.count}</td>
+                  <td>${v.total.toLocaleString()}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {reportData.recentTransactions.map((sale) => (
-                  <tr key={sale._id || sale.id}>
-                    <td>{sale.invoiceNumber || "N/A"}</td>
-                    <td>{sale.customer?.name || "Unknown"}</td>
-                    <td>
-                      {sale.vehicle
-                        ? `${sale.vehicle.make || ""} ${sale.vehicle.model || ""}`
-                        : "Unknown"}
-                    </td>
-                    <td>
-                      {new Date(sale.date || sale.createdAt || Date.now()).toLocaleDateString()}
-                    </td>
-                    <td>${((sale.totalAmount || 0).toLocaleString())}</td>
-                    <td>
-                      <span className="transaction-status completed">
-                        {sale.status || "completed"}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <div className="empty-state">
-              <BarChart3 size={48} />
-              <h3>No transactions found</h3>
-            </div>
-          )}
-        </div>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p className="no-data">No vehicle sales found</p>
+        )}
+      </div>
+
+      {/* ======================= TOP CUSTOMERS ======================= */}
+      <div className="reports-section">
+        <h2>Top Customers</h2>
+        {topCustomers.length > 0 ? (
+          <table className="reports-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Customer</th>
+                <th>Purchases</th>
+                <th>Total Spent</th>
+              </tr>
+            </thead>
+            <tbody>
+              {topCustomers.map((c, idx) => (
+                <tr key={idx}>
+                  <td>{idx + 1}</td>
+                  <td>{c.name}</td>
+                  <td>{c.purchases}</td>
+                  <td>${c.totalSpent.toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p className="no-data">No customer data available</p>
+        )}
+      </div>
+
+      {/* ======================= RECENT TRANSACTIONS ======================= */}
+      <div className="reports-section">
+        <h2>Recent Transactions</h2>
+        {recentTransactions.length > 0 ? (
+          <table className="reports-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Vehicle</th>
+                <th>Amount</th>
+                <th>Method</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentTransactions.map((t, idx) => (
+                <tr key={idx}>
+                  <td>
+                    {new Date(t.createdAt || t.date).toLocaleDateString()}
+                  </td>
+                  <td>{t.customerId?.name || "Unknown"}</td>
+                  <td>
+                    {t.vehicleId
+                      ? `${t.vehicleId.make || ""} ${t.vehicleId.model || ""}`
+                      : "N/A"}
+                  </td>
+                  <td>${t.totalAmount?.toLocaleString()}</td>
+                  <td>{t.paymentMethod || "N/A"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p className="no-data">No transactions found</p>
+        )}
       </div>
     </div>
   );

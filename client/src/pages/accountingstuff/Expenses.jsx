@@ -12,7 +12,7 @@ export default function ExpensesPurchasesPayroll() {
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // ---------------- FETCH DATA FROM MONGO ----------------
+  // ---------------- FETCH DATA ----------------
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -30,7 +30,7 @@ export default function ExpensesPurchasesPayroll() {
     fetchData();
   }, [currentTab]);
 
-  // ---------------- HANDLE FORM INPUT ----------------
+  // ---------------- HANDLE FORM ----------------
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -45,14 +45,13 @@ export default function ExpensesPurchasesPayroll() {
     setShowForm(false);
   };
 
-  // ---------------- ADD OR UPDATE DOCUMENT ----------------
+  // ---------------- ADD OR UPDATE ----------------
   const handleAddOrEdit = async () => {
     try {
       setLoading(true);
       const endpoint = `/${currentTab}`;
-
-      // Auto-compute total + date formatting
       let payload = { ...formData };
+
       if (currentTab !== "payroll") {
         payload.total =
           (Number(payload.unitCost) || 0) * (Number(payload.quantity) || 1);
@@ -62,6 +61,7 @@ export default function ExpensesPurchasesPayroll() {
           Number(payload.deduction || 0) +
           Number(payload.bonus || 0);
       }
+
       if (!payload.date)
         payload.date = new Date().toISOString().split("T")[0];
 
@@ -83,14 +83,13 @@ export default function ExpensesPurchasesPayroll() {
     }
   };
 
-  // ---------------- EDIT DOCUMENT ----------------
+  // ---------------- EDIT / DELETE / PRINT ----------------
   const handleEdit = (item) => {
     setFormData(item);
     setEditing(item._id);
     setShowForm(true);
   };
 
-  // ---------------- DELETE DOCUMENT ----------------
   const handleDelete = async (id) => {
     try {
       const endpoint = `/${currentTab}`;
@@ -104,7 +103,6 @@ export default function ExpensesPurchasesPayroll() {
     }
   };
 
-  // ---------------- PRINT ----------------
   const handlePrint = (item) => {
     const w = window.open("", "PRINT", "width=600,height=600");
     w.document.write("<html><head><title>Invoice</title>");
@@ -122,7 +120,7 @@ export default function ExpensesPurchasesPayroll() {
     w.print();
   };
 
-  // ---------------- CALCULATE TOTALS ----------------
+  // ---------------- TOTALS ----------------
   const totals = useMemo(() => {
     const expensesTotal = expenses.reduce(
       (sum, e) => sum + (e.unitCost * e.quantity || 0),
@@ -150,7 +148,7 @@ export default function ExpensesPurchasesPayroll() {
     };
   }, [expenses, purchases, payroll]);
 
-  // ---------------- TABLE RENDER ----------------
+  // ---------------- TABLE ----------------
   const renderTable = () => {
     const data =
       currentTab === "expenses"
@@ -226,9 +224,9 @@ export default function ExpensesPurchasesPayroll() {
                 </>
               )}
               <td>
-                <button onClick={() => handleEdit(row)}>✏️</button>
-                <button onClick={() => handleDelete(row._id)}>🗑️</button>
-                <button onClick={() => handlePrint(row)}>🖨️</button>
+                <button className="btn-edit" onClick={() => handleEdit(row)}>✏️</button>
+                <button className="btn-delete" onClick={() => handleDelete(row._id)}>🗑️</button>
+                <button className="btn-print" onClick={() => handlePrint(row)}>🖨️</button>
               </td>
             </tr>
           ))}
@@ -242,105 +240,28 @@ export default function ExpensesPurchasesPayroll() {
     if (currentTab === "payroll") {
       return (
         <>
-          <input
-            type="text"
-            name="name"
-            placeholder="Employee Name"
-            value={formData.name || ""}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            name="role"
-            placeholder="Role"
-            value={formData.role || ""}
-            onChange={handleChange}
-          />
-          <input
-            type="number"
-            name="salary"
-            placeholder="Salary"
-            value={formData.salary || ""}
-            onChange={handleChange}
-          />
-          <input
-            type="number"
-            name="deduction"
-            placeholder="Deduction"
-            value={formData.deduction || ""}
-            onChange={handleChange}
-          />
-          <input
-            type="number"
-            name="bonus"
-            placeholder="Bonus"
-            value={formData.bonus || ""}
-            onChange={handleChange}
-          />
-          <input
-            type="date"
-            name="date"
-            value={formData.date || ""}
-            onChange={handleChange}
-          />
+          <input type="text" name="name" placeholder="Employee Name" value={formData.name || ""} onChange={handleChange} />
+          <input type="text" name="role" placeholder="Role" value={formData.role || ""} onChange={handleChange} />
+          <input type="number" name="salary" placeholder="Salary" value={formData.salary || ""} onChange={handleChange} />
+          <input type="number" name="deduction" placeholder="Deduction" value={formData.deduction || ""} onChange={handleChange} />
+          <input type="number" name="bonus" placeholder="Bonus" value={formData.bonus || ""} onChange={handleChange} />
+          <input type="date" name="date" value={formData.date || ""} onChange={handleChange} />
           <label>
-            <input
-              type="checkbox"
-              name="paid"
-              checked={formData.paid || false}
-              onChange={handleChange}
-            />{" "}
-            Paid
+            <input type="checkbox" name="paid" checked={formData.paid || false} onChange={handleChange} /> Paid
           </label>
         </>
       );
     }
 
-    // Expense / Purchase
     return (
       <>
-        <input
-          type="text"
-          name="itemName"
-          placeholder="Item Name"
-          value={formData.itemName || ""}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="company"
-          placeholder="Company / Supplier"
-          value={formData.company || ""}
-          onChange={handleChange}
-        />
-        <input
-          type="number"
-          name="quantity"
-          placeholder="Quantity"
-          value={formData.quantity || ""}
-          onChange={handleChange}
-        />
-        <input
-          type="number"
-          name="unitCost"
-          placeholder="Unit Cost"
-          value={formData.unitCost || ""}
-          onChange={handleChange}
-        />
-        <input
-          type="date"
-          name="date"
-          value={formData.date || ""}
-          onChange={handleChange}
-        />
+        <input type="text" name="itemName" placeholder="Item Name" value={formData.itemName || ""} onChange={handleChange} />
+        <input type="text" name="company" placeholder="Company / Supplier" value={formData.company || ""} onChange={handleChange} />
+        <input type="number" name="quantity" placeholder="Quantity" value={formData.quantity || ""} onChange={handleChange} />
+        <input type="number" name="unitCost" placeholder="Unit Cost" value={formData.unitCost || ""} onChange={handleChange} />
+        <input type="date" name="date" value={formData.date || ""} onChange={handleChange} />
         <label>
-          <input
-            type="checkbox"
-            name="paid"
-            checked={formData.paid || false}
-            onChange={handleChange}
-          />{" "}
-          Paid
+          <input type="checkbox" name="paid" checked={formData.paid || false} onChange={handleChange} /> Paid
         </label>
       </>
     );
@@ -351,70 +272,38 @@ export default function ExpensesPurchasesPayroll() {
     <div className="expenses-page">
       <h1>💼 Expenses, Purchases & Payroll</h1>
 
-      {/* ✅ TOTAL SUMMARY SECTION */}
+      {/* TOTALS */}
       <div className="summary-cards">
-        <div className="card">
-          <h3>💰 Expenses Total</h3>
-          <p>${totals.expensesTotal.toFixed(2)}</p>
-        </div>
-        <div className="card">
-          <h3>🛒 Purchases Total</h3>
-          <p>${totals.purchasesTotal.toFixed(2)}</p>
-        </div>
-        <div className="card">
-          <h3>👥 Payroll Total</h3>
-          <p>${totals.payrollTotal.toFixed(2)}</p>
-        </div>
-        <div className="card grand">
-          <h3>📊 Grand Total</h3>
-          <p>${totals.grandTotal.toFixed(2)}</p>
-        </div>
+        <div className="card"><h3>💰 Expenses Total</h3><p>${totals.expensesTotal.toFixed(2)}</p></div>
+        <div className="card"><h3>🛒 Purchases Total</h3><p>${totals.purchasesTotal.toFixed(2)}</p></div>
+        <div className="card"><h3>👥 Payroll Total</h3><p>${totals.payrollTotal.toFixed(2)}</p></div>
+        <div className="card grand"><h3>📊 Grand Total</h3><p>${totals.grandTotal.toFixed(2)}</p></div>
       </div>
 
-      {/* ---------------- TABS ---------------- */}
+      {/* TABS */}
       <div className="tabs">
-        <button
-          className={currentTab === "expenses" ? "active" : ""}
-          onClick={() => setCurrentTab("expenses")}
-        >
-          Expenses
-        </button>
-        <button
-          className={currentTab === "purchases" ? "active" : ""}
-          onClick={() => setCurrentTab("purchases")}
-        >
-          Purchases
-        </button>
-        <button
-          className={currentTab === "payroll" ? "active" : ""}
-          onClick={() => setCurrentTab("payroll")}
-        >
-          Payroll
-        </button>
+        <button className={currentTab === "expenses" ? "active" : ""} onClick={() => setCurrentTab("expenses")}>Expenses</button>
+        <button className={currentTab === "purchases" ? "active" : ""} onClick={() => setCurrentTab("purchases")}>Purchases</button>
+        <button className={currentTab === "payroll" ? "active" : ""} onClick={() => setCurrentTab("payroll")}>Payroll</button>
       </div>
 
-      <div className="form-toggle">
-        <button onClick={() => setShowForm(true)}>
-          ➕ Add {currentTab === "payroll" ? "Employee" : "Item"}
-        </button>
-      </div>
-
-      {/* ---------------- FORM ---------------- */}
+      {/* FORM */}
       {showForm && (
         <div className="form-card">
-          <h2>
-            {editing ? "Edit" : "Add New"}{" "}
-            {currentTab === "payroll" ? "Employee" : "Item"}
-          </h2>
-          {renderForm()}
-          <div className="form-buttons">
+          <h2>{editing ? "Edit" : "Add New"} {currentTab === "payroll" ? "Employee" : "Item"}</h2>
+          <div className="form-grid">{renderForm()}</div>
+          <div className="form-actions">
             <button onClick={handleAddOrEdit}>💾 Save</button>
             <button onClick={resetForm}>❌ Cancel</button>
           </div>
         </div>
       )}
 
-      {/* ---------------- TABLE ---------------- */}
+      <div className="form-toggle">
+        <button onClick={() => setShowForm(true)}>➕ Add {currentTab === "payroll" ? "Employee" : "Item"}</button>
+      </div>
+
+      {/* TABLE */}
       <div className="table-card">{renderTable()}</div>
     </div>
   );

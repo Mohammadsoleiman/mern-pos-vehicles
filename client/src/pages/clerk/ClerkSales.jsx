@@ -1,4 +1,3 @@
-// src/pages/clerk/ClerkSales.jsx
 import React, { useContext, useState, useRef } from "react";
 import { VehicleContext } from "../../context/clerk/VehicleContext";
 import { SalesContext } from "../../context/clerk/SalesContext";
@@ -16,11 +15,8 @@ import "../../styles/clerk/clerkSales.css";
 const ClerkSales = () => {
   const { vehicles, updateVehicleStock } = useContext(VehicleContext);
   const { addSale } = useContext(SalesContext);
-  const {
-    customers,
-    addCustomer,
-    refreshCustomerTotals, // ✅ new function from context
-  } = useContext(CustomerContext);
+  const { customers, addCustomer, refreshCustomerTotals } =
+    useContext(CustomerContext);
 
   const [cart, setCart] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
@@ -37,10 +33,13 @@ const ClerkSales = () => {
   });
   const invoiceRef = useRef(null);
 
+  // ✅ Helper for Mongo or numeric IDs
+  const getId = (obj) => String(obj?._id || obj?.id || obj || "");
+
   // ================== Filters ==================
   const availableVehicles = vehicles.filter(
     (v) =>
-      v.stock > 0 &&
+      (v.stock || 0) > 0 &&
       (v.make?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         v.model?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
@@ -53,14 +52,12 @@ const ClerkSales = () => {
 
   // ================== Cart Functions ==================
   const addToCart = (vehicle) => {
-    const existing = cart.find(
-      (item) => item.vehicle._id === vehicle._id || item.vehicle.id === vehicle.id
-    );
+    const existing = cart.find((item) => getId(item.vehicle) === getId(vehicle));
     if (existing) {
-      if (existing.quantity < vehicle.stock) {
+      if (existing.quantity < (vehicle.stock || 0)) {
         setCart(
           cart.map((item) =>
-            item.vehicle._id === vehicle._id || item.vehicle.id === vehicle.id
+            getId(item.vehicle) === getId(vehicle)
               ? { ...item, quantity: item.quantity + 1 }
               : item
           )
@@ -70,16 +67,14 @@ const ClerkSales = () => {
   };
 
   const updateQuantity = (vehicleId, newQty) => {
-    const item = cart.find(
-      (i) => i.vehicle._id === vehicleId || i.vehicle.id === vehicleId
-    );
+    const item = cart.find((i) => getId(i.vehicle) === String(vehicleId));
     if (!item) return;
     if (newQty <= 0) return removeFromCart(vehicleId);
-    if (newQty > item.vehicle.stock)
+    if (newQty > (item.vehicle.stock || 0))
       return alert("Cannot exceed available stock!");
     setCart(
       cart.map((item) =>
-        item.vehicle._id === vehicleId || item.vehicle.id === vehicleId
+        getId(item.vehicle) === String(vehicleId)
           ? { ...item, quantity: newQty }
           : item
       )
@@ -87,14 +82,10 @@ const ClerkSales = () => {
   };
 
   const removeFromCart = (vehicleId) =>
-    setCart(
-      cart.filter(
-        (i) => i.vehicle._id !== vehicleId && i.vehicle.id !== vehicleId
-      )
-    );
+    setCart(cart.filter((i) => getId(i.vehicle) !== String(vehicleId)));
 
   const subtotal = cart.reduce(
-    (sum, i) => sum + i.vehicle.price * i.quantity,
+    (sum, i) => sum + (Number(i.vehicle.price) || 0) * i.quantity,
     0
   );
   const tax = subtotal * 0.1;
@@ -106,23 +97,26 @@ const ClerkSales = () => {
     if (!selectedCustomer) return alert("Please select a customer!");
 
     try {
+      let createdInvoice = null;
+
       for (const item of cart) {
-        const vehicleId = item.vehicle._id || item.vehicle.id;
-        const customerId = selectedCustomer._id || selectedCustomer.id;
+        const vehicleId = getId(item.vehicle);
+        const customerId = getId(selectedCustomer);
 
         const saleData = {
           vehicleId,
           customerId,
           quantity: item.quantity,
           unitPrice: item.vehicle.price,
-          totalAmount: item.vehicle.price * item.quantity,
+          totalAmount: (Number(item.vehicle.price) || 0) * item.quantity,
           paymentMethod,
-          tax: item.vehicle.price * item.quantity * 0.1,
-          subtotal: item.vehicle.price * item.quantity,
+          tax: (Number(item.vehicle.price) || 0) * item.quantity * 0.1,
+          subtotal: (Number(item.vehicle.price) || 0) * item.quantity,
         };
 
         // 1️⃣ Record the sale
         const invoice = await addSale(saleData);
+        createdInvoice = invoice;
 
         // 2️⃣ Update vehicle stock
         await updateVehicleStock(vehicleId, item.quantity);
@@ -141,10 +135,12 @@ const ClerkSales = () => {
         if (typeof refreshCustomerTotals === "function") {
           await refreshCustomerTotals(customerId);
         }
+      }
 
-        // 5️⃣ Save invoice details
+      // 5️⃣ Save invoice details
+      if (createdInvoice) {
         setLastInvoice({
-          ...invoice,
+          ...createdInvoice,
           customer: selectedCustomer,
           items: cart,
           subtotal,
@@ -208,9 +204,11 @@ const ClerkSales = () => {
           <span className="vehicle-year">{vehicle.year}</span>
         </div>
         <span
-          className={`vehicle-stock ${vehicle.stock < 5 ? "low" : "ok"}`}
+          className={`vehicle-stock ${
+            (vehicle.stock || 0) < 5 ? "low" : "ok"
+          }`}
         >
-          {vehicle.stock} left
+          {vehicle.stock || 0} left
         </span>
       </div>
       <div className="vehicle-footer">
@@ -237,7 +235,7 @@ const ClerkSales = () => {
       <div className="cart-item-quantity">
         <button
           onClick={() =>
-            updateQuantity(item.vehicle._id || item.vehicle.id, item.quantity - 1)
+            updateQuantity(getId(item.vehicle), item.quantity - 1)
           }
         >
           <Minus size={16} />
@@ -245,7 +243,7 @@ const ClerkSales = () => {
         <span>{item.quantity}</span>
         <button
           onClick={() =>
-            updateQuantity(item.vehicle._id || item.vehicle.id, item.quantity + 1)
+            updateQuantity(getId(item.vehicle), item.quantity + 1)
           }
         >
           <Plus size={16} />
@@ -256,7 +254,7 @@ const ClerkSales = () => {
       </span>
       <button
         className="btn-remove"
-        onClick={() => removeFromCart(item.vehicle._id || item.vehicle.id)}
+        onClick={() => removeFromCart(getId(item.vehicle))}
       >
         <X size={16} />
       </button>
@@ -288,7 +286,7 @@ const ClerkSales = () => {
             </div>
             <div className="vehicles-grid">
               {availableVehicles.map((v) => (
-                <VehicleCard key={v._id || v.id} vehicle={v} />
+                <VehicleCard key={getId(v)} vehicle={v} />
               ))}
             </div>
             {availableVehicles.length === 0 && (
@@ -310,9 +308,7 @@ const ClerkSales = () => {
                     type="text"
                     placeholder="Search customer..."
                     value={customerSearchQuery}
-                    onChange={(e) =>
-                      setCustomerSearchQuery(e.target.value)
-                    }
+                    onChange={(e) => setCustomerSearchQuery(e.target.value)}
                   />
                 </div>
                 <button
@@ -338,7 +334,7 @@ const ClerkSales = () => {
                 <div className="customer-list">
                   {filteredCustomers.slice(0, 5).map((c) => (
                     <button
-                      key={c._id || c.id}
+                      key={getId(c)}
                       onClick={() => setSelectedCustomer(c)}
                       className="customer-btn"
                     >
@@ -406,10 +402,7 @@ const ClerkSales = () => {
               <h3>Cart ({cart.length})</h3>
               <div className="cart-list">
                 {cart.map((item) => (
-                  <CartItem
-                    key={item.vehicle._id || item.vehicle.id}
-                    item={item}
-                  />
+                  <CartItem key={getId(item.vehicle)} item={item} />
                 ))}
                 {cart.length === 0 && (
                   <p className="text-light">Cart is empty</p>
@@ -506,10 +499,7 @@ const ClerkSales = () => {
                       <td>{item.quantity}</td>
                       <td>${item.vehicle.price.toLocaleString()}</td>
                       <td>
-                        $
-                        {(
-                          item.vehicle.price * item.quantity
-                        ).toLocaleString()}
+                        ${(item.vehicle.price * item.quantity).toLocaleString()}
                       </td>
                     </tr>
                   ))}
