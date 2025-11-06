@@ -1,6 +1,5 @@
 /* =======================================================
-   ACCOUNTING MODULE — PROFESSIONAL UI STYLING
-   Refined for enterprise-grade dashboards
+   ACCOUNTING MODULE — ENTERPRISE UI DESIGN (FINAL POLISH)
    ======================================================= */
 
 /* ---------- Base Layout ---------- */
@@ -32,7 +31,7 @@
 
 .accountsHeader button {
   background: #3b82f6;
-  color: white;
+  color: #fff;
   border: none;
   padding: 10px 18px;
   border-radius: 8px;
@@ -42,11 +41,12 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: background 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .accountsHeader button:hover {
   background: #2563eb;
+  transform: translateY(-1px);
 }
 
 /* ---------- Summary Cards ---------- */
@@ -96,40 +96,80 @@
   color: #2563eb;
 }
 
-/* ---------- Table ---------- */
+/* =======================================================
+   📊 TABLE — POLISHED HEADER + STRIPED ROWS + STICKY HEADER
+   ======================================================= */
+
 .accountsTable {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   background: #ffffff;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 40px;
 }
 
-.accountsTable th {
-  background: #f1f5f9;
-  color: #475569;
-  font-weight: 600;
-  font-size: 14px;
+/* ---------- Header ---------- */
+.accountsTable thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: linear-gradient(180deg, #f9fafb 0%, #f1f5f9 100%);
+  color: #0f172a;
+  font-weight: 700;
+  font-size: 15px;
   text-align: left;
-  padding: 12px 14px;
-  border-bottom: 1px solid #e2e8f0;
+  padding: 14px 18px;
+  border-bottom: 2px solid #e2e8f0;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
 }
 
+.accountsTable th:nth-child(3) {
+  text-align: right; /* Balance header */
+}
+
+.accountsTable th:nth-child(4) {
+  text-align: center; /* Actions header */
+}
+
+/* ---------- Rows ---------- */
 .accountsTable td {
-  padding: 12px 14px;
+  padding: 14px 18px;
   border-bottom: 1px solid #f1f5f9;
   color: #1e293b;
-  font-size: 14px;
+  font-size: 15px;
+  vertical-align: middle;
+  background: #fff;
+}
+
+/* Alternating stripes for readability */
+.accountsTable tbody tr:nth-child(even) td {
+  background: #f9fafc;
 }
 
 .accountsTable tr:hover td {
-  background: #f9fafb;
+  background: #f1f5f9;
+  transition: background 0.2s ease;
 }
 
+.accountsTable td:nth-child(3) {
+  text-align: right; /* Balance column */
+  font-weight: 600;
+}
+
+.accountsTable td:last-child {
+  text-align: center; /* Actions centered */
+}
+
+/* ---------- Actions ---------- */
 .actions {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 /* ---------- Action Buttons ---------- */
@@ -138,9 +178,12 @@
 .deleteBtn {
   border: none;
   cursor: pointer;
-  padding: 6px;
+  padding: 6px 8px;
   border-radius: 6px;
-  transition: background 0.2s ease, transform 0.1s ease;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .viewBtn {
@@ -148,7 +191,8 @@
   background: rgba(59, 130, 246, 0.08);
 }
 .viewBtn:hover {
-  background: rgba(59, 130, 246, 0.15);
+  background: rgba(59, 130, 246, 0.18);
+  transform: scale(1.1);
 }
 
 .editBtn {
@@ -156,7 +200,8 @@
   background: rgba(22, 163, 74, 0.08);
 }
 .editBtn:hover {
-  background: rgba(22, 163, 74, 0.15);
+  background: rgba(22, 163, 74, 0.18);
+  transform: scale(1.1);
 }
 
 .deleteBtn {
@@ -164,10 +209,13 @@
   background: rgba(220, 38, 38, 0.08);
 }
 .deleteBtn:hover {
-  background: rgba(220, 38, 38, 0.15);
+  background: rgba(220, 38, 38, 0.18);
+  transform: scale(1.1);
 }
 
-/* ---------- Modal (Create / Edit / View) ---------- */
+/* =======================================================
+   🪟 MODALS — CREATE / EDIT / VIEW
+   ======================================================= */
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -276,7 +324,9 @@
   background: #cbd5e1;
 }
 
-/* ---------- Responsive ---------- */
+/* =======================================================
+   📱 RESPONSIVE DESIGN
+   ======================================================= */
 @media (max-width: 768px) {
   .accountsHeader {
     flex-direction: column;
@@ -286,5 +336,11 @@
 
   .modalContent {
     padding: 24px 20px;
+  }
+
+  .accountsTable {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
   }
 }
