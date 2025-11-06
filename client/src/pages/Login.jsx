@@ -27,12 +27,12 @@ export default function Login() {
       console.log("✅ Logged in:", data);
 
      // Normalize role to string
-const userRole = data.role?.name || data.user?.role?.name || data.role || data.user?.role;
+const userRole = (data.role?.name || data.user?.role?.name || data.role || data.user?.role || "").toLowerCase();
 
 
       // ✅ توجيه حسب الدور
       if (userRole === "admin") navigate("/admin/dashboard");
-      else if (userRole === "account") navigate("/accountant");
+      else if (userRole === "accounting") navigate("/accounting");
       else if (userRole === "clerk" || userRole === "cashier")
         navigate("/cashier");
       else navigate("/unauthorized");

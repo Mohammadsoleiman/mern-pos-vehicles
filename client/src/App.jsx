@@ -2,34 +2,30 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-// 🔐 Contexts
 import { AuthProvider } from "./context/AuthContext";
+import { SettingsProvider } from "./context/SettingsContext";
+import ThemeSync from "./components/ThemeSync";
+
 import { TransactionProvider } from "./context/ACCOUNTANT/TransactionContext";
 import { ExpenseProvider } from "./context/ACCOUNTANT/ExpenseContext";
 import { VehicleProvider } from "./context/ACCOUNTANT/VehicleContext";
 import { IncomeProvider } from "./context/ACCOUNTANT/IncomeContext";
-import { SettingsProvider } from "./context/SettingsContext";
-import ThemeSync from "./components/ThemeSync";
 import { TransactionSummaryProvider } from "./context/ACCOUNTANT/TransactionSummaryContext";
-import { LowStockProvider } from "./context/clerk/LowStockContext"; // ✅ Your addition
 
-// Clerk Contexts
 import { ClerkAuthProvider } from "./context/clerk/ClerkAuthContext";
 import { ClerkVehicleProvider } from "./context/clerk/VehicleContext";
 import { ClerkSalesProvider } from "./context/clerk/SalesContext";
 import { ClerkCustomerProvider } from "./context/clerk/CustomerContext";
+import { LowStockProvider } from "./context/clerk/LowStockContext";
 
-// 🔒 Role-based Route
 import RoleRoute from "./components/RoleRoute";
 
-// 🧭 Layouts & Pages
 import Admin from "./components/admin/Admin";
 import Accounting from "./pages/Accounting";
 import Cashier from "./pages/Cashier";
 import Login from "./pages/Login";
 import Unauthorized from "./pages/Unauthorized";
 
-// 📊 Admin Pages
 import Dashboard from "./pages/Dashboard";
 import UsersPage from "./pages/users";
 import RolesPage from "./pages/roles";
@@ -38,33 +34,28 @@ import VehiclesList from "./pages/Vehicles/VehiclesList";
 import VehicleCreate from "./pages/Vehicles/VehicleCreate";
 import VehicleEdit from "./pages/Vehicles/VehicleEdit";
 import VehicleShow from "./pages/Vehicles/VehicleShow";
-import GlobalSettings from "./pages/settings/GlobalSettings"; // ✅ Unified settings page
+import GlobalSettings from "./pages/settings/GlobalSettings";
 
-// 💼 Accounting Pages
 import FeaturesOverview from "./pages/accountingstuff/FeaturesOverview";
 import Transactions from "./pages/accountingstuff/Transactions";
 import Income from "./pages/accountingstuff/Income";
 import Expenses from "./pages/accountingstuff/Expenses";
 import Reports from "./pages/accountingstuff/Reports";
 
-// 👥 Employees
 import EmployeeList from "./pages/accountingstuff/employees/EmployeeList";
 import EmployeeCreate from "./pages/accountingstuff/employees/EmployeeCreate";
 import EmployeeEdit from "./pages/accountingstuff/employees/EmployeeEdit";
 
-// 🚗 Vehicles (Accounting)
 import VehicleList from "./pages/accountingstuff/vehicles/VehicleList";
 import VehicleCreatePage from "./pages/accountingstuff/vehicles/VehicleCreate";
 import VehicleEditPage from "./pages/accountingstuff/vehicles/VehicleEdit";
 import VehicleShowPage from "./pages/accountingstuff/vehicles/VehicleShow";
 
-// 💳 Accounts
 import AccountList from "./pages/accountingstuff/accounts/AccountList";
 import AccountCreate from "./pages/accountingstuff/accounts/AccountCreate";
 import AccountEdit from "./pages/accountingstuff/accounts/AccountEdit";
 import AccountShow from "./pages/accountingstuff/accounts/AccountShow";
 
-// 💰 Clerk Pages
 import ClerkDashboard from "./pages/clerk/ClerkDashboard";
 import ClerkSales from "./pages/clerk/ClerkSales";
 import ClerkVehicles from "./pages/clerk/vehicles/VehicleList";
@@ -78,28 +69,28 @@ import Services from "./pages/clerk/inventory/Services";
 export default function App() {
   return (
     <AuthProvider>
-      {/* ✅ SettingsProvider must come right after AuthProvider */}
       <SettingsProvider>
-        <TransactionProvider>
-          <ExpenseProvider>
-            <VehicleProvider>
-              <IncomeProvider>
-                <TransactionSummaryProvider>
-                  <ClerkAuthProvider>
-                    <ClerkVehicleProvider>
-                      <ClerkSalesProvider>
-                        <ClerkCustomerProvider>
-                          <LowStockProvider> {/* ✅ Your custom context */}
-                            {/* <ThemeSync> */}
+        <ThemeSync>
+          <TransactionProvider>
+            <ExpenseProvider>
+              <VehicleProvider>
+                <IncomeProvider>
+                  <TransactionSummaryProvider>
+                    <ClerkAuthProvider>
+                      <ClerkVehicleProvider>
+                        <ClerkSalesProvider>
+                          <ClerkCustomerProvider>
+                            <LowStockProvider>
+
                               <BrowserRouter>
                                 <Routes>
 
-                                  {/* 🌐 PUBLIC */}
+                                  {/* Public */}
                                   <Route path="/" element={<Login />} />
                                   <Route path="/login" element={<Login />} />
                                   <Route path="/unauthorized" element={<Unauthorized />} />
 
-                                  {/* 🧭 ADMIN */}
+                                  {/* Admin */}
                                   <Route element={<RoleRoute allowedRoles={["admin"]} />}>
                                     <Route path="/admin" element={<Admin />}>
                                       <Route index element={<Dashboard />} />
@@ -115,11 +106,11 @@ export default function App() {
                                     </Route>
                                   </Route>
 
-                                  {/* 💼 ACCOUNTING */}
+                                  {/* Accounting */}
                                   <Route
                                     path="/accounting"
                                     element={
-                                      <RoleRoute allowedRoles={["accountant", "admin"]}>
+                                      <RoleRoute allowedRoles={["accounting", "admin"]}>
                                         <Accounting />
                                       </RoleRoute>
                                     }
@@ -150,7 +141,7 @@ export default function App() {
                                     <Route path="accounts/show/:id" element={<AccountShow />} />
                                   </Route>
 
-                                  {/* 💰 CLERK / CASHIER */}
+                                  {/* Clerk */}
                                   <Route
                                     path="/cashier"
                                     element={
@@ -172,22 +163,22 @@ export default function App() {
                                     <Route path="settings" element={<GlobalSettings />} />
                                   </Route>
 
-                                  {/* 🚫 FALLBACK */}
                                   <Route path="*" element={<Navigate to="/unauthorized" replace />} />
 
                                 </Routes>
                               </BrowserRouter>
-                            {/* </ThemeSync> */}
-                          </LowStockProvider>
-                        </ClerkCustomerProvider>
-                      </ClerkSalesProvider>
-                    </ClerkVehicleProvider>
-                  </ClerkAuthProvider>
-                </TransactionSummaryProvider>
-              </IncomeProvider>
-            </VehicleProvider>
-          </ExpenseProvider>
-        </TransactionProvider>
+
+                            </LowStockProvider>
+                          </ClerkCustomerProvider>
+                        </ClerkSalesProvider>
+                      </ClerkVehicleProvider>
+                    </ClerkAuthProvider>
+                  </TransactionSummaryProvider>
+                </IncomeProvider>
+              </VehicleProvider>
+            </ExpenseProvider>
+          </TransactionProvider>
+        </ThemeSync>
       </SettingsProvider>
     </AuthProvider>
   );

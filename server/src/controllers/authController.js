@@ -25,7 +25,7 @@ exports.login = async (req, res) => {
       user.settings = {
         admin: { theme: "light", layout: "list", profilePic: "" },
         clerk: { theme: "light", layout: "list", profilePic: "" },
-        accountant: { theme: "light", layout: "list", profilePic: "" }
+    accounting: { theme: "light", layout: "list", profilePic: "" },   
       };
       await user.save();
     }
@@ -269,20 +269,36 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+// ✅ Update Settings Per Role (admin / accounting / clerk)
 exports.updateSettings = async (req, res) => {
   try {
-    const { dashboardName, layout, theme, profilePic } = req.body;
+    const { role, theme, layout, profilePic } = req.body;
 
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // احفظ فقط بالإعدادات المحلية الآن
-    // لاحقًا نعمل model للsettings أو نضيفهم ل user schema
+    // ✅ تأكد أن user.settings موجودة وبهيكلها الصحيح
+    if (!user.settings || typeof user.settings !== "object") {
+      user.settings = {
+        admin: { theme: "light", layout: "list", profilePic: "" },
+        clerk: { theme: "light", layout: "list", profilePic: "" },
+        accounting: { theme: "light", layout: "list", profilePic: "" },
+      };
+    }
 
-    user.settings = { dashboardName, layout, theme, profilePic };
+    // ✅ حدّث الإعدادات حسب الدور الحالي فقط
+    user.settings[role] = {
+      theme: theme ?? user.settings[role].theme,
+      layout: layout ?? user.settings[role].layout,
+      profilePic: profilePic ?? user.settings[role].profilePic,
+    };
+
     await user.save();
 
-    return res.json({ message: "✅ Settings updated!", settings: user.settings });
+    return res.json({
+      message: "✅ Settings updated!",
+      settings: user.settings,
+    });
   } catch (err) {
     console.error("❌ updateSettings error:", err);
     res.status(500).json({ message: "Server error" });

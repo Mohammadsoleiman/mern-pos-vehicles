@@ -6,42 +6,46 @@ const SettingsContext = createContext();
 
 export const SettingsProvider = ({ children }) => {
   const { user, setUser } = useAuth();
-  const role = user?.role || "clerk";
+  const role = (user?.role || "clerk").toLowerCase();
 
   const defaultValues = {
     admin: { theme: "light", layout: "list", profilePic: "" },
     clerk: { theme: "light", layout: "list", profilePic: "" },
-    accountant: { theme: "light", layout: "list", profilePic: "" },
+    accounting: { theme: "light", layout: "list", profilePic: "" },
   };
 
-  // ✅ always have a safe starting value
-const [settings, setSettings] = useState(null);
+  // ✅ من البداية settings = default (مش null)
+  const [settings, setSettings] = useState(defaultValues[role]);
 
- useEffect(() => {
-  if (user?.settings) {
-    setSettings(user.settings[role] || defaultValues[role]);
-  } else {
-    setSettings(defaultValues[role]);
-  }
-}, [user, role]);
+  useEffect(() => {
+    if (!user) return;
+
+    const role = (user.role || "clerk").toLowerCase();
+
+    // ✅ لو كان عنده settings → استخدمها
+    if (user.settings?.[role]) {
+      setSettings(user.settings[role]);
+    } 
+    // ✅ غير هيك → عطيني default
+    else {
+      setSettings(defaultValues[role]);
+    }
+  }, [user]);
 
   const updateSettings = async (newSettings) => {
-    const role = user?.role || "clerk";
+    const role = (user?.role || "clerk").toLowerCase();
 
-    // ✅ ensure settings object exists
     const updatedSettings = {
-      ...(user.settings || {}), // fallback if undefined
+      ...(user.settings || {}),
       [role]: newSettings,
     };
 
-    // ✅ update UI instantly
     setSettings(newSettings);
 
     const updatedUser = { ...user, settings: updatedSettings };
     setUser(updatedUser);
     localStorage.setItem("user", JSON.stringify(updatedUser));
 
-    // ✅ send to backend with role information
     await axiosClient.put("/auth/settings", { role, ...newSettings });
   };
 

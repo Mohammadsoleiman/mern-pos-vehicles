@@ -1,17 +1,27 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  name: String,
+  email: { type: String, unique: true },
+  password: String,
   role: { type: mongoose.Schema.Types.ObjectId, ref: "Role" },
 
-  // ✅ New settings field
   settings: {
-    dashboardName: { type: String, default: "Admin Panel" },
-    layout: { type: String, default: "grid" }, // grid | list
-    theme: { type: String, default: "light" }, // light | dark
-    profilePic: { type: String, default: "" }, // will store cloudinary URL later
+    admin: {
+      theme: { type: String, default: "light" },
+      layout: { type: String, default: "list" },
+      profilePic: { type: String, default: "" },
+    },
+    clerk: {
+      theme: { type: String, default: "light" },
+      layout: { type: String, default: "list" },
+      profilePic: { type: String, default: "" },
+    },
+    accounting: {                                // ✅ بدل accountant → accounting
+      theme: { type: String, default: "light" },
+      layout: { type: String, default: "list" },
+      profilePic: { type: String, default: "" },
+    },
   }
 });
 
