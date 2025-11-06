@@ -32,7 +32,7 @@ const userRole = data.role?.name || data.user?.role?.name || data.role || data.u
 
       // ✅ توجيه حسب الدور
       if (userRole === "admin") navigate("/admin/dashboard");
-      else if (userRole === "accounting") navigate("/accounting");
+      else if (userRole === "account") navigate("/accountant");
       else if (userRole === "clerk" || userRole === "cashier")
         navigate("/cashier");
       else navigate("/unauthorized");

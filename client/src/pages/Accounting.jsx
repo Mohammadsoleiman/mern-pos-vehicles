@@ -10,9 +10,13 @@ export default function Accounting() {
   const { user } = useAuth();
   const { settings } = useSettings();
 
-  // ✅ لو مش أدمن → دايمًا Light
+  // ✅ لو الصفحات اشتغلت قبل تحميل الإعدادات → نمنع الكراش
+  if (!settings) {
+    return <div className="loading-screen">Loading settings...</div>;
+  }
 
-  const themeClass = settings.theme === "dark" ? "dark-theme" : "light-theme";
+  // ✅ Theme Class
+  const themeClass = settings.theme === "dark" ? "theme-dark" : "theme-light";
 
   return (
     <div className={`accounting-page ${themeClass}`}>

@@ -14,26 +14,35 @@ export const SettingsProvider = ({ children }) => {
     accountant: { theme: "light", layout: "list", profilePic: "" },
   };
 
-  const [settings, setSettings] = useState(defaultValues[role]);
+  // ✅ always have a safe starting value
+const [settings, setSettings] = useState(null);
 
-  useEffect(() => {
-    if (user?.settings) {
-      setSettings(user.settings[role] || defaultValues[role]);
-    }
-  }, [user, role]);
+ useEffect(() => {
+  if (user?.settings) {
+    setSettings(user.settings[role] || defaultValues[role]);
+  } else {
+    setSettings(defaultValues[role]);
+  }
+}, [user, role]);
 
   const updateSettings = async (newSettings) => {
-    const updated = {
-      ...user.settings,
+    const role = user?.role || "clerk";
+
+    // ✅ ensure settings object exists
+    const updatedSettings = {
+      ...(user.settings || {}), // fallback if undefined
       [role]: newSettings,
     };
 
+    // ✅ update UI instantly
     setSettings(newSettings);
-    const updatedUser = { ...user, settings: updated };
+
+    const updatedUser = { ...user, settings: updatedSettings };
     setUser(updatedUser);
     localStorage.setItem("user", JSON.stringify(updatedUser));
 
-    await axiosClient.put("/auth/settings", newSettings);
+    // ✅ send to backend with role information
+    await axiosClient.put("/auth/settings", { role, ...newSettings });
   };
 
   return (

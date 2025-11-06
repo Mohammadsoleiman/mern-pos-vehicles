@@ -61,6 +61,6 @@ router.delete("/users/:id", auth(["admin"]), deleteUser);
 router.put("/update-role", auth(["admin"]), updateRole);
 
 // ✅ Correct role list → accountant not accounting
-router.put("/settings", auth(["admin", "clerk", "accountant"]), updateSettings);
+router.put("/settings", auth(["admin", "clerk", "accounting"]), updateSettings);
 
 module.exports = router;
