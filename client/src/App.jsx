@@ -17,6 +17,7 @@ import { ClerkAuthProvider } from "./context/clerk/ClerkAuthContext";
 import { ClerkVehicleProvider } from "./context/clerk/VehicleContext";
 import { ClerkSalesProvider } from "./context/clerk/SalesContext";
 import { ClerkCustomerProvider } from "./context/clerk/CustomerContext";
+import { LowStockProvider } from "./context/clerk/LowStockContext"; // ✅ Added
 
 // 🔒 Role-based Route
 import RoleRoute from "./components/RoleRoute";
@@ -65,9 +66,8 @@ import AccountShow from "./pages/accountingstuff/accounts/AccountShow";
 // 💰 Clerk Pages
 import ClerkDashboard from "./pages/clerk/ClerkDashboard";
 import ClerkSales from "./pages/clerk/ClerkSales";
-import ClerkVehicles from "./pages/clerk/vehicles/VehicleList";
-import ClerkVehicleShow from "./pages/clerk/vehicles/VehicleShow";
-import ClerkCustomers from "./pages/clerk/ClerkCustomers";
+import ClerkVehicles from "./pages/clerk/ClerkVehicles";
+import ClerkCustomers from "./pages/clerk/customers/ClerkCustomers";
 import ClerkReports from "./pages/clerk/ClerkReports";
 
 // ✅ Shared Settings Page (New)
@@ -116,8 +116,8 @@ export default function App() {
                                     <Route path="vehicles/show/:id" element={<VehicleShow />} />
                                       <Route path="settings" element={<GlobalSettings />} />
                                   </Route>
-                                </Route>
 
+<<<<<<< HEAD
                                 {/* ACCOUNTING */}
                                 <Route
                                   path="/accounting"
@@ -191,6 +191,75 @@ export default function App() {
         </TransactionProvider>
 
       </SettingsProvider>
+=======
+                                  {/* 💼 ACCOUNTING */}
+                                  <Route
+                                    path="/accounting"
+                                    element={
+                                      <RoleRoute allowedRoles={["accounting", "admin"]}>
+                                        <Accounting />
+                                      </RoleRoute>
+                                    }
+                                  >
+                                    <Route index element={<FeaturesOverview />} />
+                                    <Route path="featuresoverview" element={<FeaturesOverview />} />
+                                    <Route path="transactions" element={<Transactions />} />
+                                    <Route path="income" element={<Income />} />
+                                    <Route path="expenses" element={<Expenses />} />
+                                    <Route path="reports" element={<Reports />} />
+                                    <Route path="settings" element={<Settings />} />
+
+                                    <Route path="employees" element={<EmployeeList />} />
+                                    <Route path="employees/create" element={<EmployeeCreate />} />
+                                    <Route path="employees/edit/:id" element={<EmployeeEdit />} />
+
+                                    <Route path="vehicles" element={<VehicleList />} />
+                                    <Route path="vehicles/create" element={<VehicleCreatePage />} />
+                                    <Route path="vehicles/edit/:id" element={<VehicleEditPage />} />
+                                    <Route path="vehicles/show/:id" element={<VehicleShowPage />} />
+
+                                    <Route path="accounts" element={<AccountList />} />
+                                    <Route path="accounts/create" element={<AccountCreate />} />
+                                    <Route path="accounts/edit/:id" element={<AccountEdit />} />
+                                    <Route path="accounts/show/:id" element={<AccountShow />} />
+                                  </Route>
+
+                                  {/* 💰 CLERK / CASHIER */}
+                                  <Route
+                                    path="/cashier"
+                                    element={
+                                      <RoleRoute allowedRoles={["clerk", "cashier", "admin"]}>
+                                        <Cashier />
+                                      </RoleRoute>
+                                    }
+                                  >
+                                    <Route index element={<ClerkDashboard />} />
+                                    <Route path="dashboard" element={<ClerkDashboard />} />
+                                    <Route path="sales" element={<ClerkSales />} />
+                                    <Route path="vehicles" element={<ClerkVehicles />} />
+                                    <Route path="customers" element={<ClerkCustomers />} />
+                                    <Route path="reports" element={<ClerkReports />} />
+                                    <Route path="settings" element={<ClerkSettings />} />
+                                  </Route>
+
+                                  {/* 🚫 FALLBACK */}
+                                  <Route path="*" element={<Navigate to="/unauthorized" replace />} />
+
+                                </Routes>
+                              </BrowserRouter>
+                            </ThemeSync>
+                          </SettingsProvider>
+                        </LowStockProvider> {/* ✅ Closed Provider */}
+                      </ClerkCustomerProvider>
+                    </ClerkSalesProvider>
+                  </ClerkVehicleProvider>
+                </ClerkAuthProvider>
+              </TransactionSummaryProvider>
+            </IncomeProvider>
+          </VehicleProvider>
+        </ExpenseProvider>
+      </TransactionProvider>
+>>>>>>> 3145d54a301a83f1138de833cf2da03abf9252a7
     </AuthProvider>
   );
 }

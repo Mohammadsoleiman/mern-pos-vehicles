@@ -1,5 +1,5 @@
 /* =========================================================
-   INCOME MANAGEMENT — PROFESSIONAL UI STYLING
+   INCOME MANAGEMENT — RESPONSIVE, NO HORIZONTAL SCROLL
    ========================================================= */
 
 .income-page {
@@ -8,6 +8,7 @@
   color: #1e293b;
   background: #f3f6fa;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* ---------- Header ---------- */
@@ -50,20 +51,18 @@
 
 /* ---------- Summary Cards ---------- */
 .income-summary-cards {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 20px;
   margin-bottom: 25px;
-  flex-wrap: wrap;
 }
 
 .summary-card {
   background: #fff;
   padding: 20px 25px;
   border-radius: 12px;
-  flex: 1;
-  min-width: 200px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -78,20 +77,11 @@
   box-shadow: 0 3px 12px rgba(0, 123, 255, 0.3);
 }
 
-.summary-card h4 {
-  margin: 0 0 6px 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: inherit;
-}
-
-.summary-card p {
-  font-size: 22px;
-  font-weight: 700;
-  margin: 0;
-}
-
 /* ---------- Table ---------- */
+.income-table {
+  width: 100%;
+}
+
 .income-table table {
   width: 100%;
   border-collapse: collapse;
@@ -99,14 +89,16 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  table-layout: fixed; /* Keeps columns proportional */
 }
 
 .income-table th,
 .income-table td {
-  padding: 14px 16px;
+  padding: 12px 10px;
   border-bottom: 1px solid #e2e8f0;
   text-align: left;
   font-size: 14px;
+  word-wrap: break-word;
 }
 
 .income-table th {
@@ -120,16 +112,60 @@
   background: #f8fbff;
 }
 
+/* Column width ratios */
+.income-table th:nth-child(1),
+.income-table td:nth-child(1) {
+  width: 6%;
+}
+.income-table th:nth-child(2),
+.income-table td:nth-child(2) {
+  width: 10%;
+}
+.income-table th:nth-child(3),
+.income-table td:nth-child(3) {
+  width: 10%;
+}
+.income-table th:nth-child(4),
+.income-table td:nth-child(4) {
+  width: 12%;
+}
+.income-table th:nth-child(5),
+.income-table td:nth-child(5) {
+  width: 14%;
+}
+.income-table th:nth-child(6),
+.income-table td:nth-child(6) {
+  width: 14%;
+}
+.income-table th:nth-child(7),
+.income-table td:nth-child(7) {
+  width: 10%;
+}
+.income-table th:nth-child(8),
+.income-table td:nth-child(8) {
+  width: 8%;
+}
+.income-table th:nth-child(9),
+.income-table td:nth-child(9) {
+  width: 12%;
+}
+.income-table th:nth-child(10),
+.income-table td:nth-child(10) {
+  width: 8%;
+  text-align: center;
+}
+
 /* ---------- Buttons ---------- */
 .btn-edit,
 .btn-delete,
 .btn-print {
   border: none;
-  padding: 7px 10px;
+  padding: 6px 8px;
   border-radius: 6px;
   cursor: pointer;
   margin-right: 5px;
   color: #fff;
+  font-size: 13px;
   transition: all 0.2s ease;
 }
 
@@ -170,15 +206,6 @@
   animation: fadeIn 0.3s ease;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 /* ---------- Modal Content ---------- */
 .modalContent {
   background: #fff;
@@ -186,21 +213,21 @@
   padding: 30px 35px;
   width: 90%;
   max-width: 520px;
+  max-height: 80vh;
+  overflow-y: auto;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   animation: slideUp 0.3s ease;
 }
 
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+.modalContent::-webkit-scrollbar {
+  width: 8px;
+}
+.modalContent::-webkit-scrollbar-thumb {
+  background-color: #007bff;
+  border-radius: 6px;
 }
 
+/* ---------- Modal Header ---------- */
 .modalContent h3 {
   font-size: 22px;
   font-weight: 700;
@@ -273,79 +300,81 @@
   background: #cbd5e1;
 }
 
-/* ---------- Form Cards (Legacy Compatibility) ---------- */
-.income-form-card {
-  background: #fff;
-  padding: 25px;
-  border-radius: 12px;
-  margin-bottom: 25px;
-  box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.08);
+/* ---------- Disable scroll when modal open ---------- */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* ---------- Show Button ---------- */
+.btn-show {
+  background: #6f42c1;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: #fff;
+  margin-right: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-show:hover {
+  background: #5936a3;
+}
+
+.view-details p {
+  font-size: 15px;
+  color: #334155;
+  margin: 10px 0;
+}
+.view-details strong {
+  color: #0f172a;
+}
+
+/* =========================================================
+   ACTION BUTTONS - CENTER ALIGNMENT FIX
+   ========================================================= */
+
+.income-table td:last-child {
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.income-table td:last-child button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 3px;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+
+.income-table td:last-child button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.income-table td:last-child button span,
+.income-table td:last-child button svg {
+  display: block;
+  margin: auto;
 }
 
 /* ---------- Responsive ---------- */
-@media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+@media (max-width: 900px) {
+  .income-table th,
+  .income-table td {
+    font-size: 12px;
+    padding: 10px 6px;
   }
-
-  .income-summary-cards {
-    flex-direction: column;
+  .summary-card {
+    padding: 16px;
   }
-
-  .modalContent {
-    padding: 25px 20px;
+  .page-header h1 {
+    font-size: 24px;
   }
-}
-/* ---------- Modal Overlay ---------- */
-.modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(15, 23, 42, 0.45);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-  animation: fadeIn 0.3s ease;
-}
-
-/* ---------- Modal Content ---------- */
-.modalContent {
-  background: #fff;
-  border-radius: 12px;
-  padding: 30px 35px;
-  width: 90%;
-  max-width: 520px;
-  max-height: 80vh;           /* 🟢 Limit the modal height */
-  overflow-y: auto;           /* 🟢 Enable internal scroll */
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  animation: slideUp 0.3s ease;
-  scrollbar-width: thin;      /* 🟢 Slim scrollbar for Firefox */
-  scrollbar-color: #007bff #f1f5f9;
-}
-
-/* 🟢 Optional — beautiful scrollbar for Chrome */
-.modalContent::-webkit-scrollbar {
-  width: 8px;
-}
-.modalContent::-webkit-scrollbar-thumb {
-  background-color: #007bff;
-  border-radius: 6px;
-}
-.modalContent::-webkit-scrollbar-track {
-  background-color: #f1f5f9;
-}
-
-/* ---------- Modal Header ---------- */
-.modalContent h3 {
-  font-size: 22px;
-  font-weight: 700;
-  color: #0f172a;
-  margin-bottom: 20px;
-  text-align: center;
 }

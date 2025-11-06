@@ -1,26 +1,28 @@
-// src/pages/clerk/ClerkDashboard.jsx
-import React, { useContext, useState, useEffect } from 'react';
-import { VehicleContext } from '../../context/clerk/VehicleContext';
-import { SalesContext } from '../../context/clerk/SalesContext';
-import { CustomerContext } from '../../context/clerk/CustomerContext';
-import { 
-  TrendingUp, 
-  DollarSign, 
-  Package, 
-  Users, 
+import React, { useContext, useState, useEffect } from "react";
+import { VehicleContext } from "../../context/clerk/VehicleContext";
+import { SalesContext } from "../../context/clerk/SalesContext";
+import { CustomerContext } from "../../context/clerk/CustomerContext";
+import { LowStockContext } from "../../context/clerk/LowStockContext";
+import {
+  TrendingUp,
+  DollarSign,
+  Package,
+  Users,
   AlertTriangle,
   ShoppingCart,
   Calendar,
   ArrowUp,
-  ArrowDown
-} from 'lucide-react';
-import '../../styles/clerk/ClerkDashboard.css';
+  ArrowDown,
+} from "lucide-react";
+import "../../styles/clerk/ClerkDashboard.css";
 
 const ClerkDashboard = () => {
   const { vehicles, loading: vehiclesLoading } = useContext(VehicleContext);
   const { sales, loading: salesLoading } = useContext(SalesContext);
   const { customers } = useContext(CustomerContext);
-  
+  const { lowStockVehicles, loading: lowStockLoading, error } =
+    useContext(LowStockContext);
+
   const [stats, setStats] = useState({
     totalSales: 0,
     totalRevenue: 0,
@@ -29,44 +31,67 @@ const ClerkDashboard = () => {
     lowStockVehicles: 0,
     todaySales: 0,
     monthlyGrowth: 0,
-    topSellingVehicle: null
+    topSellingVehicle: null,
   });
 
+  // ==============================
+  // 🧮 STATS CALCULATION
+  // ==============================
   useEffect(() => {
-    calculateStats();
+    if (!vehiclesLoading && !salesLoading) calculateStats();
   }, [vehicles, sales, customers]);
 
   const calculateStats = () => {
-    const totalRevenue = sales.reduce((sum, sale) => sum + sale.totalAmount, 0);
-    const lowStockVehicles = vehicles.filter(v => v.stock < 5).length;
-    const today = new Date().toISOString().split('T')[0];
-    const todaySales = sales.filter(s => s.date?.startsWith(today)).length;
-    const monthlyGrowth = 12.5;
-    
-    const vehicleSales = {};
-    sales.forEach(sale => {
-      const vehicleId = sale.vehicleId;
-      vehicleSales[vehicleId] = (vehicleSales[vehicleId] || 0) + 1;
-    });
-    
-    const topVehicleId = Object.keys(vehicleSales).reduce((a, b) => 
-      vehicleSales[a] > vehicleSales[b] ? a : b, null
+    const totalRevenue = sales.reduce(
+      (sum, sale) => sum + (Number(sale.totalAmount) || 0),
+      0
     );
-    
-    const topSellingVehicle = vehicles.find(v => v.id === parseInt(topVehicleId));
+
+    const lowStockCount = vehicles.filter((v) => (v.stock || 0) < 5).length;
+
+    const today = new Date().toISOString().split("T")[0];
+    const todaySales = sales.filter((s) => {
+      const date =
+        s.createdAt || s.updatedAt || s.date || new Date().toISOString();
+      return String(date).startsWith(today);
+    }).length;
+
+    const monthlyGrowth = 12.5; // mock % growth for demo
+
+    const vehicleSales = {};
+    sales.forEach((sale) => {
+      if (!sale.vehicleId) return;
+      const id =
+        typeof sale.vehicleId === "object"
+          ? sale.vehicleId._id || sale.vehicleId.id
+          : sale.vehicleId;
+      if (id) vehicleSales[id] = (vehicleSales[id] || 0) + 1;
+    });
+
+    const topVehicleId = Object.keys(vehicleSales).reduce(
+      (a, b) => (vehicleSales[a] > vehicleSales[b] ? a : b),
+      null
+    );
+
+    const topSellingVehicle = vehicles.find(
+      (v) => String(v._id) === String(topVehicleId)
+    );
 
     setStats({
       totalSales: sales.length,
       totalRevenue,
       totalVehicles: vehicles.length,
       totalCustomers: customers.length,
-      lowStockVehicles,
+      lowStockVehicles: lowStockCount,
       todaySales,
       monthlyGrowth,
-      topSellingVehicle
+      topSellingVehicle,
     });
   };
 
+  // ==============================
+  // 📊 REUSABLE STAT CARD
+  // ==============================
   const StatCard = ({ icon: Icon, title, value, subtitle, trend, trendUp }) => (
     <div className="stat-card">
       <div className="stat-card-content">
@@ -77,7 +102,11 @@ const ClerkDashboard = () => {
             <div className="stat-card-footer">
               <span className="stat-card-subtitle">{subtitle}</span>
               {trend && (
-                <span className={`stat-card-trend ${trendUp ? 'trend-up' : 'trend-down'}`}>
+                <span
+                  className={`stat-card-trend ${
+                    trendUp ? "trend-up" : "trend-down"
+                  }`}
+                >
                   {trendUp ? <ArrowUp size={12} /> : <ArrowDown size={12} />}
                   {trend}%
                 </span>
@@ -85,33 +114,62 @@ const ClerkDashboard = () => {
             </div>
           )}
         </div>
-        <div className={`stat-card-icon ${
-          title.includes('Revenue') ? 'green-bg' :
-          title.includes('Sales') ? 'blue-bg' :
-          title.includes('Vehicles') ? 'purple-bg' :
-          'orange-bg'
-        }`}>
+        <div
+          className={`stat-card-icon ${
+            title.includes("Revenue")
+              ? "green-bg"
+              : title.includes("Sales")
+              ? "blue-bg"
+              : title.includes("Vehicles")
+              ? "purple-bg"
+              : "orange-bg"
+          }`}
+        >
           <Icon size={24} />
         </div>
       </div>
     </div>
   );
 
+  // ==============================
+  // ⚠️ ALERT CARD
+  // ==============================
   const AlertCard = ({ vehicle }) => (
     <div className="alert-item">
       <AlertTriangle className="alert-icon" size={24} />
       <div className="alert-content">
-        <h4>{vehicle.make} {vehicle.model}</h4>
-        <p>Only {vehicle.stock} units left in stock</p>
+        <h4>
+          {vehicle.make} {vehicle.model}
+        </h4>
+        <p>Only {vehicle.stock || 0} units left in stock</p>
       </div>
       <span className="alert-badge">Low Stock</span>
     </div>
   );
 
+  // ==============================
+  // 💰 RECENT SALE CARD (SAFE FIX)
+  // ==============================
   const RecentSale = ({ sale }) => {
-    const vehicle = vehicles.find(v => v.id === sale.vehicleId);
-    const customer = customers.find(c => c.id === sale.customerId);
-    
+    // ✅ Safe access for vehicleId and customerId
+    const vehicleId =
+      sale.vehicleId && typeof sale.vehicleId === "object"
+        ? sale.vehicleId._id || sale.vehicleId.id
+        : sale.vehicleId || null;
+
+    const vehicle = vehicles.find(
+      (v) => v && String(v._id) === String(vehicleId)
+    );
+
+    const customerId =
+      sale.customerId && typeof sale.customerId === "object"
+        ? sale.customerId._id || sale.customerId.id
+        : sale.customerId || null;
+
+    const customer = customers.find(
+      (c) => c && String(c._id) === String(customerId)
+    );
+
     return (
       <div className="recent-sale-item">
         <div className="recent-sale-left">
@@ -119,18 +177,31 @@ const ClerkDashboard = () => {
             <ShoppingCart size={20} />
           </div>
           <div className="recent-sale-details">
-            <h4>{vehicle ? `${vehicle.make} ${vehicle.model}` : 'Unknown Vehicle'}</h4>
-            <p>{customer ? customer.name : 'Unknown Customer'}</p>
+            <h4>
+              {vehicle
+                ? `${vehicle.make || ""} ${vehicle.model || ""}`
+                : "Unknown Vehicle"}
+            </h4>
+            <p>{customer?.name || "Unknown Customer"}</p>
           </div>
         </div>
         <div className="recent-sale-right">
-          <p className="recent-sale-amount">${sale.totalAmount?.toLocaleString()}</p>
-          <p className="recent-sale-date">{new Date(sale.date).toLocaleDateString()}</p>
+          <p className="recent-sale-amount">
+            ${sale.totalAmount?.toLocaleString() || 0}
+          </p>
+          <p className="recent-sale-date">
+            {new Date(
+              sale.createdAt || sale.updatedAt || sale.date || Date.now()
+            ).toLocaleDateString()}
+          </p>
         </div>
       </div>
     );
   };
 
+  // ==============================
+  // 🌀 LOADING STATE
+  // ==============================
   if (vehiclesLoading || salesLoading) {
     return (
       <div className="loading-container">
@@ -139,6 +210,9 @@ const ClerkDashboard = () => {
     );
   }
 
+  // ==============================
+  // 🌟 MAIN RENDER
+  // ==============================
   return (
     <div className="clerk-dashboard">
       <div className="dashboard-container">
@@ -151,17 +225,17 @@ const ClerkDashboard = () => {
           <div className="dashboard-date-badge">
             <Calendar size={20} />
             <span>
-              {new Date().toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+              {new Date().toLocaleDateString("en-US", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
               })}
             </span>
           </div>
         </div>
 
-        {/* Stats Grid */}
+        {/* Stats */}
         <div className="stats-grid">
           <StatCard
             icon={DollarSign}
@@ -191,7 +265,7 @@ const ClerkDashboard = () => {
           />
         </div>
 
-        {/* Main Content Grid */}
+        {/* Main Grid */}
         <div className="dashboard-main-grid">
           {/* Recent Sales */}
           <div className="recent-sales-card">
@@ -200,8 +274,8 @@ const ClerkDashboard = () => {
               <p>Latest transactions</p>
             </div>
             <div className="recent-sales-list">
-              {sales.slice(0, 5).map(sale => (
-                <RecentSale key={sale.id} sale={sale} />
+              {sales.slice(0, 5).map((sale) => (
+                <RecentSale key={sale._id || sale.id} sale={sale} />
               ))}
             </div>
             {sales.length === 0 && (
@@ -214,17 +288,22 @@ const ClerkDashboard = () => {
 
           {/* Sidebar */}
           <div className="dashboard-sidebar">
-            {/* Low Stock Alerts */}
+            {/* Low Stock */}
             <div className="low-stock-card">
               <div className="card-header">
                 <h2>Low Stock Alerts</h2>
                 <p>Vehicles running low</p>
               </div>
               <div className="low-stock-list">
-                {vehicles.filter(v => v.stock < 5).slice(0, 3).map(vehicle => (
-                  <AlertCard key={vehicle.id} vehicle={vehicle} />
-                ))}
-                {vehicles.filter(v => v.stock < 5).length === 0 && (
+                {lowStockLoading ? (
+                  <p>Loading low stock vehicles...</p>
+                ) : error ? (
+                  <p className="error-text">⚠️ {error}</p>
+                ) : lowStockVehicles.length > 0 ? (
+                  lowStockVehicles.slice(0, 3).map((vehicle) => (
+                    <AlertCard key={vehicle._id || vehicle.id} vehicle={vehicle} />
+                  ))
+                ) : (
                   <div className="empty-state">
                     <Package size={48} />
                     <p>All vehicles well stocked</p>
@@ -233,12 +312,13 @@ const ClerkDashboard = () => {
               </div>
             </div>
 
-            {/* Top Selling Vehicle */}
+            {/* Top Seller */}
             {stats.topSellingVehicle && (
               <div className="top-seller-card">
                 <h3>🏆 Top Seller</h3>
                 <h2>
-                  {stats.topSellingVehicle.make} {stats.topSellingVehicle.model}
+                  {stats.topSellingVehicle.make}{" "}
+                  {stats.topSellingVehicle.model}
                 </h2>
                 <p className="subtitle">Most popular vehicle this month</p>
                 <div className="top-seller-divider">
