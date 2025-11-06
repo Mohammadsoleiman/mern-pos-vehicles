@@ -12,25 +12,31 @@ exports.login = async (req, res) => {
       $or: [{ email: emailOrName }, { name: emailOrName }],
     }).populate({
       path: "role",
-      populate: {
-        path: "permissions",
-        select: "name",
-      },
+      populate: { path: "permissions", select: "name" },
     });
 
     if (!user) return res.status(400).json({ message: "User not found" });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(400).json({ message: "Invalid credentials" });
+    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
-const token = jwt.sign(
-  { id: user._id, role: user.role?.name || "no-role" }, // اسم الرول
-  process.env.JWT_SECRET,
-  { expiresIn: "1d" }
-);
+    // ✅ تأكد من وجود settings بـ 3 لوحات (admin / clerk / accountant)
+    if (!user.settings || typeof user.settings !== "object") {
+      user.settings = {
+        admin: { theme: "light", layout: "list", profilePic: "" },
+        clerk: { theme: "light", layout: "list", profilePic: "" },
+        accountant: { theme: "light", layout: "list", profilePic: "" }
+      };
+      await user.save();
+    }
 
-    res.json({
+    const token = jwt.sign(
+      { id: user._id, role: user.role?.name || "no-role" },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    return res.json({
       token,
       role: user.role?.name || "no-role",
       permissions: user.role?.permissions?.map((p) => p.name) || [],
@@ -39,13 +45,16 @@ const token = jwt.sign(
         name: user.name,
         email: user.email,
         role: user.role?.name || null,
-      },
+        settings: user.settings   // ✅ هنا أرجعنا settings
+      }
     });
+
   } catch (err) {
     console.error("❌ Login error:", err);
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error" });
   }
 };
+
 
 // 🧾 Register
 exports.register = async (req, res) => {

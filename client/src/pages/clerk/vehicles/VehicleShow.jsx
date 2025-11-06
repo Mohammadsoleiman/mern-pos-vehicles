@@ -1,15 +1,14 @@
-// client/src/pages/admin/VehicleShow.jsx
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axiosClient from "../../api/axiosClient";
-import "../../styles/vehicles.css";
+import axiosClient from "../../../api/axiosClient";
+import "../../../styles/vehicles.css";
 
 export default function VehicleShow() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [vehicle, setVehicle] = useState(null);
 
-  // 🔹 تحميل بيانات السيارة
+  // 🔹 Load Vehicle Data
   useEffect(() => {
     axiosClient
       .get(`/vehicles/${id}`)
@@ -25,7 +24,7 @@ export default function VehicleShow() {
 
       <div className="card vehicle-card">
 
-        {/* ✅ الصور */}
+        {/* ✅ Images */}
         <div className="preview-multi">
           {vehicle.images?.length ? (
             vehicle.images.map((img, i) => (
@@ -46,7 +45,7 @@ export default function VehicleShow() {
           )}
         </div>
 
-        {/* ✅ معلومات السيارة */}
+        {/* ✅ Details */}
         <div className="info-grid">
           <div><b>VIN:</b> {vehicle.VIN}</div>
           <div><b>Make:</b> {vehicle.make}</div>
@@ -92,17 +91,11 @@ export default function VehicleShow() {
           </div>
         </div>
 
-        {/* ✅ أزرار */}
+        {/* ✅ Actions */}
         <div className="actions-bar">
           <button
-            className="btn-edit"
-            onClick={() => navigate(`/admin/vehicles/edit/${id}`)}
-          >
-            ✏ Edit
-          </button>
-          <button
             className="btn-cancel"
-            onClick={() => navigate("/admin/vehicles")}
+            onClick={() => navigate("/cashier/vehicles")}
           >
             ← Back
           </button>

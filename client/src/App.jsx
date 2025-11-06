@@ -21,7 +21,7 @@ import { ClerkCustomerProvider } from "./context/clerk/CustomerContext";
 // 🔒 Role-based Route
 import RoleRoute from "./components/RoleRoute";
 
-// 🧭 Layouts & Pages
+// 🧭 Layout Pages
 import Admin from "./components/admin/Admin";
 import Accounting from "./pages/Accounting";
 import Cashier from "./pages/Cashier";
@@ -37,7 +37,6 @@ import VehiclesList from "./pages/Vehicles/VehiclesList";
 import VehicleCreate from "./pages/Vehicles/VehicleCreate";
 import VehicleEdit from "./pages/Vehicles/VehicleEdit";
 import VehicleShow from "./pages/Vehicles/VehicleShow";
-import AdminSettings from "./pages/admin/Settings";
 
 // 💼 Accounting Pages
 import FeaturesOverview from "./pages/accountingstuff/FeaturesOverview";
@@ -45,7 +44,6 @@ import Transactions from "./pages/accountingstuff/Transactions";
 import Income from "./pages/accountingstuff/Income";
 import Expenses from "./pages/accountingstuff/Expenses";
 import Reports from "./pages/accountingstuff/Reports";
-import Settings from "./pages/accountingstuff/Settings";
 
 // 👥 Employees
 import EmployeeList from "./pages/accountingstuff/employees/EmployeeList";
@@ -67,24 +65,33 @@ import AccountShow from "./pages/accountingstuff/accounts/AccountShow";
 // 💰 Clerk Pages
 import ClerkDashboard from "./pages/clerk/ClerkDashboard";
 import ClerkSales from "./pages/clerk/ClerkSales";
-import ClerkVehicles from "./pages/clerk/ClerkVehicles";
+import ClerkVehicles from "./pages/clerk/vehicles/VehicleList";
+import ClerkVehicleShow from "./pages/clerk/vehicles/VehicleShow";
 import ClerkCustomers from "./pages/clerk/ClerkCustomers";
 import ClerkReports from "./pages/clerk/ClerkReports";
-import ClerkSettings from "./pages/clerk/ClerkSettings";
+
+// ✅ Shared Settings Page (New)
+import GlobalSettings from "./pages/settings/GlobalSettings";
+
+// 📦 Clerk Inventory
+import Accessories from "./pages/clerk/inventory/Accessories";
+import Parts from "./pages/clerk/inventory/Parts";
+import Services from "./pages/clerk/inventory/Services";
 
 export default function App() {
   return (
     <AuthProvider>
-      <TransactionProvider>
-        <ExpenseProvider>
-          <VehicleProvider>
-            <IncomeProvider>
-              <TransactionSummaryProvider>
-                <ClerkAuthProvider>
-                  <ClerkVehicleProvider>
-                    <ClerkSalesProvider>
-                      <ClerkCustomerProvider>
-                        <SettingsProvider>
+      <SettingsProvider> {/* لازم يجي مباشرة بعد Auth */}
+
+        <TransactionProvider>
+          <ExpenseProvider>
+            <VehicleProvider>
+              <IncomeProvider>
+                <TransactionSummaryProvider>
+                  <ClerkAuthProvider>
+                    <ClerkVehicleProvider>
+                      <ClerkSalesProvider>
+                        <ClerkCustomerProvider>
                           <ThemeSync>
 
                             <BrowserRouter>
@@ -103,11 +110,11 @@ export default function App() {
                                     <Route path="users" element={<UsersPage />} />
                                     <Route path="roles" element={<RolesPage />} />
                                     <Route path="permissions" element={<PermissionsPage />} />
-                                    <Route path="settings" element={<AdminSettings />} />
                                     <Route path="vehicles" element={<VehiclesList />} />
                                     <Route path="vehicles/create" element={<VehicleCreate />} />
                                     <Route path="vehicles/edit/:id" element={<VehicleEdit />} />
                                     <Route path="vehicles/show/:id" element={<VehicleShow />} />
+                                      <Route path="settings" element={<GlobalSettings />} />
                                   </Route>
                                 </Route>
 
@@ -126,7 +133,6 @@ export default function App() {
                                   <Route path="income" element={<Income />} />
                                   <Route path="expenses" element={<Expenses />} />
                                   <Route path="reports" element={<Reports />} />
-                                  <Route path="settings" element={<Settings />} />
 
                                   <Route path="employees" element={<EmployeeList />} />
                                   <Route path="employees/create" element={<EmployeeCreate />} />
@@ -141,6 +147,7 @@ export default function App() {
                                   <Route path="accounts/create" element={<AccountCreate />} />
                                   <Route path="accounts/edit/:id" element={<AccountEdit />} />
                                   <Route path="accounts/show/:id" element={<AccountShow />} />
+                                    <Route path="settings" element={<GlobalSettings />} />
                                 </Route>
 
                                 {/* CLERK / CASHIER */}
@@ -156,27 +163,34 @@ export default function App() {
                                   <Route path="dashboard" element={<ClerkDashboard />} />
                                   <Route path="sales" element={<ClerkSales />} />
                                   <Route path="vehicles" element={<ClerkVehicles />} />
+                                  <Route path="vehicles/:id" element={<ClerkVehicleShow />} />
+                                  <Route path="inventory/accessories" element={<Accessories />} />
+                                  <Route path="inventory/parts" element={<Parts />} />
+                                  <Route path="inventory/services" element={<Services />} />
                                   <Route path="customers" element={<ClerkCustomers />} />
                                   <Route path="reports" element={<ClerkReports />} />
-                                  <Route path="settings" element={<ClerkSettings />} />
+                                    <Route path="settings" element={<GlobalSettings />} />
                                 </Route>
+
+                         
 
                                 <Route path="*" element={<Navigate to="/unauthorized" replace />} />
 
-                              </Routes>
+                               </Routes>
                             </BrowserRouter>
 
                           </ThemeSync>
-                        </SettingsProvider>
-                      </ClerkCustomerProvider>
-                    </ClerkSalesProvider>
-                  </ClerkVehicleProvider>
-                </ClerkAuthProvider>
-              </TransactionSummaryProvider>
-            </IncomeProvider>
-          </VehicleProvider>
-        </ExpenseProvider>
-      </TransactionProvider>
+                        </ClerkCustomerProvider>
+                      </ClerkSalesProvider>
+                    </ClerkVehicleProvider>
+                  </ClerkAuthProvider>
+                </TransactionSummaryProvider>
+              </IncomeProvider>
+            </VehicleProvider>
+          </ExpenseProvider>
+        </TransactionProvider>
+
+      </SettingsProvider>
     </AuthProvider>
   );
 }

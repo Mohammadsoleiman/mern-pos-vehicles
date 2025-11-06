@@ -2,6 +2,24 @@
    CLERK DASHBOARD - PROFESSIONAL STYLES (LIGHT + DARK MODE)
    ========================================================= */
 
+   .themeLight {
+  --bg: #f5f7fb;
+  --bgCard: #ffffff;
+  --text: #1a1a1a;
+  --border: #e2e8f0;
+  --tableRow: #ffffff;
+  --tableHeader: #f8fafc;
+}
+
+.themeDark {
+  --bg: #0b111a;
+  --bgCard: #0f1823;
+  --text: #e4e6eb;
+  --border: #2d3a4a;
+  --tableRow: #121a27;
+  --tableHeader: #182433;
+}
+
 /* ----------- ROOT STYLING ----------- */
 :root {
   --bg-color: #f8f9fb;

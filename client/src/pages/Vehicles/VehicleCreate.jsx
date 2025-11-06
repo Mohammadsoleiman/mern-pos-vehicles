@@ -27,6 +27,7 @@ export default function VehicleCreate() {
     condition: "New",
     color: "#000000",
     status: "Active",
+      stock: "",
     images: [],
   });
 
@@ -103,6 +104,11 @@ export default function VehicleCreate() {
             </select>
           </div>
           <div><label>Price *</label><input type="number" name="price" value={form.price} onChange={handleChange} required /></div>
+          <div>
+  <label>Stock (Quantity)</label>
+  <input type="number" name="stock" value={form.stock} onChange={handleChange} />
+</div>
+
           <div><label>Cost</label><input type="number" name="cost" value={form.cost} onChange={handleChange} /></div>
           <div><label>Maintenance Cost</label><input type="number" name="maintenanceCost" value={form.maintenanceCost} onChange={handleChange} /></div>
           <div><label>Fuel Cost</label><input type="number" name="fuelCost" value={form.fuelCost} onChange={handleChange} /></div>

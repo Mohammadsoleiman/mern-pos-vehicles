@@ -3,7 +3,7 @@ const Vehicle = require("../models/Vehicle");
 // ✅ Helper لتحويل النصوص إلى أرقام أو تواريخ
 function normalize(body) {
   const out = { ...body };
-  const numFields = ["year", "price", "cost", "maintenanceCost", "fuelCost"];
+const numFields = ["year", "price", "cost", "maintenanceCost", "fuelCost", "stock"];
   numFields.forEach((k) => {
     if (out[k] !== undefined && out[k] !== "") out[k] = Number(out[k]);
   });

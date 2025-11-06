@@ -41,6 +41,7 @@ const vehicleSchema = new mongoose.Schema(
       enum: ["Active", "Sold", "Maintenance"],
       default: "Active",
     },
+    stock: { type: Number, default: 0 },
     images: [{ type: String }], // ✅ صور متعددة
   },
   { timestamps: true }
