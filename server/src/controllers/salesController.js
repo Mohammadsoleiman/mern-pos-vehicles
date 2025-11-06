@@ -3,7 +3,9 @@ const Sale = require("../models/Sale");
 const Customer = require("../models/Customer");
 const Vehicle = require("../models/Vehicle");
 
-// ✅ GET ALL SALES
+/* ==========================================================
+   📦 GET ALL SALES
+   ========================================================== */
 exports.getSales = async (req, res) => {
   try {
     const sales = await Sale.find()
@@ -18,13 +20,15 @@ exports.getSales = async (req, res) => {
   }
 };
 
-// ➕ ADD NEW SALE
+/* ==========================================================
+   ➕ ADD NEW SALE
+   ========================================================== */
 exports.addSale = async (req, res) => {
   try {
     const {
       customerId,
       vehicleId,
-      quantity,
+      quantity = 1,
       unitPrice,
       totalAmount,
       paymentMethod,
@@ -38,7 +42,7 @@ exports.addSale = async (req, res) => {
     const count = await Sale.countDocuments();
     const invoiceNumber = `INV-${String(count + 1).padStart(4, "0")}`;
 
-    // ✅ Create and save sale
+    // Create and save sale
     const sale = new Sale({
       customerId,
       vehicleId,
@@ -52,22 +56,22 @@ exports.addSale = async (req, res) => {
 
     const savedSale = await sale.save();
 
-    // ✅ Update customer totals
+    // Update customer totals
     const customer = await Customer.findById(customerId);
     if (customer) {
-      customer.totalSpent += totalAmount;
-      customer.purchaseCount = (customer.purchaseCount || 0) + 1; // ✅ correct field
+      customer.totalSpent = (customer.totalSpent || 0) + totalAmount;
+      customer.purchaseCount = (customer.purchaseCount || 0) + 1;
       await customer.save();
     }
 
-    // ✅ Reduce vehicle stock if exists
+    // Reduce vehicle stock
     const vehicle = await Vehicle.findById(vehicleId);
-    if (vehicle && vehicle.stock !== undefined) {
+    if (vehicle && typeof vehicle.stock === "number") {
       vehicle.stock = Math.max(vehicle.stock - quantity, 0);
       await vehicle.save();
     }
 
-    // ✅ Return populated sale (for invoice display)
+    // Return populated sale
     const populatedSale = await Sale.findById(savedSale._id)
       .populate("customerId", "name email phone")
       .populate("vehicleId", "make model year price");
@@ -79,25 +83,36 @@ exports.addSale = async (req, res) => {
   }
 };
 
-// ✏️ UPDATE SALE
+/* ==========================================================
+   ✏️ UPDATE SALE
+   ========================================================== */
 exports.updateSale = async (req, res) => {
   try {
-    const updated = await Sale.findByIdAndUpdate(req.params.id, req.body, {
+    const updatedSale = await Sale.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-    });
-    if (!updated) return res.status(404).json({ message: "Sale not found" });
-    res.json(updated);
+    })
+      .populate("customerId", "name email phone")
+      .populate("vehicleId", "make model year price");
+
+    if (!updatedSale)
+      return res.status(404).json({ message: "Sale not found" });
+
+    res.json(updatedSale);
   } catch (error) {
     console.error("❌ Error updating sale:", error);
     res.status(500).json({ message: "Failed to update sale" });
   }
 };
 
-// 🗑️ DELETE SALE
+/* ==========================================================
+   🗑️ DELETE SALE
+   ========================================================== */
 exports.deleteSale = async (req, res) => {
   try {
-    const deleted = await Sale.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.status(404).json({ message: "Sale not found" });
+    const deletedSale = await Sale.findByIdAndDelete(req.params.id);
+    if (!deletedSale)
+      return res.status(404).json({ message: "Sale not found" });
+
     res.json({ message: "Sale deleted successfully" });
   } catch (error) {
     console.error("❌ Error deleting sale:", error);
@@ -105,13 +120,17 @@ exports.deleteSale = async (req, res) => {
   }
 };
 
-// 🔍 GET SALE BY ID
+/* ==========================================================
+   🔍 GET SALE BY ID
+   ========================================================== */
 exports.getSaleById = async (req, res) => {
   try {
     const sale = await Sale.findById(req.params.id)
       .populate("customerId", "name email phone")
       .populate("vehicleId", "make model year price");
+
     if (!sale) return res.status(404).json({ message: "Sale not found" });
+
     res.json(sale);
   } catch (error) {
     console.error("❌ Error getting sale:", error);

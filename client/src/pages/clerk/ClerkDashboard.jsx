@@ -1,8 +1,8 @@
-// src/pages/clerk/ClerkDashboard.jsx
 import React, { useContext, useState, useEffect } from "react";
 import { VehicleContext } from "../../context/clerk/VehicleContext";
 import { SalesContext } from "../../context/clerk/SalesContext";
 import { CustomerContext } from "../../context/clerk/CustomerContext";
+import { LowStockContext } from "../../context/clerk/LowStockContext";
 import {
   TrendingUp,
   DollarSign,
@@ -20,6 +20,8 @@ const ClerkDashboard = () => {
   const { vehicles, loading: vehiclesLoading } = useContext(VehicleContext);
   const { sales, loading: salesLoading } = useContext(SalesContext);
   const { customers } = useContext(CustomerContext);
+  const { lowStockVehicles, loading: lowStockLoading, error } =
+    useContext(LowStockContext);
 
   const [stats, setStats] = useState({
     totalSales: 0,
@@ -32,9 +34,9 @@ const ClerkDashboard = () => {
     topSellingVehicle: null,
   });
 
-  // ✅ Helper to normalize IDs
-  const getId = (obj) => String(obj?._id || obj?.id || obj || "");
-
+  // ==============================
+  // 🧮 STATS CALCULATION
+  // ==============================
   useEffect(() => {
     if (!vehiclesLoading && !salesLoading) calculateStats();
   }, [vehicles, sales, customers]);
@@ -45,36 +47,34 @@ const ClerkDashboard = () => {
       0
     );
 
-    const lowStockVehicles = vehicles.filter((v) => (v.stock || 0) < 5).length;
+    const lowStockCount = vehicles.filter((v) => (v.stock || 0) < 5).length;
 
     const today = new Date().toISOString().split("T")[0];
     const todaySales = sales.filter((s) => {
       const date =
-        s.createdAt ||
-        s.updatedAt ||
-        s.date ||
-        new Date().toISOString();
+        s.createdAt || s.updatedAt || s.date || new Date().toISOString();
       return String(date).startsWith(today);
     }).length;
 
-    const monthlyGrowth = 12.5;
+    const monthlyGrowth = 12.5; // mock % growth for demo
 
-    // ✅ Count vehicle sales properly
     const vehicleSales = {};
     sales.forEach((sale) => {
-      const vehicleId = getId(sale.vehicleId);
-      if (!vehicleId) return;
-      vehicleSales[vehicleId] = (vehicleSales[vehicleId] || 0) + 1;
+      if (!sale.vehicleId) return;
+      const id =
+        typeof sale.vehicleId === "object"
+          ? sale.vehicleId._id || sale.vehicleId.id
+          : sale.vehicleId;
+      if (id) vehicleSales[id] = (vehicleSales[id] || 0) + 1;
     });
 
-    // ✅ Determine top-selling vehicle
-    const topVehicleId = Object.keys(vehicleSales).reduce((a, b) =>
-      vehicleSales[a] > vehicleSales[b] ? a : b,
+    const topVehicleId = Object.keys(vehicleSales).reduce(
+      (a, b) => (vehicleSales[a] > vehicleSales[b] ? a : b),
       null
     );
 
     const topSellingVehicle = vehicles.find(
-      (v) => getId(v) === String(topVehicleId)
+      (v) => String(v._id) === String(topVehicleId)
     );
 
     setStats({
@@ -82,13 +82,16 @@ const ClerkDashboard = () => {
       totalRevenue,
       totalVehicles: vehicles.length,
       totalCustomers: customers.length,
-      lowStockVehicles,
+      lowStockVehicles: lowStockCount,
       todaySales,
       monthlyGrowth,
       topSellingVehicle,
     });
   };
 
+  // ==============================
+  // 📊 REUSABLE STAT CARD
+  // ==============================
   const StatCard = ({ icon: Icon, title, value, subtitle, trend, trendUp }) => (
     <div className="stat-card">
       <div className="stat-card-content">
@@ -128,6 +131,9 @@ const ClerkDashboard = () => {
     </div>
   );
 
+  // ==============================
+  // ⚠️ ALERT CARD
+  // ==============================
   const AlertCard = ({ vehicle }) => (
     <div className="alert-item">
       <AlertTriangle className="alert-icon" size={24} />
@@ -141,9 +147,28 @@ const ClerkDashboard = () => {
     </div>
   );
 
+  // ==============================
+  // 💰 RECENT SALE CARD (SAFE FIX)
+  // ==============================
   const RecentSale = ({ sale }) => {
-    const vehicle = vehicles.find((v) => getId(v) === getId(sale.vehicleId));
-    const customer = customers.find((c) => getId(c) === getId(sale.customerId));
+    // ✅ Safe access for vehicleId and customerId
+    const vehicleId =
+      sale.vehicleId && typeof sale.vehicleId === "object"
+        ? sale.vehicleId._id || sale.vehicleId.id
+        : sale.vehicleId || null;
+
+    const vehicle = vehicles.find(
+      (v) => v && String(v._id) === String(vehicleId)
+    );
+
+    const customerId =
+      sale.customerId && typeof sale.customerId === "object"
+        ? sale.customerId._id || sale.customerId.id
+        : sale.customerId || null;
+
+    const customer = customers.find(
+      (c) => c && String(c._id) === String(customerId)
+    );
 
     return (
       <div className="recent-sale-item">
@@ -174,6 +199,9 @@ const ClerkDashboard = () => {
     );
   };
 
+  // ==============================
+  // 🌀 LOADING STATE
+  // ==============================
   if (vehiclesLoading || salesLoading) {
     return (
       <div className="loading-container">
@@ -182,6 +210,9 @@ const ClerkDashboard = () => {
     );
   }
 
+  // ==============================
+  // 🌟 MAIN RENDER
+  // ==============================
   return (
     <div className="clerk-dashboard">
       <div className="dashboard-container">
@@ -204,7 +235,7 @@ const ClerkDashboard = () => {
           </div>
         </div>
 
-        {/* Stats Grid */}
+        {/* Stats */}
         <div className="stats-grid">
           <StatCard
             icon={DollarSign}
@@ -234,7 +265,7 @@ const ClerkDashboard = () => {
           />
         </div>
 
-        {/* Main Content Grid */}
+        {/* Main Grid */}
         <div className="dashboard-main-grid">
           {/* Recent Sales */}
           <div className="recent-sales-card">
@@ -257,20 +288,22 @@ const ClerkDashboard = () => {
 
           {/* Sidebar */}
           <div className="dashboard-sidebar">
-            {/* Low Stock Alerts */}
+            {/* Low Stock */}
             <div className="low-stock-card">
               <div className="card-header">
                 <h2>Low Stock Alerts</h2>
                 <p>Vehicles running low</p>
               </div>
               <div className="low-stock-list">
-                {vehicles
-                  .filter((v) => (v.stock || 0) < 5)
-                  .slice(0, 3)
-                  .map((vehicle) => (
+                {lowStockLoading ? (
+                  <p>Loading low stock vehicles...</p>
+                ) : error ? (
+                  <p className="error-text">⚠️ {error}</p>
+                ) : lowStockVehicles.length > 0 ? (
+                  lowStockVehicles.slice(0, 3).map((vehicle) => (
                     <AlertCard key={vehicle._id || vehicle.id} vehicle={vehicle} />
-                  ))}
-                {vehicles.filter((v) => (v.stock || 0) < 5).length === 0 && (
+                  ))
+                ) : (
                   <div className="empty-state">
                     <Package size={48} />
                     <p>All vehicles well stocked</p>
@@ -279,7 +312,7 @@ const ClerkDashboard = () => {
               </div>
             </div>
 
-            {/* Top Selling Vehicle */}
+            {/* Top Seller */}
             {stats.topSellingVehicle && (
               <div className="top-seller-card">
                 <h3>🏆 Top Seller</h3>

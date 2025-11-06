@@ -27,4 +27,4 @@ const saleSchema = new mongoose.Schema(
   { timestamps: true } // ✅ createdAt + updatedAt
 );
 
-module.exports = mongoose.model("Sale", saleSchema); // ✅ very important
+module.exports = mongoose.model("Sale", saleSchema);

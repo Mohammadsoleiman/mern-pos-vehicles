@@ -1,4 +1,4 @@
-// server/routes/sales.js
+// server/src/routes/sales.js
 const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
@@ -12,18 +12,15 @@ const Vehicle = require("../models/Vehicle");
    ========================================================== */
 router.post("/", async (req, res) => {
   try {
-    // Generate invoice number dynamically
     const count = await Sale.countDocuments();
-    const invoiceNumber = `INV-${(count + 1).toString().padStart(4, "0")}`;
+    const invoiceNumber = `INV-${String(count + 1).padStart(4, "0")}`;
 
-    // Create new sale
     const sale = await Sale.create({
       ...req.body,
       invoiceNumber,
       status: "completed",
     });
 
-    // Populate for instant frontend usage
     const populatedSale = await sale.populate([
       { path: "customerId", select: "name email phone" },
       { path: "vehicleId", select: "make model year price" },
@@ -43,7 +40,7 @@ router.post("/", async (req, res) => {
 });
 
 /* ==========================================================
-   📋 GET all Sales (with full population)
+   📋 GET all Sales (populated)
    ========================================================== */
 router.get("/", async (req, res) => {
   try {
@@ -61,43 +58,6 @@ router.get("/", async (req, res) => {
     console.error("❌ Error fetching sales:", err);
     res.status(500).json({
       message: "❌ Failed to fetch sales",
-      error: err.message,
-    });
-  }
-});
-
-/* ==========================================================
-   📆 FILTER Sales by Date Range
-   ========================================================== */
-router.get("/range", async (req, res) => {
-  try {
-    const { start, end } = req.query;
-
-    if (!start || !end) {
-      return res
-        .status(400)
-        .json({ message: "Please provide both start and end dates." });
-    }
-
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-
-    const sales = await Sale.find({
-      createdAt: { $gte: startDate, $lte: endDate },
-    })
-      .populate("vehicleId", "make model year price")
-      .populate("customerId", "name email phone")
-      .sort({ createdAt: -1 });
-
-    res.status(200).json({
-      message: "✅ Sales filtered successfully",
-      total: sales.length,
-      sales,
-    });
-  } catch (err) {
-    console.error("❌ Error filtering sales by date:", err);
-    res.status(500).json({
-      message: "❌ Failed to filter sales",
       error: err.message,
     });
   }
@@ -193,7 +153,7 @@ router.patch("/repair", async (req, res) => {
     for (const sale of sales) {
       let updated = false;
 
-      // Fix string IDs → ObjectIds
+      // Convert string IDs to ObjectIds
       if (typeof sale.customerId === "string" && sale.customerId.length === 24) {
         sale.customerId = new mongoose.Types.ObjectId(sale.customerId);
         updated = true;
@@ -204,6 +164,7 @@ router.patch("/repair", async (req, res) => {
         updated = true;
       }
 
+      // Ensure createdAt exists
       if (!sale.createdAt) {
         sale.createdAt = new Date();
         updated = true;
@@ -215,7 +176,7 @@ router.patch("/repair", async (req, res) => {
       }
     }
 
-    // Recalculate totals for customers
+    // Recalculate customer totals
     const customers = await Customer.find();
     for (const customer of customers) {
       const customerSales = await Sale.find({ customerId: customer._id });

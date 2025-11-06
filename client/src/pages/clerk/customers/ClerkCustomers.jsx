@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { CustomerContext } from "../../../context/clerk/CustomerContext";
+import { SalesContext } from "../../../context/clerk/SalesContext";
 import {
   Search,
   Plus,
@@ -15,8 +16,8 @@ import {
 import "../../../styles/clerk/ClerkCustomers.css";
 
 export default function ClerkCustomers() {
-  const { customers, addCustomer, deleteCustomer, updateCustomer } =
-    useContext(CustomerContext);
+  const { customers, addCustomer, deleteCustomer } = useContext(CustomerContext);
+  const { sales } = useContext(SalesContext);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -31,6 +32,20 @@ export default function ClerkCustomers() {
       c.phone?.includes(searchQuery)
   );
 
+  const getCustomerStats = (customerId) => {
+    const relatedSales = sales.filter(
+      (s) => String(s.customerId?._id || s.customerId) === String(customerId)
+    );
+    const totalSpent = relatedSales.reduce(
+      (sum, s) => sum + (s.totalAmount || 0),
+      0
+    );
+    return {
+      totalSpent,
+      purchases: relatedSales.length,
+    };
+  };
+
   const handleAdd = async () => {
     if (!formData.name || !formData.email || !formData.phone) {
       alert("Please fill all fields!");
@@ -43,7 +58,6 @@ export default function ClerkCustomers() {
 
   return (
     <div className="customers-page">
-      {/* Header */}
       <div className="customers-header">
         <div>
           <h1>
@@ -56,7 +70,6 @@ export default function ClerkCustomers() {
         </button>
       </div>
 
-      {/* Search */}
       <div className="search-bar">
         <Search size={18} />
         <input
@@ -67,7 +80,6 @@ export default function ClerkCustomers() {
         />
       </div>
 
-      {/* Customer Cards */}
       <div className="customers-grid">
         {filtered.length === 0 ? (
           <div className="empty-state">No customers found.</div>
@@ -107,7 +119,6 @@ export default function ClerkCustomers() {
         )}
       </div>
 
-      {/* 🔹 Show Details Modal */}
       {showModal && selectedCustomer && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -132,14 +143,20 @@ export default function ClerkCustomers() {
                   <DollarSign size={22} />
                   <div>
                     <p>Total Spent</p>
-                    <h3>${selectedCustomer.totalSpent || 0}</h3>
+                    <h3>
+                      $
+                      {getCustomerStats(selectedCustomer._id)
+                        .totalSpent.toLocaleString()}
+                    </h3>
                   </div>
                 </div>
                 <div className="stat">
                   <ShoppingBag size={22} />
                   <div>
                     <p>Purchases</p>
-                    <h3>{selectedCustomer.purchases || 0}</h3>
+                    <h3>
+                      {getCustomerStats(selectedCustomer._id).purchases}
+                    </h3>
                   </div>
                 </div>
               </div>
@@ -148,7 +165,6 @@ export default function ClerkCustomers() {
         </div>
       )}
 
-      {/* ➕ Add Customer Modal */}
       {showAddModal && (
         <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
