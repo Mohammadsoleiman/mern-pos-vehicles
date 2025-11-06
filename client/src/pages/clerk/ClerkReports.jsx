@@ -58,18 +58,28 @@ const ClerkReports = () => {
   }, [sales]);
 
   /* ==========================================================
-     🚗 TOP SELLING VEHICLES
+     🚗 TOP SELLING VEHICLES (✅ FIXED VERSION)
   ========================================================== */
   const topVehicles = useMemo(() => {
     const map = {};
     sales.forEach((s) => {
       const vehicle = s.vehicleId;
       if (!vehicle) return;
-      const key = vehicle._id || vehicle.id;
-      const label = `${vehicle.make || "Unknown"} ${vehicle.model || ""}`.trim();
+
+      // ✅ Handle both object or string ID
+      const key =
+        typeof vehicle === "object" ? vehicle._id || vehicle.id : vehicle;
+
+      // ✅ Create readable label even if object missing
+      const label =
+        typeof vehicle === "object"
+          ? `${vehicle.make || "Unknown"} ${vehicle.model || ""}`.trim()
+          : "Unknown Vehicle";
+
       if (!map[key]) {
         map[key] = { label, count: 0, total: 0 };
       }
+
       map[key].count += s.quantity || 1;
       map[key].total += s.totalAmount || 0;
     });
@@ -220,7 +230,11 @@ const ClerkReports = () => {
                   <td>{t.customerId?.name || "Unknown"}</td>
                   <td>
                     {t.vehicleId
-                      ? `${t.vehicleId.make || ""} ${t.vehicleId.model || ""}`
+                      ? typeof t.vehicleId === "object"
+                        ? `${t.vehicleId.make || "Unknown"} ${
+                            t.vehicleId.model || ""
+                          }`
+                        : "Unknown Vehicle"
                       : "N/A"}
                   </td>
                   <td>${t.totalAmount?.toLocaleString()}</td>
