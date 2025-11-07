@@ -41,10 +41,7 @@ It offers **role-based dashboards** for Admin, Accountant, and Clerk, allowing s
 ---
 
 ## 📁 Folder Structure
-
-
 ```
-
 ذ
 mern-pos-vehicles/
 ├── client/ # React Frontend
@@ -64,12 +61,12 @@ mern-pos-vehicles/
 │ └── package.json
 │
 └── README.md
-
+```
 
 </details>
 
 
-```
+
 
 ## 🚀 Getting Started
 
