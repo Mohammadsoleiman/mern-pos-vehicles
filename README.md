@@ -41,13 +41,29 @@ It offers **role-based dashboards** for Admin, Accountant, and Clerk, allowing s
 ---
 ## 📁 Folder Structure
 
-├── frontend/           # Vue.js frontend application
-├── backend/           # Node.js Express backend
-└── docs/             # Documentation
+
+mern-pos-vehicles/
+├── client/ # React Frontend
+│ └── src/
+│ ├── components/ # UI Components (for each role)
+│ ├── context/ # React Context Providers
+│ ├── pages/ # Accountant, Clerk, Admin Pages
+│ └── styles/ # CSS Stylesheets (Custom Responsive, No Tailwind)
+│ └── package.json
+│
+├── server/ # Express + Node Backend
+│ ├── models/ # Mongoose Schemas
+│ ├── routes/ # API Endpoints
+│ ├── controllers/ # Business Logic
+│ ├── config/ # Database Connection
+│ ├── middleware/ # Auth & Validation Middleware
+│ └── package.json
+│
+└── README.md
 
 
 </details>
-...
+
 
 ---
 
