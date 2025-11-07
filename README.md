@@ -39,9 +39,13 @@ It offers **role-based dashboards** for Admin, Accountant, and Clerk, allowing s
 | **Tools** | Postman, Git, VS Code, JWT Auth |
 
 ---
+
 ## 📁 Folder Structure
 
 
+```
+
+ذ
 mern-pos-vehicles/
 ├── client/ # React Frontend
 │ └── src/
@@ -65,7 +69,7 @@ mern-pos-vehicles/
 </details>
 
 
----
+```
 
 ## 🚀 Getting Started
 
