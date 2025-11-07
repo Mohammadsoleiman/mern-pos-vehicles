@@ -1,26 +1,62 @@
+// server/src/controllers/dashboardController.js
 const Sale = require("../models/Sale");
 const Customer = require("../models/Customer");
 const Vehicle = require("../models/Vehicle");
 
-exports.getClerkDashboardStats = async (req, res) => {
+exports.getDashboard = async (req, res) => {
   try {
-    const [totalSales, totalRevenue, vehicles, customers] = await Promise.all([
-      Sale.countDocuments(),
-      Sale.aggregate([{ $group: { _id: null, total: { $sum: "$totalAmount" } } }]),
-      Vehicle.find(),
-      Customer.countDocuments(),
+    const totalVehicles = await Vehicle.countDocuments();
+    const totalCustomers = await Customer.countDocuments();
+    const totalSales = await Sale.countDocuments();
+
+    const revenueAgg = await Sale.aggregate([
+      { $group: { _id: null, total: { $sum: "$totalAmount" } } }
+    ]);
+    const totalRevenue = revenueAgg.length ? revenueAgg[0].total : 0;
+
+    const monthlySalesRaw = await Sale.aggregate([
+      {
+        $group: {
+          _id: { $substr: ["$date", 0, 7] }, // YYYY-MM
+          total: { $sum: "$totalAmount" }
+        }
+      },
+      { $sort: { _id: 1 } }
     ]);
 
-    const totalRevenueValue = totalRevenue.length ? totalRevenue[0].total : 0;
+    const monthlySales = monthlySalesRaw.map((item) => ({
+      month: item._id,
+      sales: item.total,
+    }));
+
+    const vehicleTypes = await Vehicle.aggregate([
+      { $group: { _id: "$type", count: { $sum: 1 } } }
+    ]);
+
+    const recentPurchases = await Sale.find()
+      .populate("customerId", "name")
+      .populate("vehicleId", "make")
+      .sort({ createdAt: -1 })
+      .limit(5);
+
+    const recentPayments = await Sale.find()
+      .populate("customerId", "name")
+      .sort({ createdAt: -1 })
+      .limit(5);
 
     res.json({
+      totalVehicles,
       totalSales,
-      totalRevenue: totalRevenueValue,
-      totalVehicles: vehicles.length,
-      totalCustomers: customers,
+      totalRevenue,
+      totalCustomers,
+      monthlySales,
+      vehicleTypes,
+      recentPurchases,
+      recentPayments,
     });
+
   } catch (err) {
-    console.error("❌ Dashboard data error:", err.message);
-    res.status(500).json({ message: "Failed to fetch dashboard data." });
+    console.error("❌ Dashboard Error:", err);
+    res.status(500).json({ message: "Failed to load dashboard" });
   }
 };

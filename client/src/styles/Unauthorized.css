@@ -32,7 +32,8 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 50px 350px 0px 50%;
+margin:120px auto ;
+
 
   /* ✨ الحركة */
   opacity: 0;

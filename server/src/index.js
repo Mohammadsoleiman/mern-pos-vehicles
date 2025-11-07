@@ -62,7 +62,7 @@ const customerRoutes = require("./routes/customerRoutes");
 const salesRoutes = require("./routes/sales"); // ✅ Clerk Sales route
 const dashboardClerkRoutes = require("./routes/dashboardClerk");
 const clerkReportRoutes = require("./routes/clerkReportRoutes"); // ✅ New Clerk Reports route
-
+// const notificationRoutes = require("./routes/notifications");
 // ✅ Register All Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardRoutes);
@@ -80,6 +80,9 @@ app.use("/api/transactions", transactionRoutes);
 app.use("/api/customers", customerRoutes);
 app.use("/api/sales", salesRoutes); // ✅ New POS Sales API
 app.use("/api/reports", reportRoutes);
+app.use("/notifications", require("./routes/notifications"));
+app.use("/api/dashboard", require("./routes/dashboardRoutes"));
+
 
 // 🧩 Clerk-specific routes
 app.use("/api/clerk/dashboard", dashboardClerkRoutes);

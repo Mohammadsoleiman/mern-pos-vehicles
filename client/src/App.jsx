@@ -35,6 +35,8 @@ import VehicleCreate from "./pages/Vehicles/VehicleCreate";
 import VehicleEdit from "./pages/Vehicles/VehicleEdit";
 import VehicleShow from "./pages/Vehicles/VehicleShow";
 import GlobalSettings from "./pages/settings/GlobalSettings";
+import AdminReports from "./pages/admin/Reports";
+
 
 import FeaturesOverview from "./pages/accountingstuff/FeaturesOverview";
 import Transactions from "./pages/accountingstuff/Transactions";
@@ -102,6 +104,8 @@ export default function App() {
                                       <Route path="vehicles/create" element={<VehicleCreate />} />
                                       <Route path="vehicles/edit/:id" element={<VehicleEdit />} />
                                       <Route path="vehicles/show/:id" element={<VehicleShow />} />
+                                           <Route path="/admin/reports" element={<AdminReports />} />
+
                                       <Route path="settings" element={<GlobalSettings />} />
                                     </Route>
                                   </Route>
@@ -121,6 +125,7 @@ export default function App() {
                                     <Route path="income" element={<Income />} />
                                     <Route path="expenses" element={<Expenses />} />
                                     <Route path="reports" element={<Reports />} />
+                               
                                     <Route path="settings" element={<GlobalSettings />} />
 
                                     {/* Employees */}

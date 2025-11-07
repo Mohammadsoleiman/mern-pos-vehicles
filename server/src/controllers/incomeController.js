@@ -1,4 +1,5 @@
 const Income = require("../models/Income");
+const { createNotification } = require("./notificationController");
 
 // 🧮 Helper: get current month name + year
 const getCurrentMonth = () => {
@@ -23,17 +24,22 @@ exports.createIncome = async (req, res) => {
     const currentMonth = getCurrentMonth();
     const income = new Income({
       ...req.body,
-      date: new Date().toISOString().split("T")[0], // 📅 e.g. 2025-11-04
-      month: currentMonth, // 🗓️ e.g. November 2025
+      date: new Date().toISOString().split("T")[0],
+      month: currentMonth,
     });
 
     await income.save();
+
+    // 🔔 Notification
+    await createNotification(`New Income Recorded: $${income.amount}`, "income");
+
     res.status(201).json(income);
   } catch (error) {
     console.error("❌ Error creating income:", error);
     res.status(400).json({ message: error.message });
   }
 };
+
 
 // ✏️ Update income
 exports.updateIncome = async (req, res) => {

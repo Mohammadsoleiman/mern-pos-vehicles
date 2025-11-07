@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { getClerkDashboardStats } = require("../controllers/dashboardController");
+const { getDashboard } = require("../controllers/dashboardController"); // ✅ صح
 
-// Clerk dashboard stats
-router.get("/", getClerkDashboardStats);
+// Clerk Dashboard Route
+router.get("/", getDashboard); // ✅ استخدم نفس الدالة
 
 module.exports = router;

@@ -1,4 +1,5 @@
 const Expense = require("../models/Expense");
+const { createNotification } = require("./notificationController");
 
 // 🧮 Helper to get current month name + year
 const getCurrentMonth = () => {
@@ -25,15 +26,21 @@ exports.addExpense = async (req, res) => {
     const expense = new Expense({
       ...req.body,
       month: currentMonth,
-      date: new Date().toISOString().split("T")[0], // 📅 e.g. 2025-11-04
+      date: new Date().toISOString().split("T")[0],
     });
+
     await expense.save();
+
+    // 🔔 Notification
+    await createNotification(`New Expense Added: $${expense.amount}`, "expense");
+
     res.json(expense);
   } catch (err) {
     console.error("❌ Error adding expense:", err);
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // ✏️ Update expense
 exports.updateExpense = async (req, res) => {

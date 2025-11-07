@@ -2,6 +2,7 @@
 const Sale = require("../models/Sale");
 const Customer = require("../models/Customer");
 const Vehicle = require("../models/Vehicle");
+const populatedSale = await Sale.findById(savedSale._id)
 
 /* ==========================================================
    📦 GET ALL SALES
@@ -20,6 +21,9 @@ exports.getSales = async (req, res) => {
   }
 };
 
+/* ==========================================================
+   ➕ ADD NEW SALE
+   ========================================================== */
 /* ==========================================================
    ➕ ADD NEW SALE
    ========================================================== */
@@ -42,7 +46,7 @@ exports.addSale = async (req, res) => {
     const count = await Sale.countDocuments();
     const invoiceNumber = `INV-${String(count + 1).padStart(4, "0")}`;
 
-    // Create and save sale
+    // Create & save sale
     const sale = new Sale({
       customerId,
       vehicleId,
@@ -76,12 +80,20 @@ exports.addSale = async (req, res) => {
       .populate("customerId", "name email phone")
       .populate("vehicleId", "make model year price");
 
+    // ✅ 🔔 Create Notification
+    await createNotification(
+      `New Sale Completed: $${totalAmount} - Invoice ${invoiceNumber}`,
+      "sale"
+    );
+
     res.status(201).json(populatedSale);
+
   } catch (error) {
     console.error("❌ Error adding sale:", error);
     res.status(500).json({ message: "Failed to add sale" });
   }
 };
+
 
 /* ==========================================================
    ✏️ UPDATE SALE

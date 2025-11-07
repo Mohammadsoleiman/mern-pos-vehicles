@@ -1,5 +1,7 @@
 const Customer = require("../models/Customer");
 
+
+
 // 📥 Get all customers
 exports.getCustomers = async (req, res) => {
   try {
@@ -24,12 +26,17 @@ exports.addCustomer = async (req, res) => {
 
     const newCustomer = new Customer({ name, email, phone });
     const saved = await newCustomer.save();
+
+    // 🔔 Notification
+    await createNotification(`New Customer Added: ${saved.name}`, "customer");
+
     res.status(201).json(saved);
   } catch (error) {
     console.error("❌ Error adding customer:", error);
     res.status(500).json({ message: "Failed to add customer" });
   }
 };
+
 
 // ✏️ Update customer info
 exports.updateCustomer = async (req, res) => {

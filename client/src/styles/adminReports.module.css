@@ -1,0 +1,192 @@
+/* adminReports.module.css */
+
+/* ===== PAGE LAYOUT ===== */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+/* ==== Top Stat Cards ==== */
+.cardsRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 18px;
+}
+
+.statCard {
+  background: var(--card-bg, #fff);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  text-align: center;
+  transition: 0.25s ease;
+}
+.statCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+.statCard h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  opacity: 0.7;
+}
+.statCard p {
+  margin: 0;
+  font-size: 26px;
+  font-weight: bold;
+  color: #6a5acd;
+}
+
+/* ==== Header & Button ==== */
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg,#6a5acd 0%, #8b72ff 100%);
+  padding: 12px 16px;
+  border-radius: 12px;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+.pageHeader h1 { margin: 0; font-size: 20px; font-weight: 600; }
+.printBtn {
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ==== Charts Row ==== */
+.chartsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+.chartCard {
+  padding: 22px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.07);
+}
+.chartCard h2 {
+  margin-bottom: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ==== PRINT TABLE (general table style used on screen too) ==== */
+.printTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  margin-top: 8px;
+}
+
+.printTable thead tr {
+  background: #6a5acd;
+  color: #fff;
+}
+.printTable th {
+  padding: 12px 14px;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: left;
+}
+.printTable td {
+  padding: 11px 14px;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+  color: #333;
+}
+.printTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+@media screen {
+  .printTable tbody tr:hover {
+    background: rgba(106, 90, 205, 0.06);
+    transition: .18s;
+  }
+}
+
+/* Align common numeric columns to the right (adjust selectors if your columns differ) */
+.printTable td.numeric,
+.printTable td.align-right {
+  text-align: right;
+}
+
+/* small helpers */
+#print-area h2 {
+  margin-top: 26px;
+  margin-bottom: 10px;
+  font-size: 19px;
+  font-weight: 600;
+  color: #222;
+}
+
+/* ===== SUMMARY TABLE SPECIFIC (we'll use id="summary-table") ===== */
+#summary-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  margin-top: 8px;
+}
+#summary-table thead tr { background: #6a5acd; color: #fff; }
+#summary-table th { padding: 12px 14px; font-size: 14px; text-align: center; font-weight: 600; }
+#summary-table td { padding: 11px 14px; font-size: 15px; font-weight: 600; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.07); color: #222; }
+#summary-table tbody tr:last-child td { border-bottom: none; }
+
+/* ===== PRINT MODE (override for printed output) ===== */
+@media print {
+
+  /* hide app chrome */
+  :global(.noPrint),
+  :global(.chartsRow),
+  :global(nav),
+  :global(aside),
+  :global(.sidebar),
+  :global(.printBtn) {
+    display: none !important;
+  }
+
+  /* general page */
+  :global(body), :global(html), :global(.page) {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* tables must look clean in print */
+  :global(.printTable),
+  #summary-table,
+  #print-area table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    box-shadow: none !important;
+    background: #fff !important;
+  }
+
+  :global(.printTable th), :global(.printTable td),
+  #summary-table th, #summary-table td,
+  #print-area th, #print-area td {
+    border: 1px solid #000 !important;
+    padding: 6px !important;
+    color: #000 !important;
+  }
+
+  /* force page breaks between sections when printing long reports */
+  .print-section-break { page-break-after: always; }
+}
