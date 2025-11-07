@@ -39,10 +39,9 @@ It offers **role-based dashboards** for Admin, Accountant, and Clerk, allowing s
 | **Tools** | Postman, Git, VS Code, JWT Auth |
 
 ---
-## 📁 Folder Structure
 
-<details>
-<summary>Show Full Project Structure</summary>
+## 📁 Folder Structure
+```
 
 
 mern-pos-vehicles/
@@ -63,10 +62,15 @@ mern-pos-vehicles/
 │ └── package.json
 │
 └── README.md
+```
 
 </details>
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7d00c4f9e3dbeb92a0beb8db313920b82df34e8b
 
 ## 🚀 Getting Started
 
