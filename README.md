@@ -43,7 +43,7 @@ It offers **role-based dashboards** for Admin, Accountant, and Clerk, allowing s
 
 <details>
 <summary>Show Full Project Structure</summary>
-
+...
 mern-pos-vehicles/
 ├── client/ # React Frontend
 │ └── src/
@@ -64,7 +64,7 @@ mern-pos-vehicles/
 └── README.md
 
 </details>
-
+...
 
 ---
 
