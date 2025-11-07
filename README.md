@@ -43,16 +43,15 @@ It offers **role-based dashboards** for Admin, Accountant, and Clerk, allowing s
 ## 📂 Folder Structure
 
 mern-pos-vehicles/
-│
-├── client/ # React Frontend
-│ ├── src/
-│ │ ├── components/ # UI Components (for each role)
-│ │ ├── context/ # React Context Providers
-│ │ ├── pages/ # Accountant, Clerk, Admin pages
-│ │ └── styles/ # CSS Stylesheets
+├── client/ # React Frontend Application
+│ └── src/
+│ ├── components/ # UI Components (for each role)
+│ ├── context/ # React Context Providers
+│ ├── pages/ # Accountant, Clerk, Admin Pages
+│ └── styles/ # CSS Stylesheets (Custom Responsive, No Tailwind)
 │ └── package.json
 │
-├── server/ # Express + Node Backend
+├── server/ # Express + Node.js Backend
 │ ├── models/ # Mongoose Schemas
 │ ├── routes/ # API Endpoints
 │ ├── controllers/ # Business Logic
@@ -61,8 +60,6 @@ mern-pos-vehicles/
 │ └── package.json
 │
 └── README.md
-
-
 ---
 
 ## 🚀 Getting Started
