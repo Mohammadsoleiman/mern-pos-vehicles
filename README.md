@@ -67,10 +67,7 @@ mern-pos-vehicles/
 </details>
 
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 7d00c4f9e3dbeb92a0beb8db313920b82df34e8b
 
 ## 🚀 Getting Started
 
@@ -106,9 +103,7 @@ cd ../client
 npm run dev
 
 Then visit:
-👉 http://localhost:5173
-
-📊 Future Enhancements
+👉 http://localhost:gti
 
 🔄 Real-time synchronization across dashboards
 
