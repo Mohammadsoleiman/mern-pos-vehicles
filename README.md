@@ -5,7 +5,7 @@ It offers **role-based dashboards** for Admin, Accountant, and Clerk, allowing s
 
 ---
 
-## 🎬 UI Preview (Animated)
+## 🎥 Live Dashboard Overview
 
 <p align="center">
   <img src="./client/public/preview.gif" width="800" style="border-radius:12px; box-shadow:0 0 10px #0003;" />
