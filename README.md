@@ -19,14 +19,20 @@ It offers **role-based dashboards** for Admin, Accountant, and Clerk, allowing s
 
 ## 🌟 Features
 
-- 🔐 **Role-Based Access Control** (Admin / Accountant / Clerk)
-- 💰 **POS System** for handling vehicle sales
-- 📊 **Financial & Accounting reports**
-- 🚘 **Inventory tracking** for vehicles
-- 👤 **Customer management & history**
-- 📈 **Dynamic charts & insights**
-- ⚡ **Fast modern frontend (React + Vite)**
-- 💾 **Secure backend with JWT authentication**
+- 🔐 **Role-Based Access Control**
+  - Separate dashboards for Admin, Accountant, and Clerk
+- 💰 **Point of Sale (POS)**
+  - Manage vehicle sales, invoices, and transactions
+- 📊 **Accounting Module**
+  - Track income, expenses, and profit reports
+- 🚘 **Inventory Management**
+  - Add, edit, and monitor vehicles (cars, motorcycles, boats)
+- 👥 **Customer Management**
+  - Track customer details and purchase history
+- 📈 **Dynamic Dashboards**
+  - Real-time KPIs and charts for financial insights
+- 🧾 **Reporting Tools**
+  - Generate summaries, transaction history, and analytics
 
 ---
 
@@ -161,9 +167,7 @@ Mohammad Balqis
 
 📜 License:
 
-This project is open source and available under the MIT License
-.
-
+This project is open source and available under the MIT License.
 
 🏷️ Badges
 
