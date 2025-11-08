@@ -3,6 +3,12 @@
 A full-stack **MERN** (MongoDB, Express, React, Node.js) web application that provides a complete **POS and accounting management platform** for vehicle dealerships.  
 It offers **role-based dashboards** for Admin, Accountant, and Clerk, allowing seamless management of sales, purchases, inventory, and financial records.
 
+## 📊 Application Preview
+
+<p align="center">
+  <img src="./client/public/dashboard-demo.gif" alt="App Demo" width="800" />
+</p>
+
 ---
 
 ## 🌟 Features
