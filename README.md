@@ -6,7 +6,7 @@ It offers **role-based dashboards** for Admin, Accountant, and Clerk, allowing s
 ## 📊 Application Preview
 
 <p align="center">
-  <img src="./client/public/dashboard-demo.gif" alt="App Demo" width="800" />
+  <img src="./client/public/preview.gif" alt="App Demo" width="800" />
 </p>
 
 ---
