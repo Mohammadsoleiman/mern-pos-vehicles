@@ -13,7 +13,7 @@ export default function UserCreate({ onBack }) {
 
   useEffect(() => {
     (async () => {
-      const { data } = await axiosClient.get("/roles");
+     const { data } = await axiosClient.get("/roles");
       setRoles(data);
     })();
   }, []);

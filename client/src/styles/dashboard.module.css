@@ -516,41 +516,89 @@ body {
   gap: 20px;
 }
 
-/* ================= TABLE ================= */
+/* ================= TABLE - ELEGANT MODERN DESIGN ================= */
 .table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   background: var(--bgCard, #ffffff);
   color: var(--text, #1a1a1a);
   font-size: 14px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border, #e2e8f0);
 }
 
 .table th {
   background: var(--tableHeader, #f8fafc);
-  color: var(--text, #64748b);
-  border-bottom: 1px solid var(--border, #e2e8f0);
-  padding: 14px 16px;
+  color: #475569;
+  padding: 16px 20px;
   text-align: left;
   font-weight: 700;
   text-transform: uppercase;
-  font-size: 12px;
-  letter-spacing: 0.5px;
+  font-size: 11px;
+  letter-spacing: 1.2px;
+  border-bottom: 2px solid #e2e8f0;
+  position: relative;
+}
+
+.table th:first-child {
+  border-top-left-radius: 16px;
+}
+
+.table th:last-child {
+  border-top-right-radius: 16px;
 }
 
 .table td {
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--border, #e2e8f0);
+  padding: 18px 20px;
+  border: none;
   background: var(--tableRow, #ffffff);
   color: var(--text, #1e293b);
   font-weight: 500;
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .table tbody tr {
-  transition: background 0.2s ease;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.table tbody tr::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
 }
 
 .table tbody tr:hover {
-  background: var(--tableHeader, #f8fafc);
+  background: linear-gradient(90deg, 
+    rgba(99, 102, 241, 0.03) 0%, 
+    rgba(139, 92, 246, 0.03) 100%
+  );
+  transform: translateX(2px);
+}
+
+.table tbody tr:hover::after {
+  transform: scaleX(1);
+}
+
+.table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 16px;
+}
+
+.table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 16px;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 /* ================= TABLE ACTIONS (أزرار جنب بعض) ================= */

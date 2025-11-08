@@ -28,7 +28,7 @@ app.use(
 (async () => {
   try {
     await connectDB();
-    console.log("✅ MongoDB connected successfully.");
+    // console.log("✅ MongoDB connected successfully.");
   } catch (err) {
     console.error("❌ MongoDB connection failed:", err.message);
     process.exit(1);
@@ -108,7 +108,7 @@ setTimeout(() => {
       }
     });
   } else {
-    console.warn("⚠️ No routes found in app._router");
+    // console.warn("⚠️ No routes found in app._router");
   }
 }, 1500);
 

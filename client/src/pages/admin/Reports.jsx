@@ -151,15 +151,15 @@ export default function AdminReports() {
         <h2>Top Customers</h2>
         <table className={styles.printTable}>
           <thead>
-            <tr><th>#</th><th>Customer</th><th style={{textAlign:'right'}}>Purchases</th><th style={{textAlign:'right'}}>Total Spent</th></tr>
+            <tr><th>#</th><th>Customer</th><th >Purchases</th><th >Total Spent</th></tr>
           </thead>
           <tbody>
             {topCustomers.map((c, i) => (
               <tr key={i}>
                 <td>{i + 1}</td>
                 <td>{c.name}</td>
-                <td style={{textAlign:'right'}}>{c.purchases}</td>
-                <td style={{textAlign:'right'}}>${c.totalSpent}</td>
+                <td style={{textAlign:'left'}}>{c.purchases}</td>
+                <td style={{textAlign:'left'}}>${c.totalSpent}</td>
               </tr>
             ))}
           </tbody>

@@ -142,27 +142,17 @@ exports.updateRole = async (req, res) => {
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find()
-      .populate({
-        path: "role",
-        select: "name permissions",
-        populate: { path: "permissions", select: "name" },
-      })
-      .select("-password");
+      .populate("role", "name") // ✅ رجع بس اسم الرول
+      .select("name email role") // ✅ رجع بس الأشياء المهمة
+      .lean(); // 🚀 تسريع القراءة من DB
 
-    res.json(
-      users.map((u) => ({
-        id: u._id,
-        name: u.name,
-        email: u.email,
-        role: u.role?.name || "no-role",
-        permissions: u.role?.permissions?.map((p) => p.name) || [],
-      }))
-    );
+    res.json(users);
   } catch (err) {
     console.error("❌ Get users error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 // ➕ Create user
 exports.createUser = async (req, res) => {
@@ -175,24 +165,15 @@ exports.createUser = async (req, res) => {
 
     const hashed = await bcrypt.hash(password, 10);
 
-    // ✅ حوّل الاسم إلى ObjectId
-    let roleId = null;
-    if (role) {
-      const foundRole = await Role.findOne({ name: role });
-      if (foundRole) roleId = foundRole._id;
-    }
-
+    // ✅ هون أهم سطر : إذا role جاي ObjectId لا تعمله findOne
     const newUser = await User.create({
       name,
       email,
       password: hashed,
-      role: roleId,
+      role: role || (await Role.findOne({ name: "clerk" }))._id,
     });
 
-    const populated = await newUser.populate({
-      path: "role",
-      select: "name",
-    });
+    const populated = await newUser.populate("role", "name");
 
     res.status(201).json({
       message: "✅ User created successfully!",
@@ -200,7 +181,7 @@ exports.createUser = async (req, res) => {
         id: populated._id,
         name: populated.name,
         email: populated.email,
-        role: populated.role?.name || null,
+        role: populated.role?.name,
       },
     });
   } catch (err) {
@@ -209,6 +190,8 @@ exports.createUser = async (req, res) => {
   }
 };
 
+
+// ✏️ Update user
 // ✏️ Update user
 exports.updateUser = async (req, res) => {
   try {
@@ -220,15 +203,8 @@ exports.updateUser = async (req, res) => {
     user.name = name || user.name;
     user.email = email || user.email;
 
-    if (role) {
-      // ✅ إذا كان string (مثل "clerk") نجيب الـ ObjectId
-      if (typeof role === "string") {
-        const foundRole = await Role.findOne({ name: role });
-        if (foundRole) user.role = foundRole._id;
-      } else {
-        user.role = role;
-      }
-    }
+    // ✅ عطيناه الـ ObjectId مباشرة
+    if (role) user.role = role;
 
     if (password) {
       user.password = await bcrypt.hash(password, 10);
@@ -236,10 +212,7 @@ exports.updateUser = async (req, res) => {
 
     await user.save();
 
-    const populated = await user.populate({
-      path: "role",
-      select: "name",
-    });
+    const populated = await user.populate("role", "name");
 
     res.json({
       message: "✅ User updated successfully!",
@@ -247,7 +220,7 @@ exports.updateUser = async (req, res) => {
         id: populated._id,
         name: populated.name,
         email: populated.email,
-        role: populated.role?.name || null,
+        role: populated.role?.name,
       },
     });
   } catch (err) {
@@ -255,6 +228,7 @@ exports.updateUser = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 // ❌ Delete user
 exports.deleteUser = async (req, res) => {
