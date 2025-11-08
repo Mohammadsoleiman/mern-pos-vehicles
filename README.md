@@ -109,7 +109,7 @@ mern-pos-vehicles/
 
 ### 1) Clone Repository
 ```bash
-git clone https://github.com/MohammadBalqis/mern-pos-vehicles.git
+git clone https://github.com/Mohammadsoleiman/mern-pos-vehicles.git
 cd mern-pos-vehicles
 
  ##Install Dependencies
@@ -156,20 +156,30 @@ Then visit:
 🌐 Deployment with Docker and CI/CD integration
 
 
-👨‍💻 Author
+## 👨‍💻 About the Developer
 
-Mohammad Balqis
-🚀 Full-Stack Developer (MERN) | Digital Hub Trainee
-📫 GitHub Profile: https://github.com/MohammadBalqis
+<div align="center" style="margin-top: 40px;">
 
-💼 Passionate about building scalable and data-driven web applications.
+<img src="https://avatars.githubusercontent.com/Mohammadsoleiman" width="160" style="border-radius:50%; box-shadow:0 8px 20px rgba(0,0,0,.35); transition: transform .3s ease;" />
 
+<br/><br/>
 
-📜 License:
+### **Mohammad Soleiman**
+**Full-Stack Developer — MERN Stack**  
+Focused on building **real business systems** with clean structure & meaningful logic.
 
-This project is open source and available under the MIT License.
+🌍 Saida, Lebanon  
+📩 Always learning, improving, shipping solutions.
 
-🏷️ Badges
+<br/>
+
+<a href="https://github.com/Mohammadsoleiman">
+  <img src="https://img.shields.io/badge/GitHub-View_Profile-111?style=for-the-badge&logo=github" />
+</a>
+
+</div>
+
+> *"I build systems designed to scale — clean structure, meaningful logic, and real-world value."*
 
 ---
 
