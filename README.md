@@ -239,9 +239,10 @@ Focused on building real business systems with clean structure & meaningful logi
 
 ### 🔗 Connect With Me
 
-  <a href="https://github.com/mohammadsoleiman?tab=followers">
-    <img src="https://img.shields.io/github/followers/mohammadsoleiman?label=Followers&style=for-the-badge&color=blueviolet" />
-  </a>
+ <a href="https://github.com/mohammadsoleiman?tab=followers" target="_blank">
+  <img src="https://img.shields.io/github/followers/mohammadsoleiman?label=Followers&style=for-the-badge&color=8A2BE2" />
+</a>
+
 <a href="https://www.linkedin.com/in/mohammad-suleiman" target="_blank">
   <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" />
 </a>
