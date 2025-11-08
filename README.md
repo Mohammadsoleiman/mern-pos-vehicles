@@ -219,47 +219,75 @@ Then visit: 👉 **http://localhost:5173**
 </div>
 
 ---
-
 ## 👨‍💻 About the Developer
 
 <div align="center">
-  
-<img src="https://avatars.githubusercontent.com/Mohammadsoleiman" width="160" style="border-radius:50%; box-shadow:0 8px 20px rgba(0,0,0,.35);" />
 
-<br/>
+<img src="https://avatars.githubusercontent.com/Mohammadsoleiman" width="200" style="border-radius: 50%; border: 4px solid #6366f1; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3); transition: transform 0.3s ease;" />
 
-### Mohammad Soleiman
+<h2 style="margin-top: 20px;">Mohammad Soleiman</h2>
 
-![Typing SVG](https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=18&pause=1000&color=6366F1&center=true&vCenter=true&width=435&lines=Full-Stack+Developer;MERN+Stack+Specialist;Building+Real+Business+Solutions)
-
-<br/>
-
-🌍 **Saida, Lebanon**  
-💼 Focused on building real business systems with clean structure & meaningful logic  
-📩 Always learning, improving, shipping solutions
-
-<br/>
-
-[![GitHub](https://img.shields.io/badge/GitHub-View_Profile-111?style=for-the-badge&logo=github)](https://github.com/Mohammadsoleiman)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/mohammadsoleiman)
-
-</div>
+<p>
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=18&pause=1000&color=6366F1&center=true&vCenter=true&width=435&lines=Full-Stack+MERN+Developer;Building+Real+Business+Solutions;Clean+Code+%26+Scalable+Systems;Always+Learning+%26+Improving" alt="Typing SVG" />
+</p>
 
 ---
 
-<div align="center">
-
-### 💭 Developer Quote
-
-*"I build systems designed to scale — clean structure, meaningful logic, and real-world value."*
+### 💼 Professional Focus
+```
+🚀 Building real business systems with clean structure
+💡 Focused on meaningful logic and real-world value
+🎯 MERN Stack specialist with production experience
+```
 
 ---
 
-### 📈 Project Stats
+### 📍 Location & Status
 
-![GitHub stars](https://img.shields.io/github/stars/Mohammadsoleiman/mern-pos-vehicles?style=social)
-![GitHub forks](https://img.shields.io/github/forks/Mohammadsoleiman/mern-pos-vehicles?style=social)
-![GitHub watchers](https://img.shields.io/github/watchers/Mohammadsoleiman/mern-pos-vehicles?style=social)
+🌍 **Based in:** Saida, Lebanon  
+💼 **Available for:** Full-time opportunities  
+📩 **Open to:** Collaborations & freelance projects
+
+---
+
+### 🛠️ Tech Stack
+
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=mongodb,express,react,nodejs,javascript,html,css,git,github,vscode" />
+</p>
+
+---
+
+### 🔗 Connect With Me
+
+<p align="center">
+  <a href="https://github.com/Mohammadsoleiman">
+    <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" />
+  </a>
+  <a href="https://linkedin.com/in/mohammadsoleiman">
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" />
+  </a>
+  <a href="mailto:your.email@example.com">
+    <img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" />
+  </a>
+</p>
+
+---
+
+### 📊 GitHub Stats
+
+<p align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=Mohammadsoleiman&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0D1117" width="48%" />
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=Mohammadsoleiman&theme=tokyonight&hide_border=true&background=0D1117" width="48%" />
+</p>
+
+---
+
+### 💭 Developer Philosophy
+
+<p align="center">
+  <em>"I build systems designed to scale — clean structure, meaningful logic, and real-world value."</em>
+</p>
 
 </div>
 
