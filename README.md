@@ -41,7 +41,7 @@ It offers **role-based dashboards** for Admin, Accountant, and Clerk, allowing s
 | **Frontend** | React, Vite, React Router, Lucide Icons |
 | **Backend** | Node.js, Express.js |
 | **Database** | MongoDB + Mongoose |
-| **Styling** | CSS (Custom Responsive Styling, no Tailwind) |
+| **Styling** | CSS (Custom Responsive Styling) |
 | **Tools** | Postman, Git, VS Code, JWT Auth |
 
 ---
