@@ -461,3 +461,19 @@
   border-radius: 4px;
   cursor: pointer;
 }
+.btn-view-invoice {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+  background: #22c55e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.25s ease;
+}
+
+.btn-view-invoice:hover {
+  background: #16a34a;
+}

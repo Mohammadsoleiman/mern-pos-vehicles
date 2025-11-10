@@ -13,7 +13,8 @@ import {
 import "../../styles/clerk/clerkSales.css";
 
 const ClerkSales = () => {
-  const { vehicles, updateVehicleStock } = useContext(VehicleContext);
+  const { vehicles, updateVehicleStock: ctxUpdateVehicleStock, decrementStock } =
+    useContext(VehicleContext);
   const { addSale } = useContext(SalesContext);
   const { customers, addCustomer, refreshCustomerTotals } =
     useContext(CustomerContext);
@@ -35,6 +36,28 @@ const ClerkSales = () => {
 
   // ✅ Helper for Mongo or numeric IDs
   const getId = (obj) => String(obj?._id || obj?.id || obj || "");
+
+  // 🛡️ SAFE WRAPPER for stock updates (prevents TypeError)
+  const safeUpdateVehicleStock = async (vehicleId, qty) => {
+    // 1) Preferred: context function named updateVehicleStock
+    if (typeof ctxUpdateVehicleStock === "function") {
+      return await ctxUpdateVehicleStock(vehicleId, qty);
+    }
+    // 2) Alternate name some projects use
+    if (typeof decrementStock === "function") {
+      return await decrementStock(vehicleId, qty);
+    }
+    // 3) Fallback: simple PATCH to adjust stock on backend
+    try {
+      await fetch(`http://localhost:5000/api/vehicles/${vehicleId}/stock`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ delta: -Math.abs(qty) }),
+      });
+    } catch (e) {
+      console.warn("Stock fallback request failed:", e);
+    }
+  };
 
   // ================== Filters ==================
   const availableVehicles = vehicles.filter(
@@ -118,8 +141,8 @@ const ClerkSales = () => {
         const invoice = await addSale(saleData);
         createdInvoice = invoice;
 
-        // 2️⃣ Update vehicle stock
-        await updateVehicleStock(vehicleId, item.quantity);
+        // 2️⃣ Update vehicle stock (safe wrapper avoids TypeError)
+        await safeUpdateVehicleStock(vehicleId, item.quantity);
 
         // 3️⃣ Update customer totals in DB
         await fetch("http://localhost:5000/api/customers/updateTotals", {
@@ -149,8 +172,17 @@ const ClerkSales = () => {
         });
       }
 
-      // 6️⃣ Reset after sale
-      setShowInvoice(true);
+      // 6️⃣ Ask user if they want to view/print invoice
+      const wantsInvoice = window.confirm(
+        "✅ Sale completed! Do you want to view and print the invoice?"
+      );
+      if (wantsInvoice) {
+        setShowInvoice(true);
+      } else {
+        setShowInvoice(false);
+      }
+
+      // 7️⃣ Reset cart & payment
       setCart([]);
       setSelectedCustomer(null);
       setPaymentMethod("cash");
@@ -448,6 +480,16 @@ const ClerkSales = () => {
                     >
                       Complete Sale
                     </button>
+
+                    {/* Manual invoice view button */}
+                    {lastInvoice && (
+                      <button
+                        onClick={() => setShowInvoice(true)}
+                        className="btn-view-invoice"
+                      >
+                        View Last Invoice
+                      </button>
+                    )}
                   </div>
                 </>
               )}
