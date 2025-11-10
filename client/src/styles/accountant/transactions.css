@@ -1,0 +1,331 @@
+/* ======================================================
+   TRANSACTIONS PAGE - Accountant Module
+   Clean professional style for income & expense overview
+   ====================================================== */
+
+.transactions-page {
+  padding: 30px;
+  background: #f8f9fb;
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  color: #333;
+}
+
+/* ---------------- HEADER ---------------- */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.page-header h1 {
+  margin: 0;
+  color: #1a1a1a;
+  font-size: 1.8rem;
+}
+
+.page-header p {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-primary {
+  background: #0077cc;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  background: #005fa3;
+}
+
+.btn-secondary {
+  background: #6f42c1;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-secondary:hover {
+  background: #5932a8;
+}
+
+/* ---------------- STATS CARDS ---------------- */
+.transaction-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat-card-transaction {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: 0.3s;
+}
+
+.stat-card-transaction:hover {
+  transform: translateY(-3px);
+}
+
+.stat-card-transaction h3 {
+  margin: 0 0 8px 0;
+  color: #444;
+  font-size: 1rem;
+}
+
+.stat-value {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #000;
+}
+
+.stat-card-transaction.income {
+  border-left: 4px solid #2e8b57;
+}
+
+.stat-card-transaction.expense {
+  border-left: 4px solid #d9534f;
+}
+
+.stat-card-transaction.balance {
+  border-left: 4px solid #007bff;
+}
+
+.stat-card-transaction .positive {
+  color: #2e8b57;
+  font-weight: 600;
+}
+
+.stat-card-transaction .negative {
+  color: #d9534f;
+  font-weight: 600;
+}
+
+/* ---------------- ADD TRANSACTION FORM ---------------- */
+.transaction-form-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px 25px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+  margin-bottom: 30px;
+}
+
+.transaction-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full-width {
+  flex: 100%;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+input, select {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #0077cc;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-submit {
+  background: #2e8b57;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-submit:hover {
+  background: #256d46;
+}
+
+.btn-cancel {
+  background: #ccc;
+  color: #333;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-cancel:hover {
+  background: #b0b0b0;
+}
+
+/* ---------------- FILTER SECTION ---------------- */
+.filters-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 20px;
+  background: #fff;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin-bottom: 25px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-input, .filter-select, .date-input {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.btn-clear-filters {
+  background: #ff6666;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-clear-filters:hover {
+  background: #e04e4e;
+}
+
+/* ---------------- TRANSACTION TABLE ---------------- */
+.transactions-table-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.transactions-table th {
+  background: #f2f4f8;
+  text-align: left;
+  padding: 10px;
+  font-weight: 600;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.transactions-table td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.transaction-id {
+  font-weight: 600;
+  color: #0077cc;
+}
+
+.description-cell {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.badge-type {
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.type-income { background: #2e8b57; }
+.type-expense { background: #d9534f; }
+.type-purchase { background: #6f42c1; }
+
+.amount {
+  font-weight: bold;
+}
+
+.amount.positive { color: #2e8b57; }
+.amount.negative { color: #d9534f; }
+
+.text-muted { color: #aaa; }
+
+.btn-delete {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.btn-delete:hover { color: #d9534f; }
+
+.empty-state {
+  text-align: center;
+  padding: 20px;
+  color: #777;
+  font-style: italic;
+}
+
+/* ---------------- PRINT STYLES ---------------- */
+@media print {
+  body * { visibility: hidden; }
+  .transactions-page, .transactions-page * { visibility: visible; }
+  .transactions-page { position: absolute; left: 0; top: 0; width: 100%; }
+  .btn-primary, .btn-secondary, .btn-submit, .btn-cancel, .btn-delete, .search-input, .filter-select { display: none !important; }
+  .transactions-table { border-collapse: collapse; width: 100%; }
+  .transactions-table th, .transactions-table td { border: 1px solid #000; padding: 6px 10px; font-size: 12pt; }
+  .transaction-stats { display: flex; justify-content: space-around; margin-bottom: 20px; flex-wrap: wrap; }
+}

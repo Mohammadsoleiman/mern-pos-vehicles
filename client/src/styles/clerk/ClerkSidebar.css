@@ -1,0 +1,148 @@
+/* Sidebar Container */
+.clerk-sidebar {
+  width: 230px;
+  background: linear-gradient(180deg, #0f172a, #1e293b);
+  color: #e2e8f0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255,255,255,0.07);
+  transition: transform 0.3s ease;
+  z-index: 100;
+}
+
+/* Overlay */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 50;
+}
+
+/* User Section */
+.sidebar-header {
+  padding: 1.6rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.user-avatar {
+  width: 45px;
+  height: 45px;
+  background: #3b82f6;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0px 0px 10px rgba(59,130,246,0.4);
+}
+
+.user-name {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.user-role {
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+/* Nav */
+.sidebar-nav {
+  flex-grow: 1;
+  padding: 1rem 0;
+}
+
+.nav-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-item {
+  margin-bottom: 0.4rem;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.1rem;
+  border-radius: 0.45rem;
+  text-decoration: none;
+  color: #cbd5e1;
+  transition: 0.25s;
+  position: relative;
+}
+
+.nav-link:hover {
+  background: rgba(59,130,246,0.15);
+  color: #fff;
+}
+
+/* Active Link */
+.nav-link.active {
+  background: linear-gradient(90deg, #2563eb, #3b82f6);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0px 2px 12px rgba(59,130,246,0.45);
+}
+
+/* Icons */
+.nav-icon {
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
+.nav-label {
+  flex-grow: 1;
+  margin-left: 0.6rem;
+  font-size: 0.96rem;
+}
+
+/* Footer Area */
+.sidebar-footer {
+  padding: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.logout-btn {
+  width: 100%;
+  background: #dc2626;
+  border: none;
+  border-radius: 0.45rem;
+  padding: 0.55rem 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.logout-btn:hover {
+  background: #b91c1c;
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media(max-width:1024px){
+  .clerk-sidebar{
+    transform: translateX(-100%);
+  }
+  .clerk-sidebar.open{
+    transform: translateX(0);
+  }
+}

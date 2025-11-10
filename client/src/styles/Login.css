@@ -1,0 +1,200 @@
+🟦 الخلفية العامة
+.login-page {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #0f172a 40%, #1e293b 100%);
+  font-family: "Poppins", sans-serif;
+  overflow: hidden;
+}
+
+/* 🟩 الكارت */
+.login-card {
+  background-color: #ffffff;
+  padding: 50px 40px;
+  border-radius: 20px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
+  width: 380px;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.login-card:hover {
+  transform: translateY(-6px);
+}
+
+/* 🚗 أيقونة السيارة */
+.login-icon {
+  font-size: 55px;
+  color: #2563eb;
+  margin-bottom: 10px;
+}
+
+/* 🧾 العنوان */
+.login-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: #1e293b;
+  letter-spacing: 0.5px;
+}
+
+/* ✏️ الحقول */
+.login-input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 4px rgba(37, 99, 235, 0.4);
+}
+
+/* 🔵 زر الدخول */
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #2563eb;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.login-btn:hover {
+  background-color: #1e40af;
+  transform: scale(1.02);
+}
+
+/* 🔴 نص الخطأ */
+.error-text {
+  color: tomato;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* ⚪ الفوتر */
+.footer-text {
+  font-size: 13px;
+  margin-top: 20px;
+  color: #6b7280;
+}
+
+/* 🖥️ تحسين محاذاة للـ desktop */
+@media (min-width: 1024px) {
+  .login-card {
+    margin-left: 0;
+  }
+}
+/* 🟦 الخلفية العامة */
+.login-page {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #0f172a 40%, #1e293b 100%);
+  font-family: "Poppins", sans-serif;
+  overflow: hidden;
+}
+
+/* 🟩 الكارت */
+.login-card {
+  background-color: #ffffff;
+  padding: 50px 40px;
+  border-radius: 20px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
+  width: 380px;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.login-card:hover {
+  transform: translateY(-6px);
+}
+
+/* 🚗 أيقونة السيارة */
+.login-icon {
+  font-size: 55px;
+  color: #2563eb;
+  margin-bottom: 10px;
+}
+
+/* 🧾 العنوان */
+.login-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: #1e293b;
+  letter-spacing: 0.5px;
+}
+
+/* ✏️ الحقول */
+.login-input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 4px rgba(37, 99, 235, 0.4);
+}
+
+/* 🔵 زر الدخول */
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #2563eb;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.login-btn:hover {
+  background-color: #1e40af;
+  transform: scale(1.02);
+}
+
+/* 🔴 نص الخطأ */
+.error-text {
+  color: tomato;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* ⚪ الفوتر */
+.footer-text {
+  font-size: 13px;
+  margin-top: 20px;
+  color: #6b7280;
+}
+
+/* 🖥️ تحسين محاذاة للـ desktop */
+@media (min-width: 1024px) {
+  .login-card {
+    margin-left: 0;
+  }
+}

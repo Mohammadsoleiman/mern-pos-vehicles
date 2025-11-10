@@ -1,0 +1,43 @@
+/* ==============================
+   PROFILE PAGE STYLES
+   ============================== */
+
+.profile-page {
+  padding: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.profile-page h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.profile-card {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.profile-card p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  color: #444;
+}
+
+.profile-card button {
+  display: block;
+  margin-top: 1.5rem;
+  background-color: #4b4bd8;
+  color: #fff;
+  padding: 0.7rem 1.3rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.profile-card button:hover {
+  background-color: #3a3abf;
+}

@@ -1,0 +1,107 @@
+/* ================= SETTINGS PAGE ================= */
+.settingsPage {
+  padding: 28px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Grid Layout */
+.settingsContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 26px;
+  margin-top: 24px;
+}
+
+/* Section Box */
+.settingsSection {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+  transition: 0.3s;
+}
+
+.settingsSection h2 {
+  margin-bottom: 18px;
+  color: var(--text);
+}
+
+/* Labels */
+.settingsSection label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+/* Inputs */
+.settingsSection input,
+.settingsSection select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--bg-card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  margin-bottom: 14px;
+  transition: 0.3s;
+}
+
+.settingsSection input:focus,
+.settingsSection select:focus {
+  border-color: #6366f1;
+  outline: none;
+}
+
+/* Profile Image */
+.profilePic {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.profilePic img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+}
+
+/* Save Button */
+.btnSave {
+  grid-column: span 2;
+  padding: 12px 24px;
+  margin-top: 8px;
+  background: linear-gradient(135deg,#6366f1,#8b5cf6);
+  border: none;
+  outline: none;
+  color: white;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+  display: block;
+  width: fit-content;
+}
+
+.btnSave:hover {
+  transform: translateY(-3px);
+}
+
+/* Logout Button (Optional) */
+.btnLogout {
+  padding: 12px 18px;
+  background: #e11d48;
+  border: none;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btnLogout:hover {
+  transform: translateY(-2px);
+}

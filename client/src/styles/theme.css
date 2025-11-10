@@ -1,0 +1,14 @@
+:root {
+  --bg-content: #ffffff;
+  --text-content: #222;
+  --card-bg: #ffffff;
+  --card-border: #e6e6e6;
+}
+
+/* Dark Mode */
+[data-theme="dark"] {
+  --bg-content: #0f1014;
+  --text-content: #f1f1f1;
+  --card-bg: #16171d;
+  --card-border: #2d2f36;
+}

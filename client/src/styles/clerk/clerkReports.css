@@ -1,0 +1,274 @@
+/* ============================================================
+   CLERK REPORTS DASHBOARD - EXECUTIVE PROFESSIONAL DESIGN
+   ============================================================ */
+
+.clerk-reports-page {
+  padding: 36px;
+  background: linear-gradient(180deg, #f9fafb 0%, #eef2f7 100%);
+  min-height: 100vh;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  color: #0f172a;
+  animation: fadeIn 0.5s ease;
+}
+
+/* Smooth fade-in */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   PAGE TITLE
+   ============================================================ */
+.reports-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 32px;
+  letter-spacing: -0.3px;
+  position: relative;
+}
+
+.reports-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 50px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #2563eb, #60a5fa);
+}
+
+/* ============================================================
+   KPI CARDS ROW
+   ============================================================ */
+.reports-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: #ffffffcc;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(226, 232, 240, 0.7);
+  border-radius: 16px;
+  padding: 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  border-color: #93c5fd;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12);
+}
+
+.stat-icon {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: #fff;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 20px;
+  min-width: 48px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.35);
+}
+
+.stat-card h2 {
+  font-size: 22px;
+  margin: 0;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.stat-card p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: #64748b;
+}
+
+/* ============================================================
+   SECTIONS: PANELS & TABLES
+   ============================================================ */
+.reports-section {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin-bottom: 36px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e2e8f0;
+  transition: box-shadow 0.25s ease;
+}
+
+.reports-section:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.reports-section h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reports-section h2 span {
+  font-size: 13px;
+  color: #2563eb;
+  cursor: pointer;
+  font-weight: 500;
+}
+.reports-section h2 span:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   TABLE STYLING
+   ============================================================ */
+.reports-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+  font-size: 14px;
+  color: #1e293b;
+}
+
+.reports-table thead {
+  background: #f1f5f9;
+}
+
+.reports-table th {
+  font-weight: 600;
+  text-align: left;
+  padding: 12px 14px;
+  color: #334155;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.reports-table td {
+  background: #fff;
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.25s ease, transform 0.1s ease;
+}
+
+.reports-table tr:hover td {
+  background: #f8fafc;
+  transform: scale(1.01);
+}
+
+.reports-table tbody tr {
+  border-radius: 8px;
+}
+
+/* Alternate row striping */
+.reports-table tbody tr:nth-child(even) td {
+  background: #fafbfc;
+}
+
+/* ============================================================
+   STATUS BADGES
+   ============================================================ */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: capitalize;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.status-badge.completed {
+  background: #dcfce7;
+  color: #15803d;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.25);
+}
+
+.status-badge.pending {
+  background: #fef9c3;
+  color: #a16207;
+  box-shadow: 0 0 6px rgba(234, 179, 8, 0.25);
+}
+
+.status-badge.failed {
+  background: #fee2e2;
+  color: #b91c1c;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.25);
+}
+
+.status-badge:hover {
+  transform: scale(1.05);
+}
+
+/* ============================================================
+   NO DATA STATE
+   ============================================================ */
+.no-data {
+  text-align: center;
+  color: #94a3b8;
+  font-style: italic;
+  padding: 2rem 0;
+}
+
+/* ============================================================
+   GRID ALIGNMENT: Dual tables on second row
+   ============================================================ */
+@media (min-width: 1200px) {
+  .reports-section:nth-of-type(2),
+  .reports-section:nth-of-type(3) {
+    display: inline-block;
+    vertical-align: top;
+    width: 49%;
+  }
+
+  .reports-section:nth-of-type(3) {
+    margin-left: 2%;
+  }
+
+  .reports-section:nth-of-type(4) {
+    display: block;
+    width: 100%;
+    margin-top: 32px;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .reports-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .reports-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    justify-content: flex-start;
+  }
+
+  .reports-section {
+    padding: 18px;
+  }
+
+  .reports-table th,
+  .reports-table td {
+    font-size: 13px;
+    padding: 8px;
+  }
+}

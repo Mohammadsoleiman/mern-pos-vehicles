@@ -1,0 +1,214 @@
+/* ============================================
+   REPORTS PAGE - FINAL PERFECT ALIGNMENT STYLE
+   ============================================ */
+
+.reports-page {
+  display: flex;
+  background: #f9fafb;
+  min-height: 100vh;
+  font-family: "Inter", sans-serif;
+  color: #111827;
+}
+
+/* --------------------------
+   MAIN CONTENT CONTAINER
+--------------------------- */
+.reports-container {
+  flex: 1;
+  padding: 20px 24px;
+  margin-left: 0; /* ✅ Removed big margin gap */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* --------------------------
+   PAGE HEADER
+--------------------------- */
+.reports-header {
+  background: #ffffff;
+  padding: 14px 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reports-header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.reports-header p {
+  color: #6b7280;
+  font-size: 14px;
+  text-align: right;
+  max-width: 420px;
+}
+
+/* --------------------------
+   SUMMARY CARDS
+--------------------------- */
+.reports-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.report-card {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 16px 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  transition: all 0.2s ease-in-out;
+}
+
+.report-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.report-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.report-card-header h3 {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.report-value {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 2px;
+  letter-spacing: -0.3px;
+}
+
+.report-card.income .report-value {
+  color: #22c55e;
+}
+
+.report-card.expense .report-value {
+  color: #ef4444;
+}
+
+.report-card.profit .report-value {
+  color: #2563eb;
+}
+
+/* --------------------------
+   CHART SECTION
+--------------------------- */
+.chart-section {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 18px 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.chart-header h2 {
+  font-size: 17px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.period-toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.period-toggle button {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #374151;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.period-toggle button.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.period-toggle button:hover {
+  background: #f3f4f6;
+}
+
+/* --------------------------
+   SUMMARY TEXT
+--------------------------- */
+.reports-summary-text {
+  margin-top: 24px;
+  background: #ffffff;
+  padding: 18px 20px;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.reports-summary-text h2 {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #111827;
+}
+
+.reports-summary-text p {
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.reports-summary-text strong {
+  color: #111827;
+}
+
+/* --------------------------
+   RESPONSIVE DESIGN
+--------------------------- */
+@media (max-width: 992px) {
+  .reports-container {
+    margin-left: 0;
+    padding: 14px;
+  }
+
+  .reports-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .reports-header p {
+    text-align: left;
+  }
+
+  .chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .period-toggle {
+    justify-content: flex-start;
+  }
+}
