@@ -187,13 +187,17 @@ MONGO_URI=your_mongodb_connection_string
 PORT=5000
 JWT_SECRET=your_secret_key
 ```
-# Database Seeders
+# 🌱 Database Seeders
 
-This folder contains scripts to populate the database with initial data:
+This folder contains scripts used to initialize the database with **default data** for the system.
 
-- seedUsers.js → Creates default Admin, Accountant, Clerk users
-- permissionSeeder.js → Creates role-based permissions
-- vehicleSeeder.js → Adds sample vehicles to the inventory
+| File Name | Purpose |
+|---------|---------|
+| **seedUsers.js** | Creates default system users (Admin, Accountant, Clerk) |
+| **permissionSeeder.js** | Defines role-based permissions and assigns access levels |
+| **vehicleSeeder.js** | Adds example vehicles to the system inventory |
+
+---
 
 ### 4️⃣ Run the Application
 ```bash
