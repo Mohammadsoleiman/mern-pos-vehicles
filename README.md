@@ -149,6 +149,7 @@ mern-pos-vehicles/
 │   ├── 🎮 controllers/        # Business Logic
 │   ├── ⚙️ config/             # Database Connection
 │   ├── 🔐 middleware/         # Auth & Validation Middleware
+│   ├── 📂 seed/               # Contains database initial data 
 │   └── 📦 package.json
 │
 └── 📝 README.md
@@ -186,6 +187,13 @@ MONGO_URI=your_mongodb_connection_string
 PORT=5000
 JWT_SECRET=your_secret_key
 ```
+# Database Seeders
+
+This folder contains scripts to populate the database with initial data:
+
+- seedUsers.js → Creates default Admin, Accountant, Clerk users
+- permissionSeeder.js → Creates role-based permissions
+- vehicleSeeder.js → Adds sample vehicles to the inventory
 
 ### 4️⃣ Run the Application
 ```bash
